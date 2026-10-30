@@ -680,15 +680,15 @@ svg.leaflet-image-layer.leaflet-interactive path {
   --brand:#0F4A36;--brand-700:#0B3A2A;--brand-600:#145C43;--brand-500:#1E6E50;--brand-400:#2E8160;
   --brand-100:#D9E6DD;--brand-50:#E9F0EA;
   /* Flächen */
-  --paper:#F5F2EA;--paper-2:#ECE7DB;--surface:#FBFAF6;--field:#ECE8DE;--hover:rgba(15,74,54,.05);
+  --paper:#FFFFFF;--paper-2:#F4F7F3;--surface:#F6F8F5;--field:#EEF2EC;--hover:rgba(15,74,54,.05);
   /* Text */
-  --ink:#13241D;--ink-2:#3F5047;--ink-3:#5C6A62;--ink-on:#FBFAF6;
+  --ink:#0E1F17;--ink-2:#36463E;--ink-3:#56655D;--ink-on:#FFFFFF;
   /* Linien */
-  --line:rgba(19,36,29,.10);--line-2:rgba(19,36,29,.18);
+  --line:rgba(14,31,23,.09);--line-2:rgba(14,31,23,.16);
   /* Signalfarben (dezent) */
   --leaf:#3E9A6A;--honey:#8F5B1C;--honey-50:#F4E8D4;--tomato:#B0473A;--tomato-50:#F4DFD9;--frost:#46769F;--frost-50:#E1EAF2;--berry:#A34F6C;--berry-50:#F2E0E7;
   /* Interaktion */
-  --btn:#0F4A36;--btn-hover:#145C43;--btn-ink:#FBFAF6;--focus:rgba(46,129,96,.22);
+  --btn:#0F4A36;--btn-hover:#145C43;--btn-ink:#FFFFFF;--focus:rgba(46,129,96,.22);
   --scrim:rgba(11,24,19,.42);
   /* Typografie */
   --sans:'Inter Var',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
@@ -710,17 +710,36 @@ svg.leaflet-image-layer.leaflet-interactive path {
 }
 :root[data-theme=dark]{
   color-scheme:dark;
-  --brand:#8FCDA8;--brand-700:#5FAE83;--brand-600:#A3D7B7;--brand-500:#7CC29A;--brand-400:#7CC29A;--brand-100:rgba(143,205,168,.18);--brand-50:rgba(143,205,168,.10);
-  --paper:#0C1612;--paper-2:#08110D;--surface:#121F19;--field:#18271F;--hover:rgba(143,205,168,.06);
-  --ink:#ECF1EC;--ink-2:#B6C3BB;--ink-3:#84948A;--ink-on:#0C1612;
-  --line:rgba(236,241,236,.09);--line-2:rgba(236,241,236,.16);
-  --leaf:#7CC29A;--honey:#E1A85E;--honey-50:rgba(225,168,94,.14);--tomato:#E58A7C;--tomato-50:rgba(229,138,124,.14);--frost:#8DB6DA;--frost-50:rgba(141,182,218,.14);--berry:#DA8DA7;--berry-50:rgba(218,141,167,.14);
-  --btn:#2B7D59;--btn-hover:#33906A;--btn-ink:#F4F8F4;--focus:rgba(143,205,168,.25);--scrim:rgba(0,0,0,.55);
-  --track:rgba(236,241,236,.09);--bar:rgba(143,205,168,.22);
+  /* Wald: grün-schwarz, warmes Licht, Minzakzent */
+  --brand:#86CFA6;--brand-700:#5FAE83;--brand-600:#9AD9B5;--brand-500:#7CC69C;--brand-400:#7CC69C;--brand-100:rgba(134,207,166,.18);--brand-50:rgba(134,207,166,.10);
+  --paper:#08130E;--paper-2:#060E0A;--surface:#0F1E17;--field:#16281F;--hover:rgba(134,207,166,.06);
+  --ink:#E9F0EB;--ink-2:#B4C3BA;--ink-3:#8C9C92;--ink-on:#0A120F;
+  --line:rgba(225,238,230,.08);--line-2:rgba(225,238,230,.15);
+  --leaf:#7CC69C;--honey:#E2AA62;--honey-50:rgba(226,170,98,.14);--tomato:#EB8F80;--tomato-50:rgba(235,143,128,.14);--frost:#8FB9DD;--frost-50:rgba(143,185,221,.14);--berry:#DD90AA;--berry-50:rgba(221,144,170,.14);
+  --btn:#2C8A5E;--btn-hover:#349B6B;--btn-ink:#F4F9F5;--focus:rgba(134,207,166,.26);--scrim:rgba(0,0,0,.58);
+  --track:rgba(225,238,230,.09);--bar:rgba(134,207,166,.22);
   --sh-1:none;--sh-2:0 14px 36px rgba(0,0,0,.45);--sh-3:0 28px 70px rgba(0,0,0,.6);
+  --img-dim:brightness(.84) saturate(.92);
 }
-:root[data-theme=dark][data-pal=graphit]{--paper:#0F1011;--paper-2:#0A0B0C;--surface:#17191B;--field:#1E2124;--ink:#F1F3F2;--ink-2:#BCC2C0;--ink-3:#8B9290}
-:root[data-theme=dark][data-pal=nacht]{--paper:#0A0F18;--paper-2:#070B12;--surface:#111827;--field:#172133;--ink:#EEF2F9;--ink-2:#B5BFD1;--ink-3:#8692A8}
+/* Graphit: neutral warmgrau, ruhiger Salbeiakzent */
+:root[data-theme=dark][data-pal=graphit]{
+  --brand:#A9CDB8;--brand-500:#9CC3AC;--brand-400:#9CC3AC;--brand-600:#B9D8C6;--brand-100:rgba(169,205,184,.16);--brand-50:rgba(169,205,184,.09);
+  --paper:#161514;--paper-2:#100F0E;--surface:#201F1D;--field:#2A2826;--hover:rgba(255,255,255,.05);
+  --ink:#F1F0EC;--ink-2:#C3C1BA;--ink-3:#97958E;--ink-on:#121212;
+  --line:rgba(255,253,245,.08);--line-2:rgba(255,253,245,.15);
+  --btn:#5B6F62;--btn-hover:#677C6E;--focus:rgba(169,205,184,.24);--track:rgba(255,253,245,.09);--bar:rgba(169,205,184,.2);
+  --img-dim:brightness(.8) saturate(.75);
+}
+/* Nacht: tiefes Blauschwarz, kühler Petrolakzent */
+:root[data-theme=dark][data-pal=nacht]{
+  --brand:#7FD0C4;--brand-500:#6FC3B6;--brand-400:#6FC3B6;--brand-600:#97DCD2;--brand-100:rgba(127,208,196,.17);--brand-50:rgba(127,208,196,.09);
+  --paper:#090D16;--paper-2:#060910;--surface:#111827;--field:#182032;--hover:rgba(127,208,196,.06);
+  --ink:#EDF1F8;--ink-2:#B6C0D2;--ink-3:#8892A9;--ink-on:#090D16;
+  --line:rgba(220,230,250,.08);--line-2:rgba(220,230,250,.15);
+  --btn:#23806F;--btn-hover:#2A917F;--focus:rgba(127,208,196,.26);--track:rgba(220,230,250,.09);--bar:rgba(127,208,196,.2);
+  --img-dim:brightness(.78) saturate(.85) hue-rotate(-6deg);
+}
+[data-theme=dark] .vh-i,[data-theme=dark] .rimg,[data-theme=dark] .rph img{filter:var(--img-dim)}
 
 /* ── 2 Basis ─────────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box}
@@ -843,7 +862,7 @@ label:has(>.fin:focus-visible){outline:2px solid var(--brand-400);outline-offset
 .vh-i{position:absolute;inset:-6% 0 -6% 0;background-size:cover;background-position:center 40%;will-change:transform;transform:translate3d(0,var(--py,0px),0) scale(1.06)}
 .vh-g{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,20,15,.45) 0%,rgba(8,20,15,.05) 34%,rgba(8,20,15,.20) 62%,rgba(8,20,15,.68) 100%)}
 .vh-c{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:flex-end;min-height:inherit;padding:calc(env(safe-area-inset-top,0px) + 14px) max(var(--gut),calc((100vw - var(--maxw))/2)) var(--s5)}
-.vh.home{min-height:clamp(380px,64vh,620px)}
+.vh.home{min-height:clamp(330px,52vh,540px)}
 .vh.sub{min-height:clamp(176px,26vh,250px)}
 .vh h1,.vh .hl{color:#fff;margin-bottom:0;text-shadow:0 1px 24px rgba(0,0,0,.25)}
 .vh .eyebrow{color:rgba(255,255,255,.86);margin-bottom:var(--s3)}
@@ -991,16 +1010,38 @@ label:has(>.fin:focus-visible){outline:2px solid var(--brand-400);outline-offset
 .mpmap .leaflet-control-attribution a{color:#0F4A36}
 
 /* ── 7 Navigation ────────────────────────────────────────────────────── */
-nav{position:fixed;z-index:10;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:0;
-  padding:6px max(8px,calc((100vw - var(--maxw))/2)) calc(6px + env(safe-area-inset-bottom,0px));
-  background:color-mix(in srgb,var(--paper) 92%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(16px);backdrop-filter:saturate(1.4) blur(16px);border-top:1px solid var(--line)}
-nav button{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px 6px;border:0;border-radius:var(--r-s);background:none!important;color:var(--ink-3);font-size:10.5px;font-weight:500;letter-spacing:.01em}
-nav button .ic{transition:transform var(--t-mid) var(--e-out)}
-nav span{display:block;line-height:0}
-nav button.on{color:var(--brand)}
-nav button::before{content:"";position:absolute;top:-7px;left:50%;width:18px;height:2px;margin-left:-9px;border-radius:2px;background:var(--brand-500);transform:scaleX(0);transition:transform var(--t-mid) var(--e-out)}
-nav button.on::before{transform:scaleX(1)}
-nav button:active .ic{transform:scale(.9)}
+/* Drei Bereiche; der mittlere ist größer und gefüllt. Darunter liegen Segmente je Bereich. */
+nav{position:fixed;z-index:10;left:0;right:0;bottom:0;display:flex;justify-content:center;align-items:flex-end;
+  padding:4px max(12px,calc((100vw - 460px)/2)) calc(8px + env(safe-area-inset-bottom,0px));
+  background:color-mix(in srgb,var(--paper) 94%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(18px);backdrop-filter:saturate(1.4) blur(18px);border-top:1px solid var(--line)}
+nav button{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px 2px;border:0;border-radius:var(--r-s);background:none!important;color:var(--ink-3);font:500 11px/1.2 var(--sans);letter-spacing:.01em;cursor:pointer}
+nav button em{font-style:normal}
+nav span{display:grid;place-items:center;line-height:0;width:44px;height:30px;border-radius:15px;transition:background-color var(--t-mid) var(--e-out),transform var(--t-mid) var(--e-out)}
+nav button.on{color:var(--ink)}
+nav button.on span{background:var(--brand-50);color:var(--brand)}
+nav button.mid span{width:58px;height:58px;border-radius:50%;margin-top:-22px;background:var(--btn)!important;color:var(--btn-ink)!important;box-shadow:0 6px 18px color-mix(in srgb,var(--btn) 32%,transparent),0 0 0 5px var(--paper)}
+nav button.mid{color:var(--ink-2)}
+nav button.mid.on{color:var(--brand)}
+nav button.mid.on span{box-shadow:0 8px 22px color-mix(in srgb,var(--btn) 40%,transparent),0 0 0 5px var(--paper),0 0 0 6.5px var(--brand-100)}
+nav button:active span{transform:scale(.92)}
+nav button:focus-visible{outline:none}nav button:focus-visible span{outline:2px solid var(--brand-400);outline-offset:2px}
+main{touch-action:pan-y}
+/* Segmente unter dem Kopfbild */
+.gseg{position:sticky;top:0;z-index:5;display:flex;gap:2px;padding:3px;margin:var(--s4) 0 var(--s4);border-radius:12px;background:var(--field)}
+.vh+.gseg{margin-top:var(--s4)}
+.gseg button{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 8px;border:0;border-radius:9px;background:transparent;color:var(--ink-2);font:500 13.5px/1 var(--sans);cursor:pointer;white-space:nowrap;transition:background-color var(--t-fast),color var(--t-fast)}
+.gseg button.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(14,31,23,.08),0 1px 6px rgba(14,31,23,.05)}
+[data-theme=dark] .gseg button.on{background:var(--surface);box-shadow:none}
+.gseg small{min-width:18px;height:18px;padding:0 5px;border-radius:9px;display:inline-grid;place-items:center;font:600 10.5px/1 var(--sans);background:var(--line);color:var(--ink-2)}
+.gseg button.on small{background:var(--brand-50);color:var(--brand)}
+.gseg+*{margin-top:0}
+/* Kopfzeile in jedem Bereich: Logo links, Hilfe und Profil rechts */
+.vh.sub .top{position:absolute}
+.vh.sub{min-height:clamp(168px,24vh,214px)}
+.vh.sub .vh-c{padding-top:calc(env(safe-area-inset-top,0px) + 70px);padding-bottom:var(--s4)}
+.vh.sub h1{font-size:clamp(30px,7vw,40px)}
+.vh.calm.sub .vh-c{padding-top:calc(env(safe-area-inset-top,0px) + 64px)}
+.lvc{margin-bottom:var(--s5)}
 
 /* ── 8 Overlays ──────────────────────────────────────────────────────── */
 #rv{position:fixed;inset:0;z-index:20;overflow:auto;background:var(--paper);padding:calc(env(safe-area-inset-top,0px) + 18px) var(--gut) calc(28px + env(safe-area-inset-bottom,0px));animation:fp-fade var(--t-mid) var(--e-soft) both}
@@ -1090,10 +1131,10 @@ main.enter .vh .eyebrow{animation:fp-fade .8s .35s var(--e-soft) both}
   .vh-c,.vh .top{padding-left:max(var(--gut),calc((100vw - var(--rail) - var(--maxw))/2));padding-right:max(var(--gut),calc((100vw - var(--rail) - var(--maxw))/2))}
   .vh .top{left:0;right:0}
   main{padding-left:max(var(--gut),calc((100vw - var(--rail) - var(--maxw))/2));padding-right:max(var(--gut),calc((100vw - var(--rail) - var(--maxw))/2))}
-  nav{top:0;bottom:0;right:auto;width:var(--rail);flex-direction:column;justify-content:center;gap:var(--s2);padding:var(--s5) 8px;border-top:0;border-right:1px solid var(--line)}
-  nav button{flex:none;padding:12px 4px}
-  nav button::before{top:50%;left:-8px;width:2px;height:20px;margin:-10px 0 0;transform:scaleY(0)}
-  nav button.on::before{transform:scaleY(1)}
+  nav{top:0;bottom:0;right:auto;width:var(--rail);flex-direction:column;justify-content:center;align-items:center;gap:var(--s4);padding:var(--s5) 8px;border-top:0;border-right:1px solid var(--line)}
+  nav button{flex:none;width:100%;padding:8px 4px}
+  nav button.mid span{margin-top:0;box-shadow:0 6px 18px color-mix(in srgb,var(--btn) 30%,transparent)}
+  .gseg{max-width:520px}
   .fab{right:max(var(--gut),calc((100vw - var(--rail) - var(--maxw))/2));bottom:var(--s6)}
   .toast{bottom:var(--s6);left:var(--rail)}
   .chips,.chips.scr,.hs{margin-inline:0;padding-inline:0}
@@ -2173,6 +2214,134 @@ document.addEventListener("visibilitychange",()=>{const b=Q("#m .vh.mov");if(b)b
 function setMov(on){S.cfg.mov=on;save();draw();toast(on?"Bewegte Kopfbilder an":"Bewegte Kopfbilder aus")}
 const _pfBV=pfBody;pfBody=function(){return _pfBV().replace(/(<div class="wsel">[\s\S]*?<\/button><\/div>)/,`$1<label class="row li" style="margin-top:12px"><span class="sp">Bewegte Kopfbilder<br><small class="mu">Ruhige Kamerafahrt mit Dampf, Nebel und Licht in der Bildwelt „Film“</small></span><input type="checkbox" ${S.cfg.mov===false?"":"checked"} onchange="setMov(this.checked)" style="width:22px;height:22px;flex:none;accent-color:var(--ac)"></label>`)};
 (function(){const st=TOUR.find(s=>s.t=="Naturwelt");if(st)st.x="Wähle die Bildwelt der App: „Film“ zeigt in jedem Bereich eine eigene filmische Szene, die sich ganz ruhig bewegt, mit Dampf über der Pfanne oder Nebel über dem Garten. Mit dem Schalter darunter stellst du die Bewegung ab. „Lebendiges Licht“ zeigt eine Landschaft zur Tageszeit, „Herkunft“ Szenen vom Boden bis zum Teller, „Ruhig“ verzichtet auf Kopfbilder."})();
+
+
+// ===== Navigation v3: drei Bereiche, Segmente, Wischen =====
+// Die bisherigen Ansichten bleiben unverändert erhalten (V.inv, V.list, V.mp, V.rec, V.home, V.trk).
+// Darüber liegen drei Bereiche mit Segmenten; der mittlere Tab ist hervorgehoben.
+IC.today='<rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.7" fill="currentColor" stroke="none"/>';
+IC.filter='<path d="M4 6h16M7 12h10M10 18h4"/>';
+IC.leaf='<path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15"/><path d="M5 19c3-4 6-7 10-9"/>';
+const V3GR={
+ vorrat:{n:"Vorrat",ic:"package",eye:"Was du hast und was fehlt",v:[["inv","Im Haus"],["list","Einkauf"],["mp","Markt"]]},
+ heute:{n:"Heute",ic:"today",eye:"",v:[["home","Überblick"],["nut","Ernährung"],["fin","Finanzen"]]},
+ kochen:{n:"Kochen",ic:"utensils",eye:"Rezepte und Wochenplan",v:[["rec:disc","Rezepte"],["rec:plan","Wochenplan"]]}};
+const TORD={vhk:["vorrat","heute","kochen"],vkh:["vorrat","kochen","heute"],hvk:["heute","vorrat","kochen"]};
+const TORDN={vhk:"Vorrat · Heute · Kochen",vkh:"Vorrat · Kochen · Heute",hvk:"Heute · Vorrat · Kochen"};
+const tOrd=()=>TORD[S.cfg.tabs]||TORD.vhk;
+function gOf(t){t=t||tab;return t=="home"||t=="trk"||t=="nut"||t=="fin"?"heute":t=="rec"?"kochen":"vorrat"}
+const segKey=()=>tab=="rec"?"rec:"+(RM=="plan"?"plan":"disc"):tab;
+function setSeg(k,keepScroll){const p=k.split(":");tab=p[0];if(p[1])RM=p[1];draw();if(!keepScroll)document.getElementById("m").scrollTop=0}
+function goGrp(g,dir){const cur=gOf();if(cur==g){const m=document.getElementById("m");if(m.scrollTop>4)m.scrollTo({top:0,behavior:"smooth"});else if(segKey()!=V3GR[g].v[0][0])setSeg(V3GR[g].v[0][0]);return}
+ S.cfg.gv=S.cfg.gv||{};S.cfg.gv[cur]=segKey();save();const k=S.cfg.gv[g]||V3GR[g].v[0][0];
+ if(dir===undefined){const o=tOrd();dir=o.indexOf(g)>o.indexOf(cur)?1:-1}v3Slide(dir,()=>setSeg(k))}
+// Teilansichten von „Heute“ aus dem bisherigen Tracker
+function trkParts(){const d=document.createElement("div");d.innerHTML=V.trk();const sec={head:[]};let c="head";
+ [...d.children].forEach(k=>{if(k.tagName=="H2"){c=k.textContent.trim().split(/\s/)[0];sec[c]=[k]}else(sec[c]=sec[c]||[]).push(k)});
+ const h=sec.head.filter(k=>!k.querySelector("h1")&&k.tagName!="H1");return{lv:h[0],kc:h.slice(1),sec}}
+const outer=a=>(a||[]).map(e=>e.outerHTML).join("");
+V.nut=function(){const p=trkParts();return"<h1>Heute</h1>"+outer(p.kc)+outer(p.sec["Letzte"])+outer(p.sec["Nährstoffe"])};
+V.fin=function(){const p=trkParts();return"<h1>Heute</h1>"+outer(p.sec["Ausgaben"])};
+const _hmv3=V.home;V.home=function(){const p=trkParts();let h=_hmv3();
+ // Motivation gehört zum Tag: Level und Serie unter den Spruch, Wochenziele und Abzeichen ans Ende
+ const lv=p.lv?p.lv.outerHTML.replace('class="card"','class="card lvc"'):"";
+ h=h.replace('<div class="grid2">',lv+'<div class="grid2">');
+ return h+outer(p.sec["Wochenziele"])+outer(p.sec["Abzeichen"])};
+DSEYE.nut="Ernährung";DSEYE.fin="Finanzen";try{if(typeof P!="undefined"){P.nut=P.nut||P.trk||P.home;P.fin=P.fin||P.trk||P.home}}catch(e){}
+try{FIMG.nut=FIMG.trk;FIMG.fin=FIMG.list;VFX.nut=VFX.trk;VFX.fin=VFX.list}catch(e){}
+function v3Nav(){const n=document.getElementById("n"),o=tOrd(),g=gOf();
+ n.className="v3";n.setAttribute("aria-label","Hauptbereiche");
+ n.innerHTML=o.map((k,i)=>`<button class="${i==1?"mid ":""}${k==g?"on":""}" data-g="${k}" onclick="goGrp('${k}')" aria-label="${V3GR[k].n}"${k==g?' aria-current="page"':""}><span>${ic(V3GR[k].ic,i==1?24:22)}</span><em>${V3GR[k].n}</em></button>`).join("")}
+function v3Count(k){try{if(k=="inv")return S.inv.filter(x=>!x.frozen).length;if(k=="list")return S.list.filter(x=>!x.done).length}catch(e){}return 0}
+function v3Seg(){const g=gOf(),cur=segKey(),m=document.getElementById("m");if(Q("#m .gseg"))return;
+ const s=document.createElement("div");s.className="gseg";s.setAttribute("role","tablist");
+ s.innerHTML=V3GR[g].v.map(([k,l])=>{const c=v3Count(k);return`<button role="tab" class="${k==cur?"on":""}" aria-selected="${k==cur}" onclick="setSeg('${k}')">${l}${c?`<small>${c}</small>`:""}</button>`}).join("");
+ const b=Q("#m .vh");if(b)b.after(s);else m.prepend(s)}
+function v3Band(){const b=Q("#m .vh");if(!b)return;const g=gOf(),o=tOrd(),n=String(o.indexOf(g)+1).padStart(2,"0");
+ if(b.classList.contains("sub")){const h=b.querySelector("h1");if(h)h.textContent=V3GR[g].n;
+  const e=b.querySelector(".eyebrow");if(e)e.innerHTML=`<span>${n}</span><i></i>${esc(V3GR[g].eye||new Date().toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"}))}`;
+  // Profil-Knöpfe aus den einzelnen Ansichten entfallen, oben rechts gibt es sie überall
+  b.querySelectorAll(".vh-c .iconb").forEach(x=>{const l=(x.getAttribute("aria-label")||"");if(/Profil|Hilfe/.test(l))x.remove()});
+  if(!b.querySelector(".top")){const t=document.createElement("div");t.className="top";
+   t.innerHTML=`<div class="logo"><i class="lm"></i></div><div><div class="brand">FreshPlan</div></div><div class="grp"><button class="iconb" aria-label="Hilfe" onclick="tutOpen(0)">${ic("help",18)}</button><button class="iconb" aria-label="Profil" onclick="pfOpen()">${ic("user",18)}</button></div>`;
+   b.querySelector(".vh-c").prepend(t)}}}
+let V3G=null;
+function v3Post(){v3Nav();v3Band();v3Seg();
+ if(tab=="rec"){const s=Q("#m .seg");if(s&&/Entdecken/.test(s.textContent))s.remove()}
+ document.body.dataset.grp=gOf();S.cfg.gv=S.cfg.gv||{};S.cfg.gv[gOf()]=segKey()}
+const _drwv3=draw;draw=function(){if(tab=="trk")tab="nut";const r=_drwv3.apply(this,arguments);try{v3Post()}catch(e){console.error(e)}return r};
+const fabUpd0=fabUpd;fabUpd=function(){fabUpd0()};
+// Wechsel mit sanftem Gleiten; beim Wischen folgt der Inhalt dem Finger
+const V3RM=matchMedia("(prefers-reduced-motion: reduce)");
+function v3Slide(dir,fn){const m=document.getElementById("m");if(V3RM.matches||!m.animate){m.style.transform="";fn();return}
+ const W=m.clientWidth,from=m.style.transform||"translate3d(0,0,0)";
+ const a=m.animate([{transform:from,opacity:1},{transform:`translate3d(${-dir*W*.18}px,0,0)`,opacity:0}],{duration:150,easing:"cubic-bezier(.4,0,1,1)",fill:"forwards"});
+ a.onfinish=()=>{fn();m.style.transform="";a.cancel();m.animate([{transform:`translate3d(${dir*W*.14}px,0,0)`,opacity:0},{transform:"translate3d(0,0,0)",opacity:1}],{duration:280,easing:"cubic-bezier(.22,1,.36,1)"})}}
+(function(){const m=document.getElementById("m");let on=0,lock=0,sx=0,sy=0,dx=0,t0=0;
+ const EX=".card.it,.chips,.hs,.leaflet-container,.mpmap,input,textarea,select,.wk,.seg,.gseg,[data-noswipe],.swl,.swr,.vfx";
+ m.addEventListener("touchstart",e=>{on=0;if(e.touches.length!=1||document.getElementById("rv")||(typeof TS!="undefined"&&TS)||e.target.closest(EX))return;
+  const t=e.touches[0];if(t.clientX<16||t.clientX>innerWidth-16)return;on=1;lock=0;sx=t.clientX;sy=t.clientY;dx=0;t0=performance.now()},{passive:true});
+ m.addEventListener("touchmove",e=>{if(!on)return;const t=e.touches[0],x=t.clientX-sx,y=t.clientY-sy;
+  if(!lock){if(Math.abs(x)<12&&Math.abs(y)<12)return;lock=Math.abs(x)>Math.abs(y)*1.5?1:2}
+  if(lock!=1)return;dx=x;const o=tOrd(),i=o.indexOf(gOf()),edge=(dx>0&&i==0)||(dx<0&&i==o.length-1);
+  m.style.transform=`translate3d(${(edge?dx*.22:dx*.55).toFixed(1)}px,0,0)`},{passive:true});
+ const end=()=>{if(!on)return;on=0;if(lock!=1)return;const o=tOrd(),i=o.indexOf(gOf()),W=m.clientWidth,v=Math.abs(dx)/Math.max(1,performance.now()-t0),j=i+(dx<0?1:-1);
+  if((Math.abs(dx)>W*.24||(v>.5&&Math.abs(dx)>48))&&j>=0&&j<o.length)goGrp(o[j],dx<0?1:-1);
+  else if(m.animate){const a=m.animate([{transform:m.style.transform},{transform:"translate3d(0,0,0)"}],{duration:260,easing:"cubic-bezier(.22,1,.36,1)"});m.style.transform="";a.onfinish=()=>{}}else m.style.transform=""};
+ m.addEventListener("touchend",end);m.addEventListener("touchcancel",end)})();
+// Einstellung: Anordnung der Tabs
+function setTabs(v){S.cfg.tabs=v;save();draw();toast("Anordnung: "+TORDN[v])}
+const _pfBv3=pfBody;pfBody=function(){const c=S.cfg.tabs||"vhk";return _pfBv3().replace('<h2>Darstellung</h2><div class="card set">',`<h2>Darstellung</h2><div class="card set"><label class="mu" style="margin-top:0">Anordnung der Tabs unten</label><select onchange="setTabs(this.value)" aria-label="Anordnung der Tabs">${Object.keys(TORDN).map(k=>`<option value="${k}"${k==c?" selected":""}>${TORDN[k]}${k=="vhk"?" (Standard)":""}</option>`).join("")}</select><div class="mu" style="margin:6px 0 12px">Der mittlere Tab ist hervorgehoben. Zwischen den Tabs wechselst du auch durch Wischen nach links und rechts.</div>`)};
+// Start immer bei „Heute“
+if(typeof tab!="undefined"&&(tab=="trk"))tab="nut";
+
+// ===== Geführte Tour für die neue Struktur: drei Bereiche, Segmente, Wischen =====
+(function(){const O=t=>Object.assign({},TOUR.find(s=>s.t==t)||{}),
+ NG=g=>()=>Q(`#n button[data-g="${g}"]`),GS=()=>Q("#m .gseg"),AFTER=()=>Q("#m .gseg ~ .card");
+ const st=[
+ Object.assign(O("Willkommen bei FreshPlan"),{tab:"home"}),
+ {tab:"home",el:()=>Q("#n"),t:"Drei Bereiche",x:"Unten liegen Vorrat, Heute und Kochen. Heute in der Mitte ist dein Startpunkt. Du wechselst per Tipp oder wischst über den Inhalt nach links und rechts."},
+ {tab:"home",el:GS,t:"Segmente",x:"Jeder Bereich ist oben in Segmente geteilt. Bei Heute sind das Überblick, Ernährung und Finanzen."},
+ Object.assign(O("Überblick"),{tab:"home"}),
+ Object.assign(O("Dein Spruch"),{tab:"home"}),
+ {tab:"home",el:()=>Q("#m .lvc"),t:"Level und Serie",x:"Punkte sammelst du fürs Kochen, für gerettetes Essen und erreichte Tagesziele. Die Flamme zählt deine Serie."},
+ Object.assign(O("Frische-Score und Kalorien"),{tab:"home"}),
+ Object.assign(O("Beleg scannen"),{tab:"home"}),
+ Object.assign(O("Artikel hinzufügen"),{tab:"home",x:"Einzelne Artikel mit Menge, Einheit, Lagerort und Haltbarkeit erfassen."}),
+ Object.assign(O("Bald aufbrauchen"),{tab:"home"}),
+ Object.assign(O("Heute geplant"),{tab:"home"}),
+ {tab:"home",el:()=>H2("#m","Wochenziele"),t:"Wochenziele und Abzeichen",x:"Kleine Ziele für jede Woche. Darunter sammelst du Abzeichen."},
+ {tab:"nut",el:AFTER,t:"Ernährung",x:"Kalorien des Tages und 18 Nährwerte von Eiweiß bis Vitamin D, heute oder im Wochenschnitt. Ein Kalorienziel legst du selbst fest, im Profil unter „Ziele“."},
+ {tab:"fin",el:AFTER,t:"Finanzen",x:"Was du in diesem Monat ausgegeben und was du weggeworfen hast. Ein Budget setzt du nur, wenn du eines willst."},
+ Object.assign(O("Hilfe"),{tab:"home",el:()=>Q("#m .grp .iconb:nth-child(1)")}),
+ Object.assign(O("Profil"),{tab:"home",el:()=>Q("#m .grp .iconb:nth-child(2)")}),
+ {tab:"home",el:NG("vorrat"),t:"Weiter zum Vorrat",x:"Tippe unten auf „Vorrat“."},
+ Object.assign(O("Deine Lebensmittel"),{tab:"inv",x:"Der Balken zeigt, wie lange etwas noch hält. Wische einen Artikel nach rechts, wenn er verbraucht ist, nach links zum Einfrieren. Antippen zeigt alle Aktionen. Wischen neben den Artikeln wechselt den Bereich."}),
+ Object.assign(O("Kurz-Info"),{tab:"inv"}),
+ Object.assign(O("Suchen und filtern"),{tab:"inv"}),
+ {tab:"inv",el:()=>H2("#m","Tiefkühler"),t:"Einfrieren und Auftauen",x:"Eingefrorenes steht gesammelt im Tiefkühler. Von dort taust du es mit einem Tipp wieder auf, auch geplant für einen bestimmten Tag."},
+ Object.assign(O("Schnell hinzufügen"),{tab:"inv"}),
+ {tab:"inv",el:()=>[...document.querySelectorAll("#m .gseg button")].find(b=>/Einkauf/.test(b.textContent)),t:"Zum Einkauf",x:"Vorrat und Einkauf liegen im selben Bereich. Tippe auf das Segment „Einkauf“."},
+ Object.assign(O("Artikel auf die Liste"),{tab:"list",el:AFTER}),
+ Object.assign(O("Wer kauft was?"),{tab:"list"}),
+ Object.assign(O("Einkauf erledigt"),{tab:"list"}),
+ {tab:"list",el:()=>H2("#m","Günstigster Markt"),t:"Günstigster Markt",x:"Vergleicht Lidl, Netto, Rewe und Aldi für deine Liste: die günstigste Option, Bio und aktuelle Rabatte."},
+ Object.assign(O("Standardprodukte"),{tab:"list"}),
+ {tab:"list",el:()=>[...document.querySelectorAll("#m .gseg button")].find(b=>/Markt/.test(b.textContent)),t:"Markt",x:"Das dritte Segment ist der Markt in deiner Nachbarschaft."},
+ Object.assign(O("Markt in deiner Nachbarschaft"),{tab:"mp"}),
+ Object.assign(O("Anbieten oder suchen"),{tab:"mp"}),
+ Object.assign(O("Anzeigen in der Nähe"),{tab:"mp"}),
+ {tab:"mp",el:NG("kochen"),t:"Weiter zum Kochen",x:"Tippe unten auf „Kochen“."},
+ Object.assign(O("Deine Ernährungsform"),{tab:"rec",rm:"disc"}),
+ Object.assign(O("Suchen und eigene Rezepte"),{tab:"rec",rm:"disc"}),
+ Object.assign(O("Passende Rezepte"),{tab:"rec",rm:"disc"}),
+ {tab:"rec",rm:"disc",el:()=>[...document.querySelectorAll("#m .gseg button")].find(b=>/Wochenplan/.test(b.textContent)),t:"Zum Wochenplan",x:"Tippe auf das Segment „Wochenplan“."},
+ Object.assign(O("Die nächsten 7 Tage"),{tab:"rec",rm:"plan",el:AFTER}),
+ Object.assign(O("Einkauf für den Plan"),{tab:"rec",rm:"plan"}),
+ ...["Haushalt","Freunde","Darstellung","Naturwelt","Deine Daten"].map(t=>Object.assign(O(t),{tab:"home"})),
+ Object.assign(O("Fertig!"),{tab:"home",x:"Das war alles Wichtige. Die Tour findest du jederzeit wieder über das Fragezeichen oben rechts. Viel Spaß mit FreshPlan!"})];
+ const d=st.find(s=>s.t=="Darstellung");if(d)d.x="Hell, dunkel oder automatisch, drei eigene Farbwelten für den Dunkelmodus und die Anordnung der Tabs unten.";
+ TOUR.length=0;st.forEach(s=>TOUR.push(s))})();
 
 draw();remind();
 </script></body></html>
