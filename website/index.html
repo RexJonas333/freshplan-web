@@ -64,7 +64,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .screen img.on{opacity:1;transform:none}
 .spot{position:absolute;inset:-20%;background:radial-gradient(closest-side,var(--glow),transparent 70%);z-index:-1}
 /* Kapitel: Handy bleibt, Text läuft */
-.tour{padding-block:80px 40px}
+.tour{padding-block:80px 40px;overflow-x:clip}
 .tour-head{max-width:760px;margin-bottom:36px}
 .tour-head p{margin-top:18px;font-size:19px}
 .tour-grid{display:grid;grid-template-columns:1fr 420px;gap:64px}
@@ -296,5 +296,4 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
   }
 })();
 </script>
-
 </body></html>
