@@ -2455,5 +2455,249 @@ const _drwCp=draw;draw=function(){const r=_drwCp.apply(this,arguments);try{invCo
   TOUR.splice(j+1,0,{tab:"rec",rm:"disc",ov:1,prep:()=>{const c=Q("#m .card.rc");if(c)c.click()},el:()=>Q("#rv .stg-bar"),t:"Kochen",x:"Unten bleibt „Gekocht“ immer erreichbar: Es bucht die Zutaten aus dem Vorrat ab. Mit „Einplanen“ legst du das Gericht in den Wochenplan. Fehlende Zutaten setzt du weiter oben mit einem Tipp auf die Einkaufsliste."})}
  const k=TOUR.findIndex(s=>s.t=="Deine Lebensmittel");if(k>=0)TOUR[k].x="Der Punkt zeigt, wie lange etwas noch hält: grün gut, gelb bald, rot dringend. Wische nach rechts, wenn es verbraucht ist, nach links zum Einfrieren. Antippen zeigt alle Aktionen. Wischen neben den Artikeln wechselt den Bereich."})();
 
+// ===== Server (Supabase): Konto, Abgleich, Haushalt, Freunde, Markt =====
+// Der öffentliche Schlüssel darf in der App stehen; geschützt sind die Daten durch die Zugriffsregeln der Datenbank.
+const SB={u:"https://oqplbatuftpshhlhttor.supabase.co",k:"sb_publishable_QS6mW4P0ptCm3BPgup2Z0A_ex2KdVcv",site:"https://rexjonas333.github.io/freshplan-web/"};
+// In der Vorschau innerhalb von Claude sind Verbindungen zu anderen Servern gesperrt; dort bleibt alles lokal.
+const SB_OK=!/claude|usercontent|anthropic/.test(location.hostname);
+let SBS=null;try{SBS=JSON.parse(localStorage.getItem("fpsb")||"null")}catch(e){}
+const sbSet=s=>{SBS=s;try{s?localStorage.setItem("fpsb",JSON.stringify(s)):localStorage.removeItem("fpsb")}catch(e){}};
+const sbSite=()=>/^https:/.test(location.protocol)&&!/localhost|claude|usercontent/.test(location.host)?location.origin+location.pathname:SB.site;
+class SBErr extends Error{constructor(c,m,s){super(m||c);this.code=c;this.status=s}}
+const SBM={invalid_credentials:"E-Mail oder Passwort stimmt nicht.",invalid_grant:"E-Mail oder Passwort stimmt nicht.",email_not_confirmed:"Bitte bestätige zuerst deine E-Mail-Adresse. Den Link haben wir dir geschickt.",user_already_exists:"Diese E-Mail-Adresse ist schon registriert.",email_exists:"Diese E-Mail-Adresse ist schon registriert.",weak_password:"Das Passwort ist zu schwach. Nimm mindestens 8 Zeichen mit Buchstaben und einer Zahl.",same_password:"Das neue Passwort muss sich vom alten unterscheiden.",over_email_send_rate_limit:"Zu viele E-Mails in kurzer Zeit. Bitte warte ein paar Minuten.",over_request_rate_limit:"Zu viele Versuche. Bitte warte eine Minute.",offline:"Keine Verbindung zum Server. Prüfe dein Internet und versuche es erneut.",code_unknown:"Diesen Code gibt es nicht. Prüfe ihn bitte.",own_code:"Das ist dein eigener Code.",household_full:"Dieser Haushalt ist schon voll.",signup_disabled:"Neue Konten sind gerade nicht möglich.",email_address_invalid:"Diese E-Mail-Adresse wird nicht angenommen.",not_member:"Du bist nicht mehr Mitglied in diesem Haushalt.",session_lost:"Deine Anmeldung ist abgelaufen. Bitte melde dich neu an."};
+const sbMsg=e=>SBM[e&&e.code]||SBM[String(e&&e.message||"").trim()]||(e&&e.status>=500?"Der Server antwortet gerade nicht. Bitte versuche es später erneut.":"Das hat nicht geklappt. Bitte versuche es erneut.");
+async function sbReq(path,o){o=o||{};const h={apikey:SB.k,"Content-Type":"application/json"};
+ if(o.auth!==false){const t=o.token||await sbTok();if(t)h.Authorization="Bearer "+t}if(o.prefer)h.Prefer=o.prefer;
+ const ac=typeof AbortController!="undefined"?new AbortController():null,tm=ac&&setTimeout(()=>ac.abort(),15000);let r;
+ try{r=await fetch(SB.u+path,{method:o.method||"GET",headers:h,body:o.body!=null?JSON.stringify(o.body):undefined,signal:ac&&ac.signal})}catch(e){throw new SBErr("offline","",0)}finally{if(tm)clearTimeout(tm)}
+ const tx=await r.text();let j=null;try{j=tx?JSON.parse(tx):null}catch(e){}
+ if(!r.ok){const c=j&&(j.error_code||(j.message&&SBM[j.message]?j.message:null)||j.error||j.code)||String(r.status);throw new SBErr(String(c),j&&(j.msg||j.message||j.error_description)||"",r.status)}return j}
+const sbSess=s=>({access_token:s.access_token,refresh_token:s.refresh_token,expires_at:s.expires_at||Math.floor(Date.now()/1e3)+(s.expires_in||3600),user:{id:s.user.id,email:s.user.email,name:(s.user.user_metadata||{}).name||""}});
+let SBR=null;
+async function sbTok(){if(!SBS)return null;if((SBS.expires_at||0)*1e3-Date.now()>60000)return SBS.access_token;
+ if(!SBR)SBR=sbReq("/auth/v1/token?grant_type=refresh_token",{method:"POST",auth:false,body:{refresh_token:SBS.refresh_token}}).then(s=>{sbSet(sbSess(s));return SBS.access_token}).catch(e=>{if(e.status==400||e.status==401){sbSet(null);sbLost()}throw e}).finally(()=>{SBR=null});
+ return SBR}
+const cloudCur=()=>{const id=curId();return!!(id&&SBS&&SBS.user&&SBS.user.id==id)};
+const cloudAcc=()=>{const id=curId();return(accs().accounts||[]).find(a=>a.id==id&&a.cloud)||null};
+function sbLost(){const a=cloudAcc();if(!a)return;setTimeout(()=>{toast(SBM.session_lost);authOpen("login");const e=document.getElementById("le");if(e)e.value=a.email},300)}
+const sbBusy=b=>{try{busy(b)}catch(e){}};
+
+// ── Anmelden, Registrieren, Passwort ──
+const _authOpenC=authOpen;
+authOpen=function(m){if(m=="recoverLocal"||(!SB_OK&&m=="recover"))return _authOpenC("recover");_authOpenC(m);const e=document.getElementById("auth");if(!e)return;if(!SB_OK){const r=e.querySelector(".rv-in");if(r&&m!="recover")r.insertAdjacentHTML("beforeend",'<div class="mu" style="font-size:12px;text-align:center;margin-top:18px">In dieser Vorschau gibt es keine Verbindung zum Server. Konten mit Sicherung und Haushalt funktionieren in der App und unter rexjonas333.github.io/freshplan-web.</div>');return}let h=e.innerHTML;
+ h=h.replace("Mit einem Konto bleiben die Daten mehrerer Personen auf einem Gerät getrennt. Konten liegen derzeit nur auf diesem Gerät. Du kannst auch als Gast starten.","Mit einem Konto sind deine Daten gesichert und auf allen deinen Geräten gleich. Haushalt, Freunde und Markt brauchen ein Konto. Du kannst auch als Gast starten.");
+ h=h.replace("Das Konto gilt für dieses Gerät und diesen Browser. Es gibt keine Cloud-Synchronisierung, deine Daten verlassen das Gerät nicht.","Dein Konto liegt auf dem FreshPlan-Server. Vorrat, Pläne und Einstellungen werden damit gesichert und auf deinen Geräten abgeglichen.");
+ if(m=="recover"){const lg=(accs().accounts||[]).some(a=>!a.cloud);h=`<div class="rv-in" style="padding-top:7vh"><div class="logo" style="margin:0 auto 14px;width:72px;height:72px;border-radius:22px"><i class="lm" style="width:50px;height:50px"></i></div><h1 style="text-align:center">Passwort zurücksetzen</h1><div class="mu" style="text-align:center;margin:-6px 0 8px">Wir schicken dir einen Link, mit dem du ein neues Passwort festlegst.</div><div class="aerr" id="aerr" style="display:none"></div><label class="mu">E-Mail</label><input id="ce" type="email" autocomplete="email"><button class="pri" style="width:100%;margin-top:16px" onclick="cloudRecover()">Link senden</button>${lg?'<button class="lnk" onclick="authOpen(\'recoverLocal\')">Konto nur auf diesem Gerät? Mit Wiederherstellungsschlüssel</button>':""}<button class="lnk" onclick="authOpen('login')">Zurück zur Anmeldung</button></div>`}
+ e.innerHTML=h};
+const pwOk=p=>p.length>=8&&/[A-Za-zÄÖÜäöüß]/.test(p)&&/\d/.test(p);
+const _authRegC=authReg;
+authReg=async function(){if(!SB_OK)return _authRegC();const g=i=>document.getElementById(i).value,n=g("rn").trim(),em=g("re").trim().toLowerCase(),p=g("rp");
+ if(n.length<2)return aerr("Bitte gib deinen Namen ein.");if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(em))return aerr("Bitte gib eine gültige E-Mail-Adresse ein.");if(!pwOk(p))return aerr("Das Passwort braucht mindestens 8 Zeichen mit Buchstaben und einer Zahl.");if(p!==g("rq"))return aerr("Die Passwörter stimmen nicht überein.");
+ sbBusy(true);try{const r=await sbReq("/auth/v1/signup?redirect_to="+encodeURIComponent(sbSite()),{method:"POST",auth:false,body:{email:em,password:p,data:{name:n.slice(0,40)}}});sbBusy(false);
+  if(r&&r.access_token)return cloudIn(r,n);
+  document.getElementById("auth").innerHTML=`<div class="rv-in" style="padding-top:9vh"><h1>Fast geschafft</h1><div class="mu" style="margin:-6px 0 18px;line-height:1.5">Wir haben dir eine E-Mail an <b>${esc(em)}</b> geschickt. Tippe auf den Link darin, um dein Konto zu bestätigen, und melde dich danach hier an.</div><div class="mu" style="font-size:12.5px;margin-bottom:18px">Keine E-Mail da? Schau im Spam-Ordner nach.</div><button class="pri" style="width:100%" onclick="authOpen('login');document.getElementById('le').value='${esc(em)}'">Zur Anmeldung</button></div>`}
+ catch(e){sbBusy(false);aerr(sbMsg(e))}};
+const _authLoginC=authLogin;
+authLogin=async function(){if(!SB_OK)return _authLoginC();const em=document.getElementById("le").value.trim().toLowerCase(),p=document.getElementById("lp").value;if(!em||!p)return aerr("Bitte E-Mail und Passwort eingeben.");
+ if((accs().accounts||[]).some(a=>a.email==em&&!a.cloud))return _authLoginC();if(throttled())return aerr("Zu viele Versuche. Bitte warte eine Minute.");
+ sbBusy(true);try{const s=await sbReq("/auth/v1/token?grant_type=password",{method:"POST",auth:false,body:{email:em,password:p}});sbBusy(false);localStorage.removeItem("fpf");await cloudIn(s)}catch(e){sbBusy(false);if(e.code=="invalid_credentials"||e.code=="invalid_grant")failed();aerr(sbMsg(e))}};
+async function cloudRecover(){const em=document.getElementById("ce").value.trim().toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(em))return aerr("Bitte gib eine gültige E-Mail-Adresse ein.");
+ sbBusy(true);try{await sbReq("/auth/v1/recover?redirect_to="+encodeURIComponent(sbSite()),{method:"POST",auth:false,body:{email:em}});sbBusy(false);
+  document.getElementById("auth").innerHTML=`<div class="rv-in" style="padding-top:9vh"><h1>E-Mail ist unterwegs</h1><div class="mu" style="margin:-6px 0 18px;line-height:1.5">Wenn es ein Konto mit <b>${esc(em)}</b> gibt, bekommst du gleich einen Link. Darüber legst du ein neues Passwort fest.</div><button class="pri" style="width:100%" onclick="authOpen('login')">Zur Anmeldung</button></div>`}catch(e){sbBusy(false);aerr(sbMsg(e))}}
+async function cloudIn(s,nm){sbSet(sbSess(s));const u=SBS.user,A=accs();A.accounts=A.accounts||[];let a=A.accounts.find(x=>x.id==u.id);
+ if(!a){a={id:u.id,name:(nm||u.name||u.email.split("@")[0]).slice(0,40),email:u.email,cloud:1,created:today()};
+  // Gastdaten übernimmt das erste Konto auf diesem Gerät
+  const old=localStorage.getItem("fp1");if(old&&!localStorage.getItem("fp1:"+u.id)&&!A.accounts.length)localStorage.setItem("fp1:"+u.id,old);A.accounts.push(a)}
+ else{a.cloud=1;a.email=u.email}
+ A.remember=true;A.cur=u.id;accSave(A);sessionStorage.removeItem("fpguest");sessionStorage.removeItem("fpcur");KEY=calcKey();reloadState();
+ if(!S.cfg.name){S.cfg.name=a.name;save()}
+ try{await syncPull(true)}catch(e){}afterAuth();setTimeout(()=>{hhSync().catch(()=>{});toast("Angemeldet. Deine Daten werden gesichert.")},400)}
+const _authOutC=authOut;
+authOut=function(){if(cloudCur()){const t=SBS.access_token;fetch(SB.u+"/auth/v1/logout",{method:"POST",headers:{apikey:SB.k,Authorization:"Bearer "+t}}).catch(()=>{});syPush().catch(()=>{});sbSet(null)}_authOutC()};
+const _pwSaveC=pwSave;
+pwSave=async function(){if(!cloudAcc())return _pwSaveC();const o=document.getElementById("po"),n=document.getElementById("pn").value;if(!pwOk(n))return aerr("Das neue Passwort braucht mindestens 8 Zeichen mit Buchstaben und einer Zahl.");
+ try{if(o&&!REC_PW){await sbReq("/auth/v1/token?grant_type=password",{method:"POST",auth:false,body:{email:cloudAcc().email,password:o.value}})}await sbReq("/auth/v1/user",{method:"PUT",body:{password:n}});REC_PW=0;rvClose();toast("Passwort geändert")}catch(e){aerr(e.code=="invalid_credentials"||e.code=="invalid_grant"?"Das aktuelle Passwort stimmt nicht.":sbMsg(e))}};
+let REC_PW=0;
+function cloudNewPw(){REC_PW=1;rvEl().innerHTML=`<div class="rv-in"><h1>Neues Passwort</h1><div class="mu" style="margin:-6px 0 8px">Lege ein neues Passwort für dein Konto fest.</div><div class="aerr" id="aerr" style="display:none"></div><label class="mu">Neues Passwort</label><input id="pn" type="password" autocomplete="new-password"><div class="mu" style="font-size:12px;margin:4px 2px 0">Mindestens 8 Zeichen mit Buchstaben und einer Zahl.</div><button class="pri" style="width:100%;margin-top:16px" onclick="pwSave()">Speichern</button></div>`}
+const _accDelC=accDel;
+accDel=async function(){const a=cloudAcc();if(!a)return _accDelC();const p=document.getElementById("pd").value;
+ try{await sbReq("/auth/v1/token?grant_type=password",{method:"POST",auth:false,body:{email:a.email,password:p}});await sbReq("/rest/v1/rpc/delete_me",{method:"POST",body:{}})}catch(e){return aerr(e.code=="invalid_credentials"||e.code=="invalid_grant"?"Das Passwort stimmt nicht.":sbMsg(e))}
+ const A=accs();A.accounts=A.accounts.filter(x=>x.id!=a.id);A.cur=null;accSave(A);["fp1:","fpsync:","fpsyncb:"].forEach(k=>localStorage.removeItem(k+a.id));sbSet(null);sessionStorage.removeItem("fpcur");afterAuth();setTimeout(()=>toast("Konto und alle Daten auf dem Server gelöscht"),300)};
+const _acctCardC=acctCard;
+acctCard=function(){const a=cloudAcc();if(!a)return _acctCardC().replace("Deine Daten liegen nur auf diesem Gerät. Konten werden derzeit ebenfalls nur hier gespeichert, ein Abgleich zwischen Geräten folgt mit dem Server.","Deine Daten liegen nur auf diesem Gerät. Mit einem Konto werden sie gesichert und auf allen Geräten abgeglichen.").replace("Das Konto gilt für dieses Gerät und diesen Browser. Es gibt keine Cloud-Synchronisierung.","Dieses Konto liegt nur auf diesem Gerät. Für Sicherung und Abgleich melde dich ab und erstelle ein Konto auf dem Server.");
+ return`<div class="card" id="acct"><div class="row"><div class="lvb">${ic("user",22)}</div><div class="sp"><b>${esc(a.name)}</b><div class="mu">${esc(a.email)}</div></div></div><div class="sync" id="sys" style="margin:12px 0">${sySt()}</div><button style="width:100%" onclick="syNow()">Jetzt abgleichen</button><button style="width:100%;margin-top:8px" onclick="pwOpen()">Passwort ändern</button><button style="width:100%;margin-top:8px" onclick="authOut()">Abmelden</button><button style="width:100%;margin-top:8px;color:var(--rd)" onclick="accDelOpen()">Konto löschen</button></div>`};
+const _accDelOpenC=accDelOpen;accDelOpen=function(){_accDelOpenC();if(cloudAcc()){const m=document.querySelector("#rv .mu");if(m)m.textContent="Dein Konto und alle Daten auf dem Server werden unwiderruflich gelöscht, auch auf deinen anderen Geräten. Haushalte, die du verwaltest, werden aufgelöst."}};
+cloudOpen=function(){rvClose();if(cloudCur())return pfOpen();authOpen(cloudAcc()?"login":"register")};
+
+// ── Dreiwege-Abgleich: was auf beiden Seiten geändert wurde, wird zusammengeführt ──
+const jeq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const mkey=x=>x&&typeof x=="object"&&!Array.isArray(x)&&x.id!=null?"i:"+x.id:"j:"+JSON.stringify(x);
+function m3arr(B,L,R){B=Array.isArray(B)?B:[];L=Array.isArray(L)?L:[];R=Array.isArray(R)?R:[];const mb=new Map(B.map(x=>[mkey(x),x])),ml=new Map(L.map(x=>[mkey(x),x])),mr=new Map(R.map(x=>[mkey(x),x])),out=[];
+ const pick=k=>{const b=mb.get(k),l=ml.get(k),r=mr.get(k),hb=mb.has(k),hl=ml.has(k),hr=mr.has(k);
+  if(hl&&hr)return jeq(l,r)?l:jeq(l,b)?r:l;if(hl)return hb&&jeq(l,b)?undefined:l;if(hr)return hb&&jeq(r,b)?undefined:r};
+ const seen=new Set();[...mr.keys(),...ml.keys()].forEach(k=>{if(seen.has(k))return;seen.add(k);const v=pick(k);if(v!==undefined)out.push(v)});return out}
+function m3(B,L,R){if(jeq(L,R))return L;if(B!==undefined&&jeq(L,B))return R;if(B!==undefined&&jeq(R,B))return L;
+ if(Array.isArray(L)||Array.isArray(R))return m3arr(B,L,R);
+ if(L&&R&&typeof L=="object"&&typeof R=="object"){const o={},b=B&&typeof B=="object"?B:{};new Set([...Object.keys(R),...Object.keys(L)]).forEach(k=>{const hl=k in L,hr=k in R,hb=k in b;
+  if(hl&&hr)o[k]=m3(b[k],L[k],R[k]);else if(hl){if(!(hb&&jeq(L[k],b[k])))o[k]=L[k]}else{if(!(hb&&jeq(R[k],b[k])))o[k]=R[k]}});return o}
+ return L===undefined?R:L}
+
+// ── Persönlicher Stand: Sicherung und Abgleich zwischen Geräten ──
+const syK=p=>p+curId();
+const syMeta=()=>{try{return JSON.parse(localStorage.getItem(syK("fpsync:"))||"{}")}catch(e){return{}}},sySet=m=>{try{localStorage.setItem(syK("fpsync:"),JSON.stringify(m))}catch(e){}};
+const syBase=()=>{try{return JSON.parse(localStorage.getItem(syK("fpsyncb:"))||"null")}catch(e){return null}},syBaseSet=d=>{try{localStorage.setItem(syK("fpsyncb:"),JSON.stringify(d))}catch(e){}};
+const LOCALCFG=["apiKey","gv","tabs","world","mov","theme","pal"];
+function syData(){const d=JSON.parse(JSON.stringify(S));LOCALCFG.forEach(k=>{if(d.cfg)delete d.cfg[k]});return d}
+let SYNCING=0,SYT=0,SYB=null,SYERR="";
+const _lsSet=Storage.prototype.setItem;
+Storage.prototype.setItem=function(k,v){_lsSet.call(this,k,v);if(this===localStorage&&k===KEY&&!SYNCING&&cloudCur()){const m=syMeta();m.v=(m.v||0)+1;sySet(m);clearTimeout(SYT);SYT=setTimeout(()=>{syPush().catch(()=>{});hhSync().catch(()=>{})},2500)}};
+async function syPush(){if(!cloudCur()||window.TOURING)return;if(SYB)return SYB;
+ SYB=(async()=>{for(let i=0;i<3;i++){if(await pushOnce()!=="conflict")break;await pullMerge(false)}})().catch(e=>{SYERR=sbMsg(e);syUi();throw e}).finally(()=>{SYB=null});return SYB}
+// Gespeichert wird nur, wenn der Server-Stand noch der ist, den dieses Gerät zuletzt kannte; sonst erst zusammenführen
+async function pushOnce(){const m0=syMeta(),v0=m0.v||0,d=syData(),id=SBS.user.id;let row;
+ if(m0.at){const r=await sbReq(`/rest/v1/user_state?user_id=eq.${id}&updated_at=eq.${encodeURIComponent(m0.at)}`,{method:"PATCH",prefer:"return=representation",body:{data:d}});row=Array.isArray(r)?r[0]:null;
+  if(!row){const ex=await sbReq(`/rest/v1/user_state?select=updated_at&user_id=eq.${id}`);if(ex&&ex.length)return"conflict";m0.at=null}}
+ if(!row){const r=await sbReq("/rest/v1/user_state?on_conflict=user_id",{method:"POST",prefer:"resolution=merge-duplicates,return=representation",body:{user_id:id,data:d}});row=Array.isArray(r)?r[0]:r}
+ const m=syMeta();sySet({...m,at:row&&row.updated_at,pv:v0,ok:Date.now()});syBaseSet(d);SYERR="";syUi();profPush().catch(()=>{});return"ok"}
+// Holt den Server-Stand und führt ihn mit lokalen Änderungen zusammen. Gibt zurück, ob danach gespeichert werden muss.
+async function pullMerge(first){const r=await sbReq("/rest/v1/user_state?select=data,updated_at&user_id=eq."+SBS.user.id),row=r&&r[0],m=syMeta(),dirty=(m.v||0)!=(m.pv||0)||first;
+ if(!row)return true;
+ if(m.at&&Date.parse(row.updated_at)<=Date.parse(m.at))return(m.v||0)!=(m.pv||0);
+ const loc=syData(),hasLoc=loc.inv.length||loc.list.length||loc.log.length||(loc.myrec||[]).length;let d=row.data;
+ if(dirty&&hasLoc)d=m3(syBase()||undefined,loc,row.data);
+ const keep={};LOCALCFG.forEach(k=>{if(S.cfg&&S.cfg[k]!==undefined)keep[k]=S.cfg[k]});d={...d,cfg:{...(d.cfg||{}),...keep}};
+ SYNCING=1;try{localStorage.setItem(KEY,JSON.stringify(d))}finally{SYNCING=0}
+ syBaseSet(row.data);const need=!jeq(syData(),row.data)&&dirty&&hasLoc;sySet({...m,at:row.updated_at,pv:need?(m.v||0)-1:(m.v||0),ok:Date.now()});reloadState();try{syncMy()}catch(e){}
+ if(!first&&!document.getElementById("rv")&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))draw();return need}
+async function syncPull(first){if(!cloudCur()||window.TOURING)return;if(await pullMerge(first))await syPush()}
+function sySt(){if(!cloudCur())return`${ic("clock",14)} Nicht mit dem Server verbunden`;const m=syMeta();if(SYERR)return`${ic("clock",14)} ${esc(SYERR)}`;if(!m.ok)return`${ic("clock",14)} Wird gesichert …`;
+ const t=new Date(m.ok),d=t.toDateString()==new Date().toDateString()?"heute":t.toLocaleDateString("de-DE");return`${ic("check",14)} Gesichert und abgeglichen, ${d} um ${t.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}`}
+function syUi(){const e=document.getElementById("sys");if(e)e.innerHTML=sySt();const h=document.getElementById("hhs");if(h)h.innerHTML=hhSt()}
+async function syNow(){const e=document.getElementById("sys");if(e)e.innerHTML=`${ic("clock",14)} Wird abgeglichen …`;try{await syncPull();await syPush();await hhSync();toast("Abgeglichen")}catch(x){toast(sbMsg(x))}syUi()}
+async function profPush(){if(!cloudCur())return;const p=profile();await sbReq("/rest/v1/profiles?id=eq."+SBS.user.id,{method:"PATCH",prefer:"return=minimal",body:{name:(S.cfg.name||"").slice(0,40),diet:String(p.d).slice(0,20),level:p.lv,level_name:String(p.ln||"").slice(0,40),points:p.pts|0,streak:p.st|0}})}
+
+// ── Haushalt ──
+const hhKinds=()=>["inv","list","plan","basics"].filter(k=>S.hh&&S.hh.sh&&S.hh.sh[k]);
+const hhB=()=>{try{return JSON.parse(localStorage.getItem("fphhb:"+(S.hh&&S.hh.id))||"{}")}catch(e){return{}}},hhBSet=b=>{try{localStorage.setItem("fphhb:"+S.hh.id,JSON.stringify(b))}catch(e){}};
+let HHB=null,HHOK=0,HHERR="";
+async function hhSync(){if(!cloudCur()||!S.hh||!S.hh.cloud||window.TOURING||(typeof TS!="undefined"&&TS))return;if(HHB)return HHB;
+ HHB=(async()=>{const H=S.hh.id,me=SBS.user.id;
+  const [hh,mem,docs]=await Promise.all([sbReq(`/rest/v1/households?select=id,name,code,owner&id=eq.${H}`),sbReq(`/rest/v1/household_members?select=user_id,name,color,role&household_id=eq.${H}&order=joined_at.asc`),sbReq(`/rest/v1/household_docs?select=kind,data,rev&household_id=eq.${H}`)]);
+  if(!hh.length||!mem.some(m=>m.user_id==me)){localStorage.removeItem("fphhb:"+H);S.hh=null;S.list.forEach(x=>delete x.who);save();draw();toast("Du bist nicht mehr im Haushalt.");return}
+  const h0=hh[0],B=hhB();let changed=false;
+  // Name: Verwaltung darf umbenennen
+  if(h0.owner==me&&B.name!==undefined&&S.hh.name!==B.name&&S.hh.name!==h0.name){await sbReq(`/rest/v1/households?id=eq.${H}`,{method:"PATCH",prefer:"return=minimal",body:{name:S.hh.name.slice(0,40)}})}else if(S.hh.name!==h0.name){S.hh.name=h0.name;changed=true}
+  B.name=S.hh.name;S.hh.code=h0.code;S.hh.owner=h0.owner;
+  // Einstellungen und Personen ohne Konto liegen im Dokument „meta“
+  const loc={sh:S.hh.sh,local:S.hh.m.filter(m=>m.st=="local")},dm=docs.find(d=>d.kind=="meta"),mergedM=dm?m3(B.meta,loc,dm.data):loc;
+  if(!dm||!jeq(mergedM,dm.data))await hhPut(H,"meta",mergedM,dm?dm.rev:0);
+  if(!jeq(mergedM.sh,S.hh.sh)){S.hh.sh=mergedM.sh;changed=true}B.meta=mergedM;
+  const mem2=[...mem.map((m,i)=>({id:m.user_id,n:m.name||"Mitglied",c:m.color||HCOL[i%HCOL.length],role:m.role,st:m.user_id==me?"me":"acc"})),...(mergedM.local||[])];
+  if(!jeq(mem2,S.hh.m)){S.hh.m=mem2;changed=true}
+  for(const k of hhKinds()){const d=docs.find(x=>x.kind==k),L=S[k],R=d?d.data.items:undefined;if(L===undefined&&!d)continue;let M=d?m3(B[k],L,R):L;
+   if(!d||!jeq(M,R)){const res=await hhPut(H,k,M,d?d.rev:0);if(res&&res.ok===false&&res.data){M=m3(B[k],M,res.data.items);await hhPut(H,k,M,res.rev)}}
+   if(!jeq(M,L)){S[k]=M;changed=true}B[k]=M}
+  hhBSet(B);HHOK=Date.now();HHERR="";
+  if(changed){SYNCING=1;try{save()}finally{SYNCING=0}const m=syMeta();m.v=(m.v||0)+1;sySet(m);clearTimeout(SYT);SYT=setTimeout(()=>syPush().catch(()=>{}),2500);
+   const rv=document.getElementById("rv");if(rv&&rv.querySelector("#hhs"))hhOpen();else if(!rv&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))draw()}
+  syUi()})().catch(e=>{HHERR=sbMsg(e);syUi();if(e.code=="not_member"){S.hh=null;save();draw()}throw e}).finally(()=>{HHB=null});return HHB}
+async function hhPut(H,k,items,rev){return sbReq("/rest/v1/rpc/put_doc",{method:"POST",body:{p_household:H,p_kind:k,p_data:k=="meta"?items:{v:1,items},p_rev:rev}})}
+function hhSt(){if(!S.hh||!S.hh.cloud)return"";if(HHERR)return`${ic("clock",14)} ${esc(HHERR)}`;if(!HHOK)return`${ic("clock",14)} Wird abgeglichen …`;return`${ic("check",14)} Live abgeglichen, zuletzt um ${new Date(HHOK).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}`}
+const meName=()=>(S.cfg.name||(cloudAcc()||{}).name||"Ich").slice(0,24);
+const _hhCreateC=hhCreate;
+hhCreate=async function(){if(!cloudCur())return _hhCreateC();const n=document.getElementById("hn").value.trim();if(!n)return toast("Bitte einen Namen eingeben.");
+ try{const h=await sbReq("/rest/v1/rpc/create_household",{method:"POST",body:{p_name:n.slice(0,40),p_member:meName(),p_color:HCOL[0]}});S.hh={id:h.id,name:h.name,code:h.code,owner:h.owner,cloud:1,created:today(),m:[{...meM(),id:SBS.user.id,st:"me",role:"admin"}],sh:{inv:true,list:true,plan:true,basics:true,rec:false}};save();await hhSync().catch(()=>{});hhOpen();toast("Haushalt erstellt")}catch(e){toast(sbMsg(e))}};
+async function hhGoOnline(){if(!cloudCur()||!S.hh||S.hh.cloud)return;const old=S.hh;
+ try{const h=await sbReq("/rest/v1/rpc/create_household",{method:"POST",body:{p_name:old.name.slice(0,40),p_member:meName(),p_color:HCOL[0]}});S.hh={id:h.id,name:h.name,code:h.code,owner:h.owner,cloud:1,created:old.created||today(),m:[{...meM(),id:SBS.user.id,st:"me",role:"admin"},...old.m.filter(m=>m.st=="local")],sh:{...old.sh,rec:false}};save();await hhSync().catch(()=>{});hhOpen();toast("Haushalt ist jetzt online")}catch(e){toast(sbMsg(e))}}
+const _hhJoinC=hhJoin;
+hhJoin=function(){if(!cloudCur())return _hhJoinC();rvEl().innerHTML=`<div class="rv-in"><h1>Haushalt beitreten</h1><label class="mu">Einladungscode</label><input id="hj" autocomplete="off" autocapitalize="characters" placeholder="8 Zeichen" style="font:600 20px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase"><div class="mu" style="font-size:12.5px;margin-top:8px">Den Code bekommst du von einer Person aus dem Haushalt. Dein Vorrat und deine Einkaufsliste werden danach mit dem Haushalt zusammengeführt.</div><div class="row" style="margin-top:16px"><button class="sp" onclick="pfOpen()">Zurück</button><button class="pri sp" onclick="hhJoinOk()">Beitreten</button></div></div>`};
+const _hhJoinOkC=hhJoinOk;
+hhJoinOk=async function(){if(!cloudCur())return _hhJoinOkC();const v=document.getElementById("hj").value.toUpperCase(),m=v.match(/[A-Z0-9]{8}(?![A-Z0-9])/g),code=m?m[m.length-1]:v.replace(/[^A-Z0-9]/g,"");if(code.length!=8)return toast("Der Code hat 8 Zeichen.");
+ try{const h=await sbReq("/rest/v1/rpc/join_household",{method:"POST",body:{p_code:code,p_member:meName(),p_color:HCOL[1]}});localStorage.removeItem("fphhb:"+h.id);S.hh={id:h.id,name:h.name,code:h.code,owner:h.owner,cloud:1,created:today(),m:[{...meM(),id:SBS.user.id,st:"me"}],sh:{inv:true,list:true,plan:true,basics:true,rec:false}};save();await hhSync().catch(()=>{});hhOpen();toast("Willkommen im Haushalt "+h.name)}catch(e){toast(sbMsg(e))}};
+const _hhLeaveC=hhLeave;
+hhLeave=async function(){if(!S.hh||!S.hh.cloud||!cloudCur())return _hhLeaveC();const own=S.hh.owner==SBS.user.id;if(!confirm(own?"Haushalt auflösen? Alle Mitglieder verlieren den gemeinsamen Zugriff. Deine eigenen Daten bleiben erhalten.":"Haushalt verlassen? Deine eigenen Daten bleiben erhalten."))return;
+ try{await sbReq("/rest/v1/rpc/leave_household",{method:"POST",body:{p_id:S.hh.id}})}catch(e){return toast(sbMsg(e))}localStorage.removeItem("fphhb:"+S.hh.id);S.hh=null;S.list.forEach(x=>delete x.who);save();pfOpen();toast(own?"Haushalt aufgelöst":"Haushalt verlassen")};
+const _hhDelC=hhDel;
+hhDel=async function(id){if(!S.hh||!S.hh.cloud)return _hhDelC(id);const m=S.hh.m.find(x=>x.id==id);if(!m)return;if(!confirm(m.n+" aus dem Haushalt entfernen?"))return;
+ if(m.st=="acc"){try{await sbReq(`/rest/v1/household_members?household_id=eq.${S.hh.id}&user_id=eq.${id}`,{method:"DELETE"})}catch(e){return toast(sbMsg(e))}}
+ S.hh.m=S.hh.m.filter(x=>x.id!=id);S.list.forEach(x=>{if(x.who==id)delete x.who});save();hhSync().catch(()=>{});hhOpen()};
+const _hhInviteC=hhInvite;
+hhInvite=function(){if(!S.hh||!S.hh.cloud)return _hhInviteC();const c=S.hh.code||"";rvEl().innerHTML=`<div class="rv-in"><h1>Person einladen</h1><div class="mu" style="margin:-6px 0 14px">Die Person installiert FreshPlan, erstellt ein Konto und gibt unter Profil, Haushalt, „Mit Einladungscode beitreten“ diesen Code ein.</div><div class="card" style="text-align:center;font:600 30px/1.3 var(--mono);letter-spacing:.2em" id="hcode">${esc(c)}</div><div class="row" style="margin-top:14px"><button class="sp" onclick="hhOpen()">Zurück</button><button class="pri sp" onclick="hhShareCode()">Code teilen</button></div></div>`};
+function hhShareCode(){shareText("Einladung zu "+S.hh.name,`${S.cfg.name||"Ich"} lädt dich in den Haushalt „${S.hh.name}“ bei FreshPlan ein.\n\nSo trittst du bei: FreshPlan öffnen, Profil, Haushalt, „Mit Einladungscode beitreten“.\nCode: ${S.hh.code}\n\nApp: ${SB.site}website/`)}
+const _hhOpenC=hhOpen;
+hhOpen=function(){_hhOpenC();const rv=document.getElementById("rv");if(!rv||!S.hh)return;const h=S.hh,me=cloudCur()?SBS.user.id:null;
+ // Status der Mitglieder ehrlich anzeigen
+ rv.querySelectorAll(".row.li .mu").forEach(e=>{e.textContent=e.textContent.replace("eingeladen, wartet auf Server","mit eigenem Konto").replace("auf diesem Gerät","du")});
+ const cards=[...rv.querySelectorAll("h2")].find(x=>x.textContent=="Synchronisierung");if(!cards)return;const card=cards.nextElementSibling;
+ if(h.cloud&&me)rv.querySelectorAll('button[onclick^="hhDel("]').forEach(x=>{const id=(x.getAttribute("onclick").match(/hhDel\('([^']+)'/)||[])[1],mm=h.m.find(y=>y.id==id);if(id==me||(h.owner!=me&&mm&&mm.st=="acc"))x.remove()});
+ if(h.cloud&&me){card.innerHTML=`<div class="sync" id="hhs" style="margin:0 0 10px">${hhSt()}</div><div class="mu" style="font-size:12.5px;margin-bottom:12px">Änderungen an Vorrat, Einkaufsliste, Wochenplan und Standardprodukten sehen alle Mitglieder nach wenigen Sekunden.</div><div class="row" style="gap:8px"><div class="sp"><div class="mu" style="font-size:12px">Einladungscode</div><b style="font:600 18px var(--mono);letter-spacing:.14em">${esc(h.code||"")}</b></div><button class="sm" onclick="hhNow()">Jetzt abgleichen</button></div>`;
+  const rec=[...rv.querySelectorAll(".row.li")].find(r=>/Eigene Rezepte/.test(r.textContent));if(rec)rec.remove();
+  if(h.owner!==me){const n=rv.querySelector('input[onchange^="S.hh.name"]');if(n){n.disabled=true;n.title="Nur die Verwaltung kann den Namen ändern"}}}
+ else if(cloudCur())card.innerHTML=`<div class="mu" style="font-size:12.5px;margin-bottom:10px">Dieser Haushalt liegt bisher nur auf diesem Gerät. Stell ihn online, damit andere mit einem Code beitreten und alles live abgeglichen wird.</div><button class="pri" style="width:100%" onclick="hhGoOnline()">Haushalt online teilen</button>`;
+ else card.innerHTML=`<div class="mu" style="font-size:12.5px;margin-bottom:10px">Zum Teilen mit anderen brauchst du ein Konto. Dann gleichen sich alle Mitglieder automatisch ab.</div><button class="pri" style="width:100%" onclick="rvClose();authOpen('register')">Konto erstellen</button>`};
+async function hhNow(){const e=document.getElementById("hhs");if(e)e.innerHTML=`${ic("clock",14)} Wird abgeglichen …`;try{await hhSync();toast("Abgeglichen")}catch(x){toast(sbMsg(x))}syUi()}
+const _hhCardC=hhCard;
+hhCard=function(){return _hhCardC().replace(`${ic("clock",14)} Synchronisierung wartet auf einen Server`,S.hh&&S.hh.cloud?hhSt():cloudCur()?`${ic("clock",14)} Nur auf diesem Gerät, unter „Verwalten“ online teilen`:`${ic("clock",14)} Zum Teilen mit anderen brauchst du ein Konto`)};
+
+// ── Freunde: Freundescode und Bestenliste vom Server ──
+let FRC=null;
+const _frOpenC=frOpen;
+frOpen=async function(){if(!cloudCur())return _frOpenC();_frOpenC();const rv=document.getElementById("rv");if(!rv)return;
+ const ps=rv.querySelector('button[onclick="frShare()"]');if(ps)ps.textContent="Freundescode teilen";
+ const add=[...rv.querySelectorAll("h2")].find(h=>h.textContent=="Freund hinzufügen");if(add){const c=add.nextElementSibling;c.innerHTML=`<input id="fcc" autocomplete="off" autocapitalize="characters" placeholder="Freundescode, 8 Zeichen" style="font:600 18px var(--mono);letter-spacing:.12em;text-transform:uppercase"><button class="pri" style="width:100%;margin-top:10px" onclick="frAddCloud()">Hinzufügen</button><details style="margin-top:10px"><summary class="mu">Alten Profil-Code einfügen</summary><textarea id="fc" placeholder="Profil-Code einfügen"></textarea><button style="width:100%;margin-top:8px" onclick="frAdd()">Hinzufügen</button></details>`}
+ const note=[...rv.querySelectorAll(".mu")].find(e=>/Stand ihres Codes/.test(e.textContent));if(note)note.textContent="Die Bestenliste kommt live vom Server. Freunde ohne Konto zeigen den Stand ihres letzten Codes.";
+ try{const [me,fr]=await Promise.all([sbReq(`/rest/v1/profiles?select=friend_code&id=eq.${SBS.user.id}`),sbReq(`/rest/v1/friends?select=friend_id&user_id=eq.${SBS.user.id}`)]);FRC=me[0]&&me[0].friend_code;
+  const ids=fr.map(f=>f.friend_id);let pr=[];if(ids.length)pr=await sbReq(`/rest/v1/profiles?select=id,name,diet,level,level_name,points,streak&id=in.(${ids.join(",")})`);
+  const box=[...rv.querySelectorAll("h2")].find(h=>h.textContent=="Bestenliste");if(!box)return;const P=profile();
+  const all=[{id:"me",n:P.n,d:P.d,lv:P.lv,pts:P.pts,st:P.st,me:1},...pr.map(p=>({id:p.id,n:p.name||"Freund",d:p.diet,lv:p.level,pts:p.points,st:p.streak,cl:1})),...S.friends].sort((a,b)=>b.pts-a.pts);
+  box.nextElementSibling.innerHTML=all.map((p,i)=>`<div class="row li"><b style="width:22px">${i+1}</b><div class="sp"><b>${esc(p.n)}${p.me?" (du)":""}</b><div class="mu">Level ${p.lv} · ${p.pts} Punkte · Serie ${p.st} · ${esc(p.d||"alle")}${p.cl||p.me?"":" · per Code"}</div></div>${p.me?"":`<button class="sm" onclick="frDiet('${p.id}')">Rezepte</button><button class="sm" aria-label="Entfernen" onclick="${p.cl?`frDelCloud('${p.id}')`:`frDel('${p.id}')`}">${ic("x",14)}</button>`}</div>`).join("");
+  const top=rv.querySelector(".card.set");if(top&&FRC&&!top.querySelector("#frc"))top.insertAdjacentHTML("afterbegin",`<div id="frc" class="row" style="margin-bottom:12px"><div class="sp"><div class="mu" style="font-size:12px">Dein Freundescode</div><b style="font:600 20px var(--mono);letter-spacing:.14em">${esc(FRC)}</b></div></div>`);
+  window._FRP=pr}catch(e){toast(sbMsg(e))}};
+const _frShareC=frShare;frShare=function(){if(!cloudCur()||!FRC)return _frShareC();shareText("FreshPlan-Freundescode",`Lass uns bei FreshPlan gegeneinander antreten. Mein Freundescode: ${FRC}\n\nSo geht's: Profil, Freunde, Code eingeben.\nApp: ${SB.site}website/`)};
+async function frAddCloud(){const v=(document.getElementById("fcc").value||"").toUpperCase().replace(/[^A-Z0-9]/g,"");if(v.length!=8)return toast("Der Freundescode hat 8 Zeichen.");try{const r=await sbReq("/rest/v1/rpc/add_friend",{method:"POST",body:{p_code:v}});toast((r&&r.name||"Freund")+" ist dabei");frOpen()}catch(e){toast(sbMsg(e))}}
+async function frDelCloud(id){if(!confirm("Diesen Freund entfernen?"))return;try{await sbReq(`/rest/v1/friends?user_id=eq.${SBS.user.id}&friend_id=eq.${id}`,{method:"DELETE"});await sbReq(`/rest/v1/friends?user_id=eq.${id}&friend_id=eq.${SBS.user.id}`,{method:"DELETE"})}catch(e){return toast(sbMsg(e))}frOpen()}
+const _frDietC=frDiet;frDiet=function(id){const p=(window._FRP||[]).find(x=>x.id==id);if(!p)return _frDietC(id);rf.diet=DIETS.includes(p.diet)?p.diet:"alle";RM="disc";tab="rec";rvClose();draw();toast("Rezepte für: "+rf.diet)};
+
+// ── Markt: Anzeigen der Nachbarschaft vom Server ──
+let MPC=[],MPT=0,MPR="",MPB=null;
+const mpBox=r=>{const d=(r.r||15)+1,dl=d/111,dg=d/(111*Math.max(.2,Math.cos(r.lat*Math.PI/180)));return[r.lat-dl,r.lat+dl,r.lng-dg,r.lng+dg]};
+async function mpFetch(force){if(!cloudCur())return;const m=mpS(),r=m.reg;if(!r)return;const key=[r.lat.toFixed(3),r.lng.toFixed(3),r.r].join();if(!force&&key==MPR&&Date.now()-MPT<60000)return;if(MPB)return MPB;
+ MPB=(async()=>{const b=mpBox(r),now=new Date().toISOString();const rows=await sbReq(`/rest/v1/listings?select=id,user_id,kind,lat,lng,status,data,expires_at&lat=gte.${b[0]}&lat=lte.${b[1]}&lng=gte.${b[2]}&lng=lte.${b[3]}&expires_at=gt.${now}&status=neq.done&order=created_at.desc&limit=200`);
+  const me=SBS.user.id;MPC=rows.filter(x=>x.user_id!=me).map(x=>{const d=x.data||{};return{...d,id:x.id,k:x.kind=="r"?"r":"o",lat:x.lat,lng:x.lng,st:x.status,e:String(x.expires_at).slice(0,10),cl:1,n:String(d.n||"").slice(0,60),by:String(d.by||"Nachbar").slice(0,24),c:String(d.c||"").slice(0,24),note:String(d.note||"").slice(0,240),q:String(d.q||"").slice(0,30),p:Math.max(0,Math.min(9999,+d.p||0)),pl:String(d.pl||"").slice(0,60)}});
+  MPT=Date.now();MPR=key;if(tab=="mp"&&!document.getElementById("rv"))draw()})().catch(e=>{MPT=Date.now();MPR=key;toast(sbMsg(e))}).finally(()=>{MPB=null});return MPB}
+const _mpAllC=mpAll;
+mpAll=function(){if(!cloudCur())return _mpAllC();const m=mpS(),d=m.demo;m.demo=false;const a=_mpAllC();m.demo=d;const ids=new Set(a.map(x=>x.id)),now=today();return[...a,...MPC.filter(x=>!ids.has(x.id)&&x.st!="done"&&(!x.e||x.e>=now))]};
+async function mpPushMine(){if(!cloudCur())return;const m=mpS(),me=SBS.user.id,pushed=new Set(m.pushed||[]),cur=m.my.map(x=>x.id);
+ const rows=m.my.map(x=>({id:x.id,user_id:me,kind:x.k=="r"?"r":"o",lat:x.lat,lng:x.lng,status:x.st||"open",data:{n:x.n,q:x.q,p:x.p,f:x.f,note:x.note,pl:x.pl,by:x.by,c:x.c,t:x.t,d:x.d||""},expires_at:new Date(Math.min(Date.parse((x.e||today())+"T23:59:59Z"),Date.now()+30*864e5)).toISOString()}));
+ try{if(rows.length)await sbReq("/rest/v1/listings?on_conflict=id",{method:"POST",prefer:"resolution=merge-duplicates,return=minimal",body:rows});
+  const gone=[...pushed].filter(id=>!cur.includes(id));if(gone.length)await sbReq(`/rest/v1/listings?id=in.(${gone.map(encodeURIComponent).join(",")})`,{method:"DELETE"});
+  m.pushed=cur;SYNCING=1;try{save()}finally{SYNCING=0}}catch(e){toast("Anzeige gespeichert, aber noch nicht online: "+sbMsg(e))}}
+["mpSave","mpSt","mpDel"].forEach(f=>{const o=window[f];window[f]=function(){const r=o.apply(this,arguments);setTimeout(()=>mpPushMine(),50);return r}});
+const _drwCl=draw;draw=function(){const r=_drwCl.apply(this,arguments);try{if(tab=="mp"&&cloudCur())mpFetch()}catch(e){}return r};
+const _mpVC=V.mp;V.mp=function(){let h=_mpVC();if(cloudCur())h=h.replace(/<div class="mpnote">[\s\S]*?<\/div><\/div>/,`<div class="mpnote">${ic("info",15)}<div class="sp">Live vom Server: Anzeigen von Nachbarn mit FreshPlan-Konto in deinem Umkreis. Deine eigenen Anzeigen sehen sie, sobald du sie speicherst.</div></div>`);else h=h.replace("Echte Anzeigen deiner Nachbarn erscheinen, sobald der Server verbunden ist.","Echte Anzeigen deiner Nachbarn siehst du mit einem Konto.");return h};
+
+// ── Rückkehr aus E-Mail-Links (Bestätigung, neues Passwort) ──
+(function(){const hs=location.hash||"";if(!/access_token=|error_description=/.test(hs))return;const q=new URLSearchParams(hs.slice(1));try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}
+ if(q.get("error_description")){setTimeout(()=>toast(/expired/i.test(q.get("error_description"))?"Der Link ist abgelaufen. Fordere bitte einen neuen an.":"Der Link hat nicht funktioniert."),800);return}
+ const at=q.get("access_token"),rt=q.get("refresh_token"),ty=q.get("type");window.CLOUDHASH=1;
+ sbReq("/auth/v1/user",{token:at}).then(async u=>{await cloudIn({access_token:at,refresh_token:rt,expires_in:+q.get("expires_in")||3600,user:u},(u.user_metadata||{}).name);if(ty=="recovery")setTimeout(cloudNewPw,600);else setTimeout(()=>toast("E-Mail bestätigt. Willkommen bei FreshPlan!"),900)}).catch(e=>toast(sbMsg(e))).finally(()=>{window.CLOUDHASH=0})})();
+const _startFlowC=startFlow;startFlow=function(){if(window.CLOUDHASH)return;return _startFlowC.apply(this,arguments)};
+
+// ── Laufender Abgleich: beim Start, beim Zurückkehren in die App und alle 20 Sekunden im Haushalt ──
+let SYLAST=0;
+function syTick(force){if(!cloudCur()||document.visibilityState=="hidden"||window.TOURING||(typeof TS!="undefined"&&TS))return;
+ if(force||Date.now()-SYLAST>30000){SYLAST=Date.now();syncPull().catch(()=>{})}hhSync().catch(()=>{})}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState=="visible")syTick(true)});
+addEventListener("online",()=>syTick(true));
+setInterval(()=>syTick(false),20000);
+setTimeout(()=>syTick(true),1500);
+
+// ── Tour: Konto, Abgleich und die Funktionen mit Server ──
+(function(){const i=TOUR.findIndex(s=>s.t=="Haushalt");if(i>=0){TOUR.splice(i,0,{tab:"home",ov:1,prep:()=>pfOpen(),el:()=>Q("#rv .rv-in > .card"),t:"Konto und Abgleich",x:"Mit einem Konto sind Vorrat, Pläne und Einstellungen auf dem Server gesichert und auf all deinen Geräten gleich. Der Abgleich läuft von selbst; hier siehst du, wann zuletzt gesichert wurde."});
+  TOUR[i+1].x="Lege einen Haushalt an und teile den Einladungscode mit Familie oder WG. Vorrat, Einkaufsliste, Wochenplan und Standardprodukte gleichen sich dann bei allen live ab."}
+ const f=TOUR.find(s=>s.t=="Freunde");if(f)f.x="Tauscht eure Freundescodes aus. Die Bestenliste mit Level, Punkten und Serie kommt live vom Server, und du siehst, wie sich deine Freunde ernähren.";
+ const m=TOUR.find(s=>s.t=="Markt in deiner Nachbarschaft");if(m)m.x+=" Mit Konto siehst du hier die echten Anzeigen deiner Nachbarn.";
+ const d=TOUR.find(s=>s.t=="Deine Daten");if(d)d.x="Mit Konto wird automatisch gesichert. Zusätzlich kannst du hier jederzeit eine Sicherungsdatei erstellen."})();
+
 draw();remind();
 </script></body></html>
