@@ -1,12 +1,11 @@
 {
-  "code": 24,
-  "name": "1.24",
+  "code": 25,
+  "name": "1.25",
   "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
   "date": "2026-11-01",
   "notes": [
-    "Updates direkt in der App installieren",
-    "Rezepte per Link von Websites übernehmen",
-    "Anzeigen im Markt melden und Anbieter blockieren",
-    "Barcode-Scanner, Allergien und Erinnerungen"
+    "62 neue Rezepte mit Fotos, jetzt 107 insgesamt",
+    "Suppen, Pasta, Bowls, Klassiker und Frühstück",
+    "Updates direkt in der App installieren"
   ]
 }
