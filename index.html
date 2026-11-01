@@ -2883,7 +2883,10 @@ const _drwMk=draw;draw=function(){const r=_drwMk.apply(this,arguments);try{mkPos
 let MKSIG="";// Nur neu zeichnen, wenn neue Anzeigen dazukommen (sonst Endlosschleife, wenn nichts zur Liste passt)
 const _mpFetchMk=mpFetch;mpFetch=function(f){const p=_mpFetchMk(f);if(p&&p.then)p.then(()=>{if((tab=="home"||tab=="list")&&!document.getElementById("rv")&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||"")){const had=!!Q("#m .mkcard,#m .mkhint"),sig=tab+":"+mkNear().map(x=>x.id).join();if(!had&&sig.length>tab.length+1&&sig!==MKSIG){MKSIG=sig;draw()}}}).catch(()=>{});return p};
 // Im Markt kein Wischen zwischen den Bereichen (die Karte braucht die Geste)
-const _goGrpMk=goGrp;goGrp=function(g,dir){if(tab=="mp"&&dir!==undefined&&g!="markt")return;return _goGrpMk(g,dir)};
+// Gemerkte Ansicht je Bereich nur, wenn sie dort noch existiert (früher lag der Markt unter „Vorrat“; sonst führte „Vorrat“ immer in den Markt)
+function gvClean(){const gv=S.cfg&&S.cfg.gv;if(!gv||typeof gv!="object")return;Object.keys(gv).forEach(g=>{if(!V3GR[g]||!V3GR[g].v.some(v=>v[0]==gv[g]))delete gv[g]})}
+gvClean();
+const _goGrpMk=goGrp;goGrp=function(g,dir){if(tab=="mp"&&dir!==undefined&&g!="markt")return;gvClean();return _goGrpMk(g,dir)};
 // Tour: Markt über das Kartensymbol
 (function(){const i=TOUR.findIndex(s=>s.t=="Markt"&&s.tab=="list");if(i>=0)TOUR[i]={tab:"list",el:()=>Q("#m .mkb"),t:"Markt in der Nachbarschaft",x:"Über das Kartensymbol oben öffnest du den Markt. Er meldet sich auch von selbst: In der Einkaufsliste siehst du bei einem Artikel, wenn ihn jemand in der Nähe anbietet, und was bald abläuft, kannst du auf der Startseite mit einem Tipp verschenken."};
  const j=TOUR.findIndex(s=>s.t=="Weiter zum Kochen");if(j>=0)TOUR[j]={tab:"mp",el:()=>Q("#m .mkback"),t:"Zurück",x:"Mit dem Pfeil oben links kommst du dorthin zurück, wo du warst. Danach geht es weiter zum Kochen."};
