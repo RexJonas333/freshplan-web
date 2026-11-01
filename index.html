@@ -1219,6 +1219,38 @@ main.enter .vh .eyebrow{animation:fp-fade .8s .35s var(--e-soft) both}
 .mkq{display:flex;align-items:center;gap:8px;margin:0 0 var(--s4);padding:10px 12px;border-radius:12px;background:var(--brand-50);color:var(--ink-2);font-size:14px}
 .mkcard{cursor:pointer}.mkcard .mu{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mkback{margin:0!important}
+
+/* ── Barcode-Scanner ─────────────────────────────────────────────────── */
+.bcgo{width:100%;margin:var(--s3) 0 var(--s1)}
+.bcp{display:flex;align-items:center;gap:var(--s3);margin:var(--s4) 0 var(--s1);padding:var(--s3);border:1px solid var(--line);border-radius:var(--r-m);background:var(--surface)}
+.bcp img,.bcp .bci{width:56px;height:56px;flex:none;border-radius:var(--r-s);object-fit:contain;background:#fff}
+.bcp .bci{display:grid;place-items:center;background:var(--brand-50);color:var(--brand)}
+.bcp b{display:block;font-size:var(--fs-title);line-height:1.25}
+.bcp .mu{font-size:var(--fs-small)}
+.bcnew .sp{font-size:var(--fs-small);line-height:1.45}
+.bcal{margin-top:6px;display:inline-block;padding:2px 8px;border-radius:10px;background:var(--honey-50);color:var(--honey);font:500 12px/1.4 var(--sans)}
+.bcns{flex:none;width:30px;height:30px;display:grid;place-items:center;border-radius:8px;font:700 15px/1 var(--sans);color:#fff}
+.bcns.n-a{background:#1E8F4E}.bcns.n-b{background:#60AC0E}.bcns.n-c{background:#C9A100}.bcns.n-d{background:#E07B0E}.bcns.n-e{background:#D9411E}
+input.bcchk{border-color:var(--honey);box-shadow:0 0 0 3px var(--honey-50)}
+#bcs{position:fixed;inset:0;z-index:40;background:#000;color:#fff;overflow:hidden;animation:fp-fade var(--t-mid) var(--e-soft) both}
+#bcs video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bcs-top{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:var(--s3);padding:calc(env(safe-area-inset-top,0px) + 12px) var(--gut) 28px;background:linear-gradient(rgba(0,0,0,.55),transparent)}
+.bcs-top b{flex:1;text-align:center;font-size:var(--fs-title)}
+#bcs .iconb{margin:0;color:#fff;background:rgba(255,255,255,.14);border-color:transparent}
+#bcs .iconb.on{background:#fff;color:#000}
+#bcs [hidden]{display:none!important}
+.bcs-win{position:absolute;left:50%;top:42%;width:min(80vw,360px);height:min(36vw,160px);transform:translate(-50%,-50%);border:2px solid rgba(255,255,255,.92);border-radius:var(--r-m);box-shadow:0 0 0 100vmax rgba(0,0,0,.42)}
+.bcs-win i{position:absolute;left:8%;right:8%;top:50%;height:2px;border-radius:2px;background:#7CC69C;box-shadow:0 0 12px #7CC69C;animation:bc-scan 1.8s var(--e-io) infinite alternate}
+@keyframes bc-scan{from{transform:translateY(-52px)}to{transform:translateY(52px)}}
+.bcs-bot{position:absolute;left:0;right:0;bottom:0;padding:40px var(--gut) calc(env(safe-area-inset-bottom,0px) + 20px);background:linear-gradient(transparent,rgba(0,0,0,.72) 30%);text-align:center}
+.bcs-msg{margin:0 auto var(--s4);max-width:420px;font-size:var(--fs-body);line-height:1.45}
+.bcs-man{display:flex;gap:var(--s2);max-width:420px;margin:0 auto}
+.bcs-man input{flex:1;margin:0;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25);color:#fff;letter-spacing:.06em}
+.bcs-man input::placeholder{color:rgba(255,255,255,.65);letter-spacing:0}
+.bcs-man .sm{background:#fff;color:#0E1F17;border-color:#fff}
+.bcs-noc{margin-top:var(--s3);background:none;border:0;color:rgba(255,255,255,.85);font:500 var(--fs-small)/1.4 var(--sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+#bcs.nocam{background:#0B1712}#bcs.nocam .bcs-win{display:none}#bcs.nocam .bcs-bot{top:30%;bottom:auto;background:none}
+@media (prefers-reduced-motion:reduce){.bcs-win i{animation:none}}
 </style></head><body><svg width="0" height="0" style="position:absolute"><defs>
 <filter id="bl"><feGaussianBlur stdDeviation="1.6"/></filter>
 <radialGradient id="gt" cx=".35" cy=".32" r=".85"><stop offset="0" stop-color="#ff7a63"/><stop offset=".35" stop-color="#e8261f"/><stop offset=".8" stop-color="#b3111b"/><stop offset="1" stop-color="#6e0a14"/></radialGradient>
@@ -2760,6 +2792,111 @@ const _goGrpMk=goGrp;goGrp=function(g,dir){if(tab=="mp"&&dir!==undefined&&g!="ma
  const b=TOUR.findIndex(s=>s.t=="Bald aufbrauchen");if(b>=0)TOUR[b].x="Was in den nächsten Tagen abläuft, steht hier. Das solltest du zuerst verwenden oder mit „Verschenken“ in der Nachbarschaft anbieten."})();
 function NGk(g){return()=>Q(`#n button[data-g="${g}"]`)}
 const _mpFromInvMk=mpFromInv;mpFromInv=function(id){if(tab!="mp")MKPREV=segKey();return _mpFromInvMk(id)};
+
+// ===== Barcode-Scanner: Kamera, Open Food Facts, Übernahme in den Vorrat =====
+IC.barcode='<path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8v8M10 8v8M13 8v8M16.5 8v8"/>';
+IC.flash='<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>';
+S.bc=S.bc||{};
+const BC_AL={"en:gluten":"Gluten","en:crustaceans":"Krebstiere","en:eggs":"Eier","en:fish":"Fisch","en:peanuts":"Erdnüsse","en:soybeans":"Soja","en:milk":"Milch","en:nuts":"Schalenfrüchte","en:celery":"Sellerie","en:mustard":"Senf","en:sesame-seeds":"Sesam","en:sulphur-dioxide-and-sulphites":"Sulfite","en:lupin":"Lupinen","en:molluscs":"Weichtiere"};
+const BC_SH=[ // Reihenfolge zählt: Speziellere Regeln zuerst
+ [/frozen|surgel|tiefk|gefror|ice-cream|speiseeis|eiscreme/,120,"freezer","Tiefkühlware"],
+ [/canned|conserv|konserve|tinned/,730,"pantry","Konserve"],
+ [/uht|h-milch|haltbare milch|long-life/,90,"pantry","H-Milch"],
+ [/peanut-butter|erdnussbutter|nut-butter|spreads|aufstrich|nutella|honey|honig|jams|konfit|marmelade/,180,"pantry","Aufstrich"],
+ [/pasta|nudel|noodle|spaghetti|rices|\breis\b|flour|mehl|cereal|müsli|muesli|oat|hafer|grains|getreide|lentil|linsen|legume|hülsen/,365,"pantry","Trockenware"],
+ [/sausage|wurst|salami|\bhams?\b|schinken|cold-cuts|aufschnitt/,10,"fridge","Wurst und Aufschnitt"],
+ [/meat|poultr|chicken|hähnchen|geflügel|beef|pork|\brind|schwein|hackfleisch|minced|steak|schnitzel/,3,"fridge","Frischfleisch"],
+ [/fish|fisch|lachs|salmon|seafood|meeresfr/,2,"fridge","Fisch"],
+ [/yog|joghurt|quark|skyr|pudding/,14,"fridge","Joghurt und Quark"],
+ [/cheese|käse|fromage|mozzarella|gouda/,21,"fridge","Käse"],
+ [/butter/,30,"fridge","Butter"],
+ [/\beggs\b|\beier\b/,21,"fridge","Eier"],
+ [/milk|milch|cream|sahne|dairies/,7,"fridge","Milchprodukt"],
+ [/bread|brot|bröt|toast|bakery|backwar|cake|kuchen/,5,"pantry","Brot und Backwaren"],
+ [/chocola|schoko|candy|candies|sweets|süß|snack|chips|crisps|biscuit|keks|cookie|gummi|bonbon|confectioner|marzipan/,180,"pantry","Süßes und Snacks"],
+ [/beverage|drinks|getränk|juice|saft|waters|wasser|\bsodas?\b|\blimo|\bcolas?\b|\bbeers?\b|\bbier|\bwines?\b|\bwein\b/,180,"pantry","Getränk"],
+ [/coffee|kaffee|\btea\b|\btee\b/,365,"pantry","Kaffee und Tee"],
+ [/sauce|soße|sosse|ketchup|mayo|mustard|senf|dressing|condiment|gewürz|spice|\boils?\b|vinegar|essig/,180,"pantry","Soßen und Würzmittel"],
+ [/salad|salat|vegetable|gemüse|herbs|kräuter/,5,"fridge","Frisches Gemüse"],
+ [/fruit|obst|apfel|apple|banan|berr|beere/,7,"pantry","Obst"]];
+function bcShelf(cats,name){const t=((cats||[]).filter(c=>!/-and-/.test(c)).join(" ")+" "+(name||"")).toLowerCase();
+ for(const r of BC_SH)if(r[0].test(t))return{sh:r[1],loc:r[2],cat:r[3]};
+ const d=find(name||"");if(d)return{sh:d[6],loc:d[6]>=20?"pantry":"fridge",cat:"Produktliste"};return{sh:7,loc:"fridge",cat:""}}
+const bcValid=c=>{if(!/^\d{8}$|^\d{12,14}$/.test(c))return false;const d=c.split("").map(Number),ck=d.pop();let s=0;d.reverse().forEach((v,i)=>s+=v*(i%2?1:3));return(10-s%10)%10==ck};
+function bcGrams(p){let q=parseFloat(p.product_quantity),u=String(p.product_quantity_unit||"").toLowerCase();
+ if(!(q>0)){const m=String(p.quantity||"").match(/([\d.,]+)\s*(kg|g|ml|cl|l)\b/i);if(m){q=parseFloat(m[1].replace(",","."));u=m[2].toLowerCase()}}
+ if(!(q>0))return null;if(u=="kg"||u=="l"){q*=1000}else if(u=="cl")q*=10;const v=u=="ml"||u=="l"||u=="cl";
+ return{q,txt:(q>=1000?fmt(q/1000)+(v?" l":" kg"):fmt(q)+(v?" ml":" g"))}}
+// Open-Food-Facts-Eintrag in das FreshPlan-Format bringen
+function bcMap(code,p){const nm=String(p.product_name_de||p.product_name||p.generic_name_de||p.generic_name||"").trim().replace(/\s+/g," "),br=String(p.brands||"").split(",")[0].trim();
+ let name=nm||br;if(!name)return null;if(br&&nm&&nm.toLowerCase().startsWith(br.toLowerCase()+" "))name=nm.slice(br.length).trim()||nm;
+ name=cap(name).slice(0,48);const g=bcGrams(p),n=p.nutriments||{},kc=+n["energy-kcal_100g"]||(+n["energy_100g"]?n["energy_100g"]/4.184:0),f=g?g.q/100:1,sh=bcShelf(p.categories_tags,name);
+ return{code,n:name,br,unit:g?g.txt:"",k:Math.round(kc*f),p:+((+n.proteins_100g||0)*f).toFixed(1),c:+((+n.carbohydrates_100g||0)*f).toFixed(1),fa:+((+n.fat_100g||0)*f).toFixed(1),
+  al:(p.allergens_tags||[]).filter(a=>BC_AL[a]),tr:(p.traces_tags||[]).filter(a=>BC_AL[a]),ns:/^[a-e]$/.test(p.nutriscore_grade||"")?p.nutriscore_grade:"",img:p.image_front_small_url||"",sh:sh.sh,loc:sh.loc,cat:sh.cat,src:"off"}}
+async function bcFetch(code){const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),9000);
+ try{const r=await fetch(`https://world.openfoodfacts.org/api/v2/product/${code}.json?fields=product_name,product_name_de,generic_name,generic_name_de,brands,quantity,product_quantity,product_quantity_unit,categories_tags,nutriments,allergens_tags,traces_tags,image_front_small_url,nutriscore_grade`,{signal:ctl.signal});
+  if(!r.ok)return r.status==404?{none:true}:{err:true};const j=await r.json();if(j.status!==1||!j.product)return{none:true};const m=bcMap(code,j.product);return m?{p:m}:{none:true}}
+ catch(e){return{err:true}}finally{clearTimeout(t)}}
+let BCX=null,BCS=null,BCF=false;
+new MutationObserver(()=>{if(BCX&&!document.getElementById("rv"))BCX=null}).observe(document.body,{childList:true});
+async function bcLook(code){code=String(code).replace(/\D/g,"");if(!bcValid(code)){toast("Das ist kein gültiger Strichcode.");return}
+ const known=S.bc[code];if(known&&known.n){bcFill(Object.assign({code},known),true);return}
+ rvEl().innerHTML=`<div class="rv-in rv-c"><div class="spin"></div><b>Produkt wird gesucht</b><div class="mu" style="margin:4px 0 16px">Code ${esc(code)}</div><button class="sm" onclick="BCX=null;rvClose()">Abbrechen</button></div>`;
+ let r=await bcFetch(code);if(r.none&&code.length==12)r=await bcFetch("0"+code);
+ if(!document.getElementById("rv"))return;
+ if(r.p){S.bc[code]=Object.assign({},r.p,{code:undefined});save();bcFill(r.p,false);return}
+ BCX={code,n:"",new:true};BCF=true;addSheet("one");bcDeco(null,r.err?`Keine Verbindung zur Produktdatenbank. Trag den Artikel von Hand ein, FreshPlan merkt sich den Code ${code}.`:`Den Code ${code} kennt die Produktdatenbank noch nicht. Trag den Namen einmal ein, beim nächsten Scan erkennt FreshPlan das Produkt.`)}
+function bcFill(p,mine){BCX=Object.assign({},p);BCF=true;addSheet("one");const g=i=>document.getElementById(i);
+ g("an").value=p.n;g("aq").value=1;g("au").value=p.unit?"Packung":"Stk";g("al").value=p.loc||"fridge";g("ae").value=add(today(),p.sh||7);
+ g("ah").innerHTML=mine&&p.own?`Haltbarkeit wie bei deinem letzten Einkauf: ${p.sh} Tage. <b>Bitte das Datum auf der Packung prüfen.</b>`:`Haltbarkeit geschätzt${p.cat?" ("+esc(p.cat)+")":""}: ${p.sh||7} Tage. <b>Bitte das Datum auf der Packung prüfen.</b>`;
+ g("ae").classList.add("bcchk");bcDeco(p,"")}
+function bcDeco(p,msg){const r=Q("#rv .rv-in");if(!r)return;const seg=r.querySelector(".seg");const al=p?(p.al||[]).map(a=>BC_AL[a]):[],tr=p?(p.tr||[]).filter(a=>!(p.al||[]).includes(a)).map(a=>BC_AL[a]):[];
+ const h=p?`<div class="bcp">${p.img?`<img src="${esc(p.img)}" alt="" onerror="this.remove()">`:`<div class="bci">${ic("barcode",22)}</div>`}<div class="sp"><b>${esc(p.n)}</b><div class="mu">${[p.br,p.unit].filter(Boolean).map(esc).join(" · ")}${p.k?` · ${p.k} kcal`:""}</div>${al.length?`<div class="bcal">Enthält: ${al.join(", ")}</div>`:""}${tr.length?`<div class="mu" style="font-size:12px">Kann Spuren enthalten: ${tr.join(", ")}</div>`:""}</div>${p.ns?`<span class="bcns n-${p.ns}" title="Nutri-Score ${p.ns.toUpperCase()}">${p.ns.toUpperCase()}</span>`:""}</div>`
+  :`<div class="bcp bcnew"><div class="bci">${ic("barcode",22)}</div><div class="sp mu">${esc(msg)}</div></div>`;
+ (seg||r.firstElementChild).insertAdjacentHTML("afterend",h)}
+// Hinzufügen-Blatt: Scan-Knopf oben, beim Speichern Daten übernehmen und Code merken
+const _addSheetBc=addSheet;addSheet=function(m){if(!BCF)BCX=null;BCF=false;const r=_addSheetBc.apply(this,arguments);if(AD=="one"&&!BCX){const seg=Q("#rv .seg");if(seg)seg.insertAdjacentHTML("afterend",`<button class="qb bcgo" onclick="bcOpen()">${ic("barcode",20)}<span>Barcode scannen</span></button>`)}if(AD!="one")BCX=null;return r};
+const _mk2Bc=mk2;mk2=function(o){const it=_mk2Bc(o);const x=BCX;if(x&&x.code){it.bc=x.code;if(x.n&&o.name.toLowerCase()==x.n.toLowerCase()){if(x.k){it.k=x.k;it.p=x.p;it.c=x.c;it.f=x.fa}if(x.unit&&it.u=="pc")it.unit=x.unit;if(x.al&&x.al.length)it.al=x.al.slice()}}return it};
+const _adOkBc=adOk;adOk=function(){const x=BCX,g=i=>document.getElementById(i),nm=(g("an")||{}).value,ex=(g("ae")||{}).value,lo=(g("al")||{}).value,n0=S.inv.length;
+ _adOkBc.apply(this,arguments);if(!x||!x.code||document.getElementById("an"))return;
+ const same=x.n&&nm&&nm.trim().toLowerCase()==x.n.toLowerCase(),o=S.bc[x.code]||{},sh=Math.max(1,diff(ex));
+ S.bc[x.code]=Object.assign(o,same?{}:{n:cap(nm.trim()),k:0,p:0,c:0,fa:0,unit:"",al:[],tr:[],img:"",ns:""},{n:cap(nm.trim()),sh,loc:lo,own:1,src:o.src||"user"});
+ const ks=Object.keys(S.bc);if(ks.length>400)delete S.bc[ks[0]];BCX=null;save()};
+// Kamera
+async function bcOpen(){BCX=null;rvClose();if(document.getElementById("bcs"))return;
+ const el=document.createElement("div");el.id="bcs";el.setAttribute("role","dialog");el.setAttribute("aria-label","Barcode scannen");
+ el.innerHTML=`<video playsinline muted autoplay></video><div class="bcs-top"><button class="iconb" aria-label="Schließen" onclick="bcClose()">${ic("x",20)}</button><b>Barcode scannen</b><button class="iconb bct" aria-label="Licht" hidden onclick="bcTorch()">${ic("flash",20)}</button></div><div class="bcs-win"><i></i></div><div class="bcs-bot"><p class="bcs-msg">Halte den Strichcode in den Rahmen.</p><form class="bcs-man" onsubmit="event.preventDefault();bcManual()"><input id="bcin" inputmode="numeric" autocomplete="off" placeholder="Code eintippen" aria-label="Code eintippen"><button class="sm">Suchen</button></form><button class="bcs-noc" onclick="bcClose();addSheet('one')">Ohne Barcode eintragen</button></div>`;
+ document.body.appendChild(el);const v=el.querySelector("video"),msg=t=>{const m=el.querySelector(".bcs-msg");if(m)m.textContent=t};
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){el.classList.add("nocam");msg("Die Kamera ist hier nicht verfügbar. Tippe den Code unter dem Strichcode ein.");return}
+ let st;try{st=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}},audio:false})}
+ catch(e){el.classList.add("nocam");msg(e&&e.name=="NotAllowedError"?"Kein Zugriff auf die Kamera. Erlaube ihn in den Einstellungen oder tippe den Code ein.":"Die Kamera ließ sich nicht starten. Tippe den Code unter dem Strichcode ein.");return}
+ if(!document.getElementById("bcs")){st.getTracks().forEach(t=>t.stop());return}
+ BCS={st,v,on:true,torch:false};v.srcObject=st;try{await v.play()}catch(e){}
+ try{const tr=st.getVideoTracks()[0],cp=tr.getCapabilities&&tr.getCapabilities();if(cp&&cp.torch)el.querySelector(".bct").hidden=false}catch(e){}
+ const det=await bcDetector();if(!BCS||!BCS.on)return;if(!det){msg("Der Scanner lädt nicht. Tippe den Code unter dem Strichcode ein.");return}
+ let last="",busy=false;const loop=async()=>{if(!BCS||!BCS.on)return;if(!busy&&v.readyState>=2){busy=true;try{const c=await det(v);if(c&&bcValid(c)){if(BCS.zx&&c!==last){last=c}else{bcHit(c);return}}}catch(e){}busy=false}setTimeout(loop,140)};loop()}
+async function bcDetector(){
+ if("BarcodeDetector"in window){try{const f=await BarcodeDetector.getSupportedFormats();if(f.includes("ean_13")){const d=new BarcodeDetector({formats:["ean_13","ean_8","upc_a","upc_e"].filter(x=>f.includes(x))});return async v=>{const r=await d.detect(v);return r&&r[0]&&r[0].rawValue}}}catch(e){}}
+ try{await bcZxLoad()}catch(e){return null}if(!window.ZXing)return null;BCS&&(BCS.zx=true);
+ const Z=window.ZXing,hints=new Map();hints.set(Z.DecodeHintType.POSSIBLE_FORMATS,[Z.BarcodeFormat.EAN_13,Z.BarcodeFormat.EAN_8,Z.BarcodeFormat.UPC_A,Z.BarcodeFormat.UPC_E]);hints.set(Z.DecodeHintType.TRY_HARDER,true);
+ const rd=new Z.MultiFormatReader();rd.setHints(hints);const cv=document.createElement("canvas"),cx=cv.getContext("2d",{willReadFrequently:true});
+ return async v=>{const vw=v.videoWidth,vh=v.videoHeight;if(!vw)return null;const sw=Math.round(vw*.86),sh=Math.round(Math.min(vh*.5,sw*.6)),sx=Math.round((vw-sw)/2),sy=Math.round((vh-sh)/2),k=Math.min(1,800/sw),w=Math.round(sw*k),h=Math.round(sh*k);
+  cv.width=w;cv.height=h;cx.drawImage(v,sx,sy,sw,sh,0,0,w,h);return bcZxDecode(Z,rd,cx.getImageData(0,0,w,h))}}
+function bcZxDecode(Z,rd,id){const w=id.width,h=id.height,d=id.data,l=new Uint8ClampedArray(w*h);for(let i=0,j=0;j<l.length;i+=4,j++)l[j]=(d[i]*299+d[i+1]*587+d[i+2]*114)/1000;
+ try{const r=rd.decodeWithState(new Z.BinaryBitmap(new Z.HybridBinarizer(new Z.RGBLuminanceSource(l,w,h))));return r&&r.getText()}catch(e){return null}finally{try{rd.reset()}catch(e){}}}
+let BCZ=null;function bcZxLoad(){if(window.ZXing)return Promise.resolve();if(BCZ)return BCZ;BCZ=new Promise((res,rej)=>{const s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js";s.onload=res;s.onerror=()=>{BCZ=null;rej(new Error("load"))};document.head.appendChild(s)});return BCZ}
+function bcStop(){if(BCS){BCS.on=false;try{BCS.st.getTracks().forEach(t=>t.stop())}catch(e){}BCS=null}}
+function bcClose(){bcStop();const e=document.getElementById("bcs");if(e)e.remove()}
+function bcHit(c){try{navigator.vibrate&&navigator.vibrate(40)}catch(e){}bcClose();bcLook(c)}
+function bcManual(){const v=(document.getElementById("bcin")||{}).value||"",c=v.replace(/\D/g,"");if(!bcValid(c))return toast("Bitte die 8 oder 13 Ziffern unter dem Strichcode eingeben.");bcClose();bcLook(c)}
+async function bcTorch(){if(!BCS)return;try{const t=BCS.st.getVideoTracks()[0];BCS.torch=!BCS.torch;await t.applyConstraints({advanced:[{torch:BCS.torch}]});const b=Q("#bcs .bct");if(b)b.classList.toggle("on",BCS.torch)}catch(e){toast("Licht lässt sich hier nicht einschalten.")}}
+document.addEventListener("visibilitychange",()=>{if(document.hidden&&document.getElementById("bcs"))bcClose()});
+document.addEventListener("keydown",e=>{if(e.key=="Escape"&&document.getElementById("bcs"))bcClose()});
+// Startseite: Barcode neben Beleg
+function bcHome(){if(tab!="home")return;const qa=Q("#m .qa");if(!qa||qa.querySelector(".qbc"))return;const b=qa.children[0];if(b)b.insertAdjacentHTML("afterend",`<button class="qb qbc" onclick="bcOpen()">${ic("barcode",22)}<span>Barcode</span></button>`)}
+const _drwBc=draw;draw=function(){const r=_drwBc.apply(this,arguments);try{bcHome()}catch(e){console.error(e)}return r};
+// Tour: Artikel-Schritt wird zum Barcode-Schritt
+(function(){const i=TOUR.findIndex(s=>s.t=="Artikel hinzufügen");const st={tab:"home",el:()=>Q("#m .qa .qbc"),t:"Barcode scannen",x:"Halte die Kamera auf den Strichcode. FreshPlan holt Name, Packungsgröße, Nährwerte und Allergene aus der freien Datenbank Open Food Facts. Die Haltbarkeit ist nur geschätzt, prüf das Datum auf der Packung. Ohne Barcode trägst du Artikel über das Plus im Vorrat von Hand ein."};if(i>=0)TOUR[i]=st;else{const j=TOUR.findIndex(s=>s.t=="Beleg scannen");TOUR.splice(j+1,0,st)}})();
 
 draw();remind();
 </script></body></html>
