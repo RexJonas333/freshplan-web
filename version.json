@@ -1,11 +1,11 @@
 {
-  "code": 25,
-  "name": "1.25",
+  "code": 26,
+  "name": "1.26",
   "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
   "date": "2026-11-01",
   "notes": [
+    "Vorrat öffnet wieder den Vorrat statt den Markt",
     "62 neue Rezepte mit Fotos, jetzt 107 insgesamt",
-    "Suppen, Pasta, Bowls, Klassiker und Frühstück",
     "Updates direkt in der App installieren"
   ]
 }
