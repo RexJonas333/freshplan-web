@@ -2961,5 +2961,47 @@ const _bcDecoAl=bcDeco;bcDeco=function(p,msg){_bcDecoAl.apply(this,arguments);if
 // Tour: nach der Ernährungsform
 (function(){const i=TOUR.findIndex(s=>s.t=="Deine Ernährungsform");const st={tab:"rec",rm:"disc",el:()=>Q("#m .algnote"),t:"Allergien",x:"Hier gibst du an, was du nicht verträgst. Rezepte damit blendet FreshPlan aus, im Rezept steht ein Hinweis, und beim Scannen warnt die App bei Allergenen und auf Wunsch auch bei Spuren. Du findest die Einstellung auch im Profil."};TOUR.splice(i>=0?i+1:TOUR.length,0,st)})();
 
+// ===== Erinnerungen: in der Android-App im Voraus geplant, kommen auch bei geschlossener App =====
+const NT_IDS=[7100,7101,7102,7103,7104,7105,7106];
+const ntNative=()=>{try{return!!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())}catch(e){return false}};
+const ntLN=()=>{const C=window.Capacitor;if(!C)return null;return(C.Plugins&&C.Plugins.LocalNotifications)||(C.registerPlugin?C.registerPlugin("LocalNotifications"):null)};
+S.cfg.ntime=/^\d\d:\d\d$/.test(S.cfg.ntime||"")?S.cfg.ntime:"09:00";
+const ntList=a=>a.length<=4?a.join(", "):a.slice(0,3).join(", ")+" und "+(a.length-3)+" weitere";
+// Plan für die nächsten sieben Tage: je Tag eine Nachricht zur gewählten Uhrzeit, nur wenn etwas abläuft
+function ntPlan(now){now=now||new Date();const [hh,mm]=S.cfg.ntime.split(":").map(Number),out=[];
+ for(let d=0;d<7;d++){const day=add(today(),d),at=new Date(day+"T00:00:00");at.setHours(hh,mm,0,0);if(at.getTime()<=now.getTime()+60000)continue;
+  const live=S.inv.filter(x=>!x.frozen&&x.exp),t0=live.filter(x=>x.exp==day).map(x=>x.name),t1=live.filter(x=>x.exp==add(day,1)).map(x=>x.name);if(!t0.length&&!t1.length)continue;
+  const body=[t0.length?(t0.length==1?"Heute läuft ab: ":"Heute laufen ab: ")+ntList(t0)+".":"",t1.length?"Morgen: "+ntList(t1)+".":""].filter(Boolean).join(" ");
+  out.push({id:NT_IDS[d],title:t0.length?"Heute aufbrauchen":"Morgen läuft etwas ab",body,at})}return out}
+let NTT=null;
+async function ntSync(force){if(!ntNative())return;const LN=ntLN();if(!LN)return;
+ try{if(!S.cfg.notify){if(force||localStorage.getItem("fpnt")){await LN.cancel({notifications:NT_IDS.map(id=>({id}))});localStorage.removeItem("fpnt")}return}
+  const pl=ntPlan(),sig=JSON.stringify(pl.map(n=>[n.id,n.at.getTime(),n.body]));if(!force&&localStorage.getItem("fpnt")==sig)return;
+  await LN.cancel({notifications:NT_IDS.map(id=>({id}))});
+  if(pl.length)await LN.schedule({notifications:pl.map(n=>({id:n.id,title:n.title,body:n.body,schedule:{at:n.at,allowWhileIdle:true},smallIcon:"ic_stat_freshplan",iconColor:"#0F4A36",extra:{go:"inv"}}))});
+  localStorage.setItem("fpnt",sig)}catch(e){console.error("Erinnerungen",e)}}
+const ntSoon=()=>{clearTimeout(NTT);NTT=setTimeout(()=>ntSync(false),1500)};
+// Einschalten: in der App über Android, im Browser wie bisher
+const _notifNt=notif;notif=async function(){if(!ntNative())return _notifNt.apply(this,arguments);const LN=ntLN();if(!LN)return toast("Erinnerungen sind hier nicht verfügbar.");
+ try{let p=await LN.checkPermissions();if(p.display!="granted")p=await LN.requestPermissions();
+  if(p.display!="granted"){S.cfg.notify=false;save();toast("Benachrichtigungen sind für FreshPlan in den Android-Einstellungen ausgeschaltet.");ntRefresh();return}
+  S.cfg.notify=true;save();await ntSync(true);toast("Erinnerungen an. Sie kommen täglich um "+S.cfg.ntime+" Uhr, wenn etwas abläuft.");ntRefresh()}catch(e){toast("Erinnerungen ließen sich nicht einschalten.")}};
+async function ntOff(){S.cfg.notify=false;save();await ntSync(true);toast("Erinnerungen aus.");ntRefresh()}
+function ntTime(v){if(!/^\d\d:\d\d$/.test(v))return;S.cfg.ntime=v;save();ntSync(true)}
+function ntRefresh(){if(Q("#rv .ntcard")&&typeof pfOpen=="function")pfOpen()}
+// Im Browser keine doppelten Meldungen aus der App heraus, wenn sie nativ läuft
+const _remindNt=remind;remind=function(){if(ntNative())return ntSoon();return _remindNt.apply(this,arguments)};
+// Profil: eigener Abschnitt
+const _pfBodyNt=pfBody;pfBody=function(){let h=_pfBodyNt.apply(this,arguments);h=h.replace(/<button class="sm" onclick="notif\(\)">[\s\S]*?Erinnerungen aktivieren<\/button>/,"");
+ const nat=ntNative(),on=!!S.cfg.notify;
+ const c=`<h2>Erinnerungen</h2><div class="card set ntcard"><div class="row"><div class="sp"><b>${on?"An":"Aus"}</b><div class="mu">${nat?(on?"Täglich, wenn etwas heute oder morgen abläuft. Kommt auch, wenn FreshPlan geschlossen ist.":"Erinnert dich, bevor Lebensmittel ablaufen, auch bei geschlossener App."):"Im Browser erinnert FreshPlan nur, solange die App offen ist. In der Android-App kommen Erinnerungen auch im Hintergrund."}</div></div><button class="sm ${on?"":"pri"}" onclick="${on&&nat?"ntOff()":"notif()"}">${on&&nat?"Ausschalten":on?"Erneut prüfen":"Einschalten"}</button></div>${nat?`<label class="mu">Uhrzeit</label><input type="time" value="${S.cfg.ntime}" onchange="ntTime(this.value)" aria-label="Uhrzeit der Erinnerung">`:""}</div>`;
+ return h.includes("<h2>Allergien</h2>")?h.replace("<h2>Allergien</h2>",c+"<h2>Allergien</h2>"):h.replace("<h2>Darstellung</h2>",c+"<h2>Darstellung</h2>")};
+// Bei jeder Änderung neu planen, beim Öffnen der App ebenso; Tipp auf die Nachricht öffnet den Vorrat
+const _drwNt=draw;draw=function(){const r=_drwNt.apply(this,arguments);if(ntNative()&&S.cfg.notify)ntSoon();return r};
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&ntNative())ntSync(false)});
+(function(){if(!ntNative())return;const LN=ntLN();if(!LN||!LN.addListener)return;try{LN.addListener("localNotificationActionPerformed",a=>{try{rvClose();setSeg("inv")}catch(e){tab="inv";draw()}})}catch(e){}})();
+// Tour: im Schritt „Bald aufbrauchen“ erwähnen
+(function(){const b=TOUR.find(s=>s.t=="Bald aufbrauchen");if(b&&!/Erinnerung/.test(b.x))b.x+=" Erinnerungen dafür schaltest du im Profil ein. In der Android-App kommen sie auch, wenn FreshPlan geschlossen ist."})();
+
 draw();remind();
 </script></body></html>
