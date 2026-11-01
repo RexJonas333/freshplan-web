@@ -1384,7 +1384,7 @@ home(){const s=soon(),dk=S.log.filter(l=>l.d==today()&&l.t=="eat"),k=tot(dk,"k")
  <div class="grid2"><div class="card ringc">${ring(sc==null?0:sc,100,"#1f9d6b",sc==null?"–":sc+"%","FRISCHE")}<div><b>Frische-Score</b><div class="mu">${n?fresh+" von "+n+" Artikeln frisch":"Noch keine Artikel"}</div></div></div>
  <div class="card ringc">${ring(S.cfg.kcal?k:0,S.cfg.kcal||1,"#f5a524",Math.round(k),"KCAL")}<div><b>Heute</b><div class="mu">${S.cfg.kcal?"Ziel "+S.cfg.kcal+" kcal":"Kein Ziel festgelegt"}</div></div></div></div>
  <div class="qa"><label class="qb">${ic("camera",22)}<span>Beleg</span><input type="file" accept="image/*" class="fin" onchange="ocr(this)" aria-label="Beleg-Foto wählen"></label><button class="qb" onclick="addSheet()">${ic("plus",22)}<span>Artikel</span></button><button class="qb" onclick="tab='rec';draw()">${ic("utensils",22)}<span>Rezepte</span></button><button class="qb" onclick="tab='list';draw()">${ic("list",22)}<span>Einkauf</span></button></div>
- ${s.length?`<h2>Bald aufbrauchen</h2><div class="hs">${s.map(x=>`<div class="mini ${diff(x.exp)<0?"bad":""}">${av(x.name)}<b>${esc(x.name)}</b><span class="mu">${diff(x.exp)<0?"abgelaufen":diff(x.exp)==0?"heute":"in "+diff(x.exp)+" Tagen"}</span></div>`).join("")}</div>`:""}
+ ${s.length?`<h2>Bald aufbrauchen</h2><div class="hs">${s.map(x=>`<div class="mini ${diff(x.exp)<0?"bad":""}">${av(x.name)}<b>${esc(x.name)}</b><span class="mu">${diff(x.exp)<0?"abgelaufen":diff(x.exp)==0?"heute":(diff(x.exp)==1?"morgen":"in "+diff(x.exp)+" Tagen")}</span></div>`).join("")}</div>`:""}
  ${thawCard()}${cookCard()}${listCard()}`},
 inv(){const all=S.inv.filter(x=>(!VQ||x.name.toLowerCase().includes(VQ.toLowerCase()))&&(VL=="all"||locOf(x)==VL)).sort((a,b)=>a.exp<b.exp?-1:1),g=all.filter(x=>!x.frozen),z=all.filter(x=>x.frozen);return `<h1>Vorrat (${S.inv.length})</h1>${S.inv.length>4||VQ?`<input type="search" class="srch" placeholder="Vorrat durchsuchen" value="${esc(VQ)}" onchange="VQ=this.value;draw()" aria-label="Vorrat durchsuchen">`:""}${S.inv.length>4?`<div class="chips">${[["all","Alle"],["fridge","Kühlschrank"],["pantry","Vorrat"],["freezer","Tiefkühler"]].map(o=>`<button class="sm ${VL==o[0]?"on":""}" onclick="VL='${o[0]}';draw()">${o[1]}</button>`).join("")}</div>`:""}${g.map(item).join("")||(z.length?"":'<div class="empty">'+ic("package",30)+'<b>Keine Artikel im Vorrat</b><span>Erfasse deinen Einkauf auf der Startseite.</span></div>')}${z.length?`<h2>Tiefkühler (${z.length})</h2>${z.map(item).join("")}`:""}`},
 rec(){const r=recs().filter(x=>!RQ||x.n.toLowerCase().includes(RQ.toLowerCase())||x.i.some(g=>g.includes(RQ.toLowerCase()))),F=(k,v,l)=>`<button class="sm ${rf[k]==v?"on":""}" onclick="rf['${k}']=${typeof v=="string"?`'${v}'`:v};draw()">${l}</button>`;
@@ -3002,6 +3002,16 @@ document.addEventListener("visibilitychange",()=>{if(!document.hidden&&ntNative(
 (function(){if(!ntNative())return;const LN=ntLN();if(!LN||!LN.addListener)return;try{LN.addListener("localNotificationActionPerformed",a=>{try{rvClose();setSeg("inv")}catch(e){tab="inv";draw()}})}catch(e){}})();
 // Tour: im Schritt „Bald aufbrauchen“ erwähnen
 (function(){const b=TOUR.find(s=>s.t=="Bald aufbrauchen");if(b&&!/Erinnerung/.test(b.x))b.x+=" Erinnerungen dafür schaltest du im Profil ein. In der Android-App kommen sie auch, wenn FreshPlan geschlossen ist."})();
+
+// ===== Kernbotschaft: Vorrat trifft Nachbarschaft =====
+const FP_PITCH="Weniger wegwerfen: Du siehst, was zu Hause ist, kochst mit dem, was bald abläuft, und was du nicht schaffst, verschenkst du an Leute in deiner Nähe.";
+(function(){const w=TOUR.find(s=>s.t=="Willkommen bei FreshPlan");if(w)w.x=FP_PITCH+" Ich führe dich in rund zwei Minuten durch die App. Dafür nutze ich Beispieldaten, die danach wieder verschwinden.";
+ if(typeof TUT!="undefined"&&TUT[0])TUT[0].x=FP_PITCH})();
+// Start: neuer Einleitungstext, im zweiten Schritt auch Allergien
+function algObTog(k){const s=new Set(S.cfg.alg||[]);s.has(k)?s.delete(k):s.add(k);S.cfg.alg=ALG.map(a=>a[0]).filter(x=>s.has(x));save();obOpen(1)}
+const _obOpenMsg=obOpen;obOpen=function(p){const r=_obOpenMsg.apply(this,arguments);try{const e=Q("#rv .rv-in");if(!e)return r;
+ if(p==0){const m=e.querySelector(".mu");if(m)m.textContent=FP_PITCH+" Zwei Angaben machen die App persönlich, beide kannst du jederzeit ändern."}
+ else{const ch=e.querySelector(".chips");if(ch&&!e.querySelector(".obalg")){const on=new Set(S.cfg.alg||[]);ch.insertAdjacentHTML("afterend",`<label class="mu">Allergien</label><div class="chips obalg">${ALG.map(([k,l])=>`<button class="sm ${on.has(k)?"on":""}" aria-pressed="${on.has(k)}" onclick="algObTog('${k}')">${l}</button>`).join("")}</div>`)}}}catch(x){console.error(x)}return r};
 
 draw();remind();
 </script></body></html>
