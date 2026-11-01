@@ -1271,6 +1271,11 @@ input.bcchk{border-color:var(--honey);box-shadow:0 0 0 3px var(--honey-50)}
 .repo{gap:12px;padding:12px 14px;border:1px solid var(--line-2);border-radius:var(--r-s);cursor:pointer}
 .repo input{width:auto;margin:0;accent-color:var(--brand)}
 .repo:has(input:checked){border-color:var(--brand);background:var(--brand-50)}
+
+/* ── Rezept per Link ─────────────────────────────────────────────────── */
+.impbox{margin:var(--s3) 0 var(--s2);padding:var(--s3) var(--s4) var(--s4);border:1px solid var(--line);border-radius:var(--r-m);background:var(--surface)}
+.impbox label{margin-top:0!important}
+.impbox input{flex:1;min-width:0}
 </style></head><body><svg width="0" height="0" style="position:absolute"><defs>
 <filter id="bl"><feGaussianBlur stdDeviation="1.6"/></filter>
 <radialGradient id="gt" cx=".35" cy=".32" r=".85"><stop offset="0" stop-color="#ff7a63"/><stop offset=".35" stop-color="#e8261f"/><stop offset=".8" stop-color="#b3111b"/><stop offset="1" stop-color="#6e0a14"/></radialGradient>
@@ -3058,6 +3063,26 @@ const _pfBodyRep=pfBody;pfBody=function(){const h=_pfBodyRep.apply(this,argument
  return h.includes("<h2>Darstellung</h2>")?h.replace("<h2>Darstellung</h2>",c+"<h2>Darstellung</h2>"):h+c};
 // Tour
 (function(){const s=TOUR.find(t=>t.t=="Anzeigen in der Nähe");if(s&&!/melden/.test(s.x))s.x+=" Passt eine Anzeige nicht, meldest du sie oder blockierst die Person direkt in der Anzeige."})();
+
+// ===== Rezept per Link übernehmen (Supabase-Funktion „rezept-import“ liest die Rezeptdaten der Seite) =====
+const IMP_FR={"½":.5,"¼":.25,"¾":.75,"⅓":1/3,"⅔":2/3,"⅛":.125};
+function impNum(s){s=String(s).trim();if(IMP_FR[s]!=null)return IMP_FR[s];const f=s.match(/^(\d+)\s*\/\s*(\d+)$/);if(f)return +f[1]/+f[2];const m=s.match(/^(\d+)\s*([½¼¾⅓⅔⅛])$/);if(m)return +m[1]+IMP_FR[m[2]];return parseFloat(s.replace(",","."))}
+const impFmt=v=>{const r=v>=10?Math.round(v):Math.round(v*4)/4;return String(r).replace(".",",")};
+function impScale(line,f){const m=String(line).match(/^\s*(\d+\s*[½¼¾⅓⅔⅛]|\d+\s*\/\s*\d+|\d+(?:[.,]\d+)?|[½¼¾⅓⅔⅛])(?:\s*(?:-|–|bis)\s*(?:\d+(?:[.,]\d+)?))?\s*(.*)$/);if(!m)return line.trim();const v=impNum(m[1]);if(!(v>0))return line.trim();return(f==1?impFmt(v):impFmt(v*f))+" "+m[2].trim()}
+function impDiet(ing){const t=" "+ing.join(" ").toLowerCase()+" ";if(/fleisch|hähnchen|huhn|pute|rind|schwein|hack|speck|schinken|wurst|salami|lamm|kalb|ente|chorizo|bacon|gelatine/.test(t)||algText(t).some(a=>a=="fish"||a=="crust"||a=="moll"))return 0;if(algText(t).some(a=>a=="milk"||a=="eggs")||/honig/.test(t))return 1;return 2}
+const _myRecOpenImp=myRecOpen;myRecOpen=function(idx){const r=_myRecOpenImp.apply(this,arguments);try{if(idx==null||!(idx>=NB)){const h=Q("#rv .rv-in h1");if(h&&!Q("#rv .impbox")){const on=typeof cloudCur=="function"&&cloudCur();
+ h.insertAdjacentHTML("afterend",`<div class="impbox"><label class="mu">Von einer Website übernehmen</label><div class="row" style="gap:8px"><input id="murl" type="url" inputmode="url" placeholder="Link zum Rezept einfügen" style="margin:0" ${on?"":"disabled"}><button class="sm pri" id="mimb" onclick="recImport()" ${on?"":"disabled"}>Übernehmen</button></div><div class="mu" id="mimsg" style="font-size:12px;margin-top:6px">${on?"Klappt bei den meisten Rezeptseiten. Danach prüfst und speicherst du wie gewohnt.":"Mit einem Konto kannst du Rezepte per Link übernehmen."}</div></div>`)}}}catch(e){console.error(e)}return r};
+async function recImport(){const g=i=>document.getElementById(i),u=(g("murl")||{}).value||"",msg=t=>{const m=g("mimsg");if(m)m.textContent=t},b=g("mimb");
+ let url;try{url=new URL(u.trim());if(url.protocol!="https:")throw 0}catch(e){return msg("Bitte einen vollständigen Link einfügen, der mit https:// beginnt.")}
+ if(b){b.disabled=true;b.textContent="Lädt …"}msg("Rezept wird gelesen …");
+ let r;try{r=await sbReq("/functions/v1/rezept-import",{method:"POST",body:{url:url.toString()}})}catch(e){const c=String(e&&e.code||"");
+  msg(c=="kein_rezept"?"Auf dieser Seite hat FreshPlan kein Rezept gefunden. Manche Seiten geben ihre Rezeptdaten nicht frei.":c=="link"?"Dieser Link lässt sich nicht öffnen.":c=="abruf"||c=="offline"?"Die Seite war nicht erreichbar. Versuch es später noch einmal.":"Das hat nicht geklappt: "+sbMsg(e));if(b){b.disabled=false;b.textContent="Übernehmen"}return}
+ if(b){b.disabled=false;b.textContent="Übernehmen"}if(!r||!r.n)return msg("Auf dieser Seite hat FreshPlan kein Rezept gefunden.");
+ const sc=r.y>=2,f=sc?2/r.y:1,ing=r.ing.map(l=>impScale(l,f)).filter(Boolean),set=(i,v)=>{const e=g(i);if(e)e.value=v};
+ set("mn",r.n.replace(/\s*(?:[-–]\s*)?(?:das\s+)?(?:klassische\s+)?Rezept$/i,"").replace(/\s+Rezept$/i,"").slice(0,60));set("mi",ing.join("\n"));set("ms",[...r.s,"Quelle: "+r.src].join("\n"));set("mt",r.t||30);set("mk",sc&&r.kcal?r.kcal:"");set("mp",sc&&r.p?r.p:"");set("mc",sc&&r.c?r.c:"");set("mv",impDiet(r.ing));
+ const host=url.hostname.replace(/^www\./,"");msg(`Übernommen von ${host}`+(sc&&r.y!=2?`, umgerechnet von ${r.y} auf 2 Portionen`:sc?"":", Mengen wie auf der Seite")+(sc&&r.kcal?".":". Kalorien pro Portion bitte selbst eintragen.")+" Bitte kurz prüfen und speichern.")}
+// Tour
+(function(){const s=TOUR.find(t=>t.t=="Suchen und eigene Rezepte");if(s&&!/Link/.test(s.x))s.x+=" Über „Eigenes“ übernimmst du mit Konto auch Rezepte per Link von Websites."})();
 
 draw();remind();
 </script></body></html>
