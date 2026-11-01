@@ -1207,6 +1207,9 @@ main.enter .vh .eyebrow{animation:fp-fade .8s .35s var(--e-soft) both}
 #rv.recv>.stg-bar{position:fixed}
 #rv.sheetv h1{text-align:left;font-size:28px}
 @media (min-width:960px){#rv.recv>.stg-bar{left:50%;right:auto;width:min(720px,100vw);transform:translateX(-50%);margin:0;bottom:0;border-radius:18px 18px 0 0;padding:14px var(--s6)}}
+/* Karte: OpenStreetMap ruhiger einfärben, im Dunkelmodus umkehren */
+.mpt{filter:saturate(.55) contrast(.94) brightness(1.04)}
+[data-theme=dark] .mpt{filter:invert(1) hue-rotate(180deg) saturate(.35) brightness(.82) contrast(.92)}
 </style></head><body><svg width="0" height="0" style="position:absolute"><defs>
 <filter id="bl"><feGaussianBlur stdDeviation="1.6"/></filter>
 <radialGradient id="gt" cx=".35" cy=".32" r=".85"><stop offset="0" stop-color="#ff7a63"/><stop offset=".35" stop-color="#e8261f"/><stop offset=".8" stop-color="#b3111b"/><stop offset="1" stop-color="#6e0a14"/></radialGradient>
@@ -2108,7 +2111,11 @@ function mpMap(){const el=document.getElementById("mpmap");if(!el)return;if(MPM)
  const r=mpS().reg,dk=document.documentElement.getAttribute("data-theme")=="dark";
  const map=L.map(el,{zoomControl:false,attributionControl:true}).setView(MPV?MPV.c:[r.lat,r.lng],MPV?MPV.z:12);MPM=map;
  map.attributionControl.setPrefix("");
- let ok=0,bad=0;const tl=L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/${dk?"dark_all":"voyager"}/{z}/{x}/{y}{r}.png`,{subdomains:"abcd",maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>-Mitwirkende &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'}).addTo(map);
+ let ok=0,bad=0;const OSMA='&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>-Mitwirkende';
+ // OpenStreetMap-Kacheln; fallen sie aus, übernimmt der Server von OpenStreetMap France (Stil „Humanitarian“)
+ let tl=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:OSMA,className:"mpt"}).addTo(map);
+ const alt=()=>{if(tl._alt)return;const t2=L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",{subdomains:"abc",maxZoom:19,attribution:OSMA+', Kacheln: <a href="https://www.openstreetmap.fr" target="_blank" rel="noopener">OSM France</a>',className:"mpt"});t2._alt=1;map.removeLayer(tl);tl=t2;tl.on("tileload",()=>{ok++;msg("")});tl.on("tileerror",()=>{bad++;if(!ok&&bad>=8)msg("Kartenbilder konnten nicht geladen werden. Prüfe deine Internetverbindung.")});tl.addTo(map)};
+ tl.on("tileerror",()=>{if(!ok)alt()});
  tl.on("tileload",()=>{ok++;msg("")});tl.on("tileerror",()=>{bad++;if(!ok&&bad>=4)msg("Kartenbilder konnten nicht geladen werden. Prüfe deine Internetverbindung. Die Liste unten funktioniert trotzdem.")});
  L.circle([r.lat,r.lng],{radius:(r.r||15)*1000,color:"#1f9d6b",weight:1.5,opacity:.5,fillColor:"#1f9d6b",fillOpacity:.04,interactive:false}).addTo(map);
  mpList().forEach(x=>{const ico=L.divIcon({className:"",html:`<div class="mppin ${x.k}${x.f?" f":""}${x.demo?" demo":""}${x.mine?" mine":""}">${ic(mpIcon(x),18)}</div>`,iconSize:[36,44],iconAnchor:[18,42]});
