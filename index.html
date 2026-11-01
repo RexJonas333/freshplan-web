@@ -1251,6 +1251,16 @@ input.bcchk{border-color:var(--honey);box-shadow:0 0 0 3px var(--honey-50)}
 .bcs-noc{margin-top:var(--s3);background:none;border:0;color:rgba(255,255,255,.85);font:500 var(--fs-small)/1.4 var(--sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 #bcs.nocam{background:#0B1712}#bcs.nocam .bcs-win{display:none}#bcs.nocam .bcs-bot{top:30%;bottom:auto;background:none}
 @media (prefers-reduced-motion:reduce){.bcs-win i{animation:none}}
+
+/* ── Allergien ───────────────────────────────────────────────────────── */
+.algnote{display:inline-flex;align-items:center;gap:6px;margin:-4px 0 var(--s4);padding:6px 12px 6px 10px;border:1px solid var(--line-2);border-radius:999px;background:transparent;color:var(--ink-2);font:500 var(--fs-small)/1.3 var(--sans);cursor:pointer;max-width:100%;text-align:left}
+.algnote span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (hover:hover){.algnote:hover{background:var(--hover)}}
+.algwarn{display:flex;align-items:flex-start;gap:8px;margin:var(--s3) 0;padding:10px 12px;border-radius:var(--r-s);background:var(--honey-50);color:var(--ink);font-size:var(--fs-small);line-height:1.45}
+.algwarn .ic{flex:none;margin-top:1px;color:var(--honey)}
+.algwarn.bad{background:var(--tomato-50)}.algwarn.bad .ic{color:var(--tomato)}
+.bcp.albad{border-color:var(--tomato)}.bcp.alwarn{border-color:var(--honey)}
+.algcard .sm{flex:none}
 </style></head><body><svg width="0" height="0" style="position:absolute"><defs>
 <filter id="bl"><feGaussianBlur stdDeviation="1.6"/></filter>
 <radialGradient id="gt" cx=".35" cy=".32" r=".85"><stop offset="0" stop-color="#ff7a63"/><stop offset=".35" stop-color="#e8261f"/><stop offset=".8" stop-color="#b3111b"/><stop offset="1" stop-color="#6e0a14"/></radialGradient>
@@ -2897,6 +2907,59 @@ function bcHome(){if(tab!="home")return;const qa=Q("#m .qa");if(!qa||qa.querySel
 const _drwBc=draw;draw=function(){const r=_drwBc.apply(this,arguments);try{bcHome()}catch(e){console.error(e)}return r};
 // Tour: Artikel-Schritt wird zum Barcode-Schritt
 (function(){const i=TOUR.findIndex(s=>s.t=="Artikel hinzufügen");const st={tab:"home",el:()=>Q("#m .qa .qbc"),t:"Barcode scannen",x:"Halte die Kamera auf den Strichcode. FreshPlan holt Name, Packungsgröße, Nährwerte und Allergene aus der freien Datenbank Open Food Facts. Die Haltbarkeit ist nur geschätzt, prüf das Datum auf der Packung. Ohne Barcode trägst du Artikel über das Plus im Vorrat von Hand ein."};if(i>=0)TOUR[i]=st;else{const j=TOUR.findIndex(s=>s.t=="Beleg scannen");TOUR.splice(j+1,0,st)}})();
+
+IC.alert='<path d="M12 3l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.5h.01"/>';
+// ===== Allergien: Einstellung, Rezeptfilter, Warnungen beim Scannen und im Rezept =====
+const ALG=[["gluten","Gluten"],["milk","Milch"],["eggs","Eier"],["nuts","Schalenfrüchte"],["peanuts","Erdnüsse"],["soy","Soja"],["fish","Fisch"],["crust","Krebstiere"],["moll","Weichtiere"],["celery","Sellerie"],["mustard","Senf"],["sesame","Sesam"],["sulph","Sulfite"],["lupin","Lupinen"]];
+const ALGL=Object.fromEntries(ALG),ALG_OFF={"en:gluten":"gluten","en:milk":"milk","en:eggs":"eggs","en:nuts":"nuts","en:peanuts":"peanuts","en:soybeans":"soy","en:fish":"fish","en:crustaceans":"crust","en:molluscs":"moll","en:celery":"celery","en:mustard":"mustard","en:sesame-seeds":"sesame","en:sulphur-dioxide-and-sulphites":"sulph","en:lupin":"lupin"};
+S.cfg.alg=Array.isArray(S.cfg.alg)?S.cfg.alg:[];if(S.cfg.algTr===undefined)S.cfg.algTr=1;
+// Zutatenwörter, aus denen sich Allergene ableiten lassen (deutsche Rezepttexte)
+const ALG_RX={
+ gluten:/nudel|spaghetti|pasta|penne|fusilli|lasagne|tagliatelle|brot|brötchen|toast|mehl|weizen|dinkel|roggen|gerste|couscous|bulgur|semmel|panier|tortilla|wrap|teig|gnocchi|baguette|crouton|hafer|sojasauce|seitan|grieß|knödel|zwieback|keks/,
+ milk:/milch|butter|käse|parmesan|mozzarella|feta|joghurt|quark|sahne|schmand|crème|creme fra|frischkäse|ricotta|mascarpone|skyr|ghee|halloumi|burrata|gouda|emmentaler|pecorino/,
+ eggs:/\bei\b|\beier|eigelb|eiweiß|mayonnaise|\bmayo/,
+ nuts:/mandel|haselnuss|walnuss|cashew|pistazie|pekan|macadamia|paranuss|nüsse|\bnuss/,
+ peanuts:/erdnuss/,soy:/soja|tofu|edamame|miso|tempeh/,
+ fish:/fisch|lachs|thunfisch|kabeljau|forelle|sardelle|sardine|hering|makrele|seelachs|dorade|anchovi|zander|scholle/,
+ crust:/garnele|shrimp|krabbe|hummer|languste|scampi|krebs/,moll:/muschel|tintenfisch|calamar|oktopus|auster|schnecke/,
+ celery:/sellerie/,mustard:/senf/,sesame:/sesam|tahin/,sulph:/\bwein\b|weißwein|rotwein|rosine|trockenobst|getrocknete aprikose/,lupin:/lupine/};
+const ALG_NOT={milk:/kokosmilch|hafermilch|mandelmilch|sojamilch|reismilch|erdnussbutter|kakaobutter|milchreis-ersatz/,gluten:/reisnudel|glasnudel|glutenfrei|buchweizen/,nuts:/erdnuss|muskatnuss|kokosnuss/};
+function algText(t){let s=" "+String(t||"").toLowerCase()+" ";const out=[];for(const [k,rx] of Object.entries(ALG_RX)){let x=s;if(ALG_NOT[k])x=x.replace(new RegExp(ALG_NOT[k].source,"g")," ");if(rx.test(x))out.push(k)}return out}
+const ALGC=new WeakMap();
+function algOf(r){if(!r)return[];if(ALGC.has(r))return ALGC.get(r);const t=[...(r.ing||[]).map(g=>g[0]+" "+g[1]),...(r.i||[]),...(r.s||[])].join(" | ");const a=algText(t);ALGC.set(r,a);return a}
+const algMine=()=>S.cfg.alg||[],algHit=list=>algMine().filter(a=>(list||[]).includes(a)),algOffKeys=tags=>(tags||[]).map(t=>ALG_OFF[t]).filter(Boolean);
+const algNames=ks=>ks.map(k=>ALGL[k]).join(", ");
+// Rezepte mit eigenen Allergenen fallen überall aus Vorschlägen und Listen heraus
+let ALG_OFFF=false;
+const _dietOkAl=dietOk;dietOk=function(r,d){return _dietOkAl(r,d)&&(ALG_OFFF||!algHit(algOf(r)).length)};
+const algHidden=()=>{if(!algMine().length)return 0;let n=0;ALG_OFFF=true;try{n=recs().length}finally{ALG_OFFF=false}return Math.max(0,n-recs().length)};
+// Einstellung
+function algOpen(back){const e=rvEl();e.className="";const on=new Set(algMine());
+ e.innerHTML=`<div class="rv-in"><div class="row" style="margin-bottom:6px"><h1 class="sp" style="margin:0">Allergien</h1><button class="iconb" style="margin:0" onclick="algDone('${back||""}')" aria-label="Schließen">${ic("x",18)}</button></div>
+ <div class="mu" style="margin-bottom:14px">Wähle, was du nicht verträgst. Rezepte damit blendet FreshPlan aus, und beim Scannen warnt die App.</div>
+ <div class="fgrid algg">${ALG.map(([k,l])=>`<button class="${on.has(k)?"on":""}" aria-pressed="${on.has(k)}" onclick="algTog('${k}','${back||""}')">${l}</button>`).join("")}</div>
+ <label class="row algtr" style="margin-top:18px;gap:10px;cursor:pointer"><input type="checkbox" ${S.cfg.algTr?"checked":""} onchange="S.cfg.algTr=this.checked?1:0;save()" style="width:auto;margin:0"><span class="sp">Auch bei möglichen Spuren warnen</span></label>
+ <div class="mu" style="margin-top:14px;font-size:12px">Die Angaben stammen aus den Zutaten der Rezepte und aus Open Food Facts. Sie können unvollständig sein. Lies im Zweifel immer die Zutatenliste auf der Packung.</div>
+ <button class="pri" style="width:100%;margin-top:18px" onclick="algDone('${back||""}')">Fertig</button></div>`}
+function algTog(k,back){const s=new Set(algMine());s.has(k)?s.delete(k):s.add(k);S.cfg.alg=ALG.map(a=>a[0]).filter(x=>s.has(x));save();algOpen(back)}
+function algDone(back){if(back=="pf"&&typeof pfOpen=="function"){pfOpen();return}rvClose();draw()}
+// Profil: eigener Abschnitt vor „Darstellung“
+const _pfBodyAl=pfBody;pfBody=function(){const h=_pfBodyAl.apply(this,arguments),m=algMine();
+ return h.replace("<h2>Darstellung</h2>",`<h2>Allergien</h2><div class="card row algcard" role="button" tabindex="0" onclick="algOpen('pf')" style="cursor:pointer"><div class="sp"><b>${m.length?esc(algNames(m)):"Keine angegeben"}</b><div class="mu">Rezepte damit werden ausgeblendet, gescannte Produkte geprüft.</div></div><span class="sm">Ändern</span></div><h2>Darstellung</h2>`)};
+// Rezepte: Hinweis über der Liste, Warnung im Rezept selbst
+function algRecNote(){if(tab!="rec"||RM=="plan"||Q("#m .algnote"))return;const m=algMine();const bar=Q("#m .fbar");if(!bar)return;const n=algHidden();
+ bar.insertAdjacentHTML("afterend",`<button class="algnote" onclick="algOpen('rec')">${ic("help",14)}<span>${m.length?`Ohne ${esc(algNames(m))}${n?` · ${n} ${n==1?"Rezept":"Rezepte"} ausgeblendet`:""}`:"Allergien angeben"}</span></button>`)}
+// Eingeplante Gerichte bleiben stehen, bekommen aber einen Hinweis
+function algMark(){if(!algMine().length)return;document.querySelectorAll("#m .card.rc").forEach(c=>{if(c.querySelector(".algtag"))return;const b=c.querySelector("b.sp");if(!b)return;const r=REC.find(x=>x.n==b.textContent.trim());const h=r&&algHit(algOf(r));if(h&&h.length)b.insertAdjacentHTML("afterend",`<span class="tag no algtag">Enthält ${esc(algNames(h))}</span>`)})}
+const _drwAl=draw;draw=function(){const r=_drwAl.apply(this,arguments);try{algRecNote();algMark()}catch(e){console.error(e)}return r};
+const _recDrawAl=recDraw;recDraw=function(){const r=_recDrawAl.apply(this,arguments);try{const rc=REC[RC.i],a=algOf(rc),hit=algHit(a),inn=Q("#rv .rv-in h1");
+ if(inn&&a.length&&!Q("#rv .algwarn"))inn.insertAdjacentHTML("afterend",hit.length?`<div class="algwarn bad">${ic("alert",16)}<span><b>Enthält ${esc(algNames(hit))}.</b> Das steht bei deinen Allergien.</span></div>`:`<div class="algwarn"><span>Allergene laut Zutaten: ${esc(algNames(a))}</span></div>`)}catch(e){console.error(e)}return r};
+// Scannen: eigene Allergene und Spuren hervorheben, im Vorrat am Artikel merken
+const _bcDecoAl=bcDeco;bcDeco=function(p,msg){_bcDecoAl.apply(this,arguments);if(!p)return;const al=algOffKeys(p.al),tr=algOffKeys(p.tr).filter(k=>!al.includes(k)),h=algHit(al),ht=S.cfg.algTr?algHit(tr):[];
+ const card=Q("#rv .bcp");if(!card||(!h.length&&!ht.length))return;card.classList.add(h.length?"albad":"alwarn");
+ card.insertAdjacentHTML("afterend",`<div class="algwarn ${h.length?"bad":""}">${ic("alert",16)}<span>${h.length?`<b>Achtung: enthält ${esc(algNames(h))}.</b> `:""}${ht.length?`${h.length?"Außerdem k":"K"}ann Spuren von ${esc(algNames(ht))} enthalten.`:""}</span></div>`)};
+// Tour: nach der Ernährungsform
+(function(){const i=TOUR.findIndex(s=>s.t=="Deine Ernährungsform");const st={tab:"rec",rm:"disc",el:()=>Q("#m .algnote"),t:"Allergien",x:"Hier gibst du an, was du nicht verträgst. Rezepte damit blendet FreshPlan aus, im Rezept steht ein Hinweis, und beim Scannen warnt die App bei Allergenen und auf Wunsch auch bei Spuren. Du findest die Einstellung auch im Profil."};TOUR.splice(i>=0?i+1:TOUR.length,0,st)})();
 
 draw();remind();
 </script></body></html>
