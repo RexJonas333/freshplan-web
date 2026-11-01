@@ -1258,9 +1258,19 @@ input.bcchk{border-color:var(--honey);box-shadow:0 0 0 3px var(--honey-50)}
 @media (hover:hover){.algnote:hover{background:var(--hover)}}
 .algwarn{display:flex;align-items:flex-start;gap:8px;margin:var(--s3) 0;padding:10px 12px;border-radius:var(--r-s);background:var(--honey-50);color:var(--ink);font-size:var(--fs-small);line-height:1.45}
 .algwarn .ic{flex:none;margin-top:1px;color:var(--honey)}
+.algwarn.info{background:var(--surface);color:var(--ink-2);padding:8px 12px}
 .algwarn.bad{background:var(--tomato-50)}.algwarn.bad .ic{color:var(--tomato)}
 .bcp.albad{border-color:var(--tomato)}.bcp.alwarn{border-color:var(--honey)}
 .algcard .sm{flex:none}
+
+/* ── Markt: Melden und Blockieren ────────────────────────────────────── */
+.repbar{gap:8px;margin-top:var(--s4);justify-content:center;flex-wrap:wrap}
+.repbar .sm{background:transparent;border-color:transparent;color:var(--ink-3);display:inline-flex;align-items:center;gap:6px}
+@media (hover:hover){.repbar .sm:hover{color:var(--ink);background:var(--hover)}}
+.repl{display:grid;gap:8px}
+.repo{gap:12px;padding:12px 14px;border:1px solid var(--line-2);border-radius:var(--r-s);cursor:pointer}
+.repo input{width:auto;margin:0;accent-color:var(--brand)}
+.repo:has(input:checked){border-color:var(--brand);background:var(--brand-50)}
 </style></head><body><svg width="0" height="0" style="position:absolute"><defs>
 <filter id="bl"><feGaussianBlur stdDeviation="1.6"/></filter>
 <radialGradient id="gt" cx=".35" cy=".32" r=".85"><stop offset="0" stop-color="#ff7a63"/><stop offset=".35" stop-color="#e8261f"/><stop offset=".8" stop-color="#b3111b"/><stop offset="1" stop-color="#6e0a14"/></radialGradient>
@@ -2721,7 +2731,7 @@ let MPC=[],MPT=0,MPR="",MPB=null;
 const mpBox=r=>{const d=(r.r||15)+1,dl=d/111,dg=d/(111*Math.max(.2,Math.cos(r.lat*Math.PI/180)));return[r.lat-dl,r.lat+dl,r.lng-dg,r.lng+dg]};
 async function mpFetch(force){if(!cloudCur())return;const m=mpS(),r=m.reg;if(!r)return;const key=[r.lat.toFixed(3),r.lng.toFixed(3),r.r].join();if(!force&&key==MPR&&Date.now()-MPT<60000)return;if(MPB)return MPB;
  MPB=(async()=>{const b=mpBox(r),now=new Date().toISOString();const rows=await sbReq(`/rest/v1/listings?select=id,user_id,kind,lat,lng,status,data,expires_at&lat=gte.${b[0]}&lat=lte.${b[1]}&lng=gte.${b[2]}&lng=lte.${b[3]}&expires_at=gt.${now}&status=neq.done&order=created_at.desc&limit=200`);
-  const me=SBS.user.id;MPC=rows.filter(x=>x.user_id!=me).map(x=>{const d=x.data||{};return{...d,id:x.id,k:x.kind=="r"?"r":"o",lat:x.lat,lng:x.lng,st:x.status,e:String(x.expires_at).slice(0,10),cl:1,n:String(d.n||"").slice(0,60),by:String(d.by||"Nachbar").slice(0,24),c:String(d.c||"").slice(0,24),note:String(d.note||"").slice(0,240),q:String(d.q||"").slice(0,30),p:Math.max(0,Math.min(9999,+d.p||0)),pl:String(d.pl||"").slice(0,60)}});
+  const me=SBS.user.id;MPC=rows.filter(x=>x.user_id!=me).map(x=>{const d=x.data||{};return{...d,id:x.id,u:x.user_id,k:x.kind=="r"?"r":"o",lat:x.lat,lng:x.lng,st:x.status,e:String(x.expires_at).slice(0,10),cl:1,n:String(d.n||"").slice(0,60),by:String(d.by||"Nachbar").slice(0,24),c:String(d.c||"").slice(0,24),note:String(d.note||"").slice(0,240),q:String(d.q||"").slice(0,30),p:Math.max(0,Math.min(9999,+d.p||0)),pl:String(d.pl||"").slice(0,60)}});
   MPT=Date.now();MPR=key;if(tab=="mp"&&!document.getElementById("rv"))draw()})().catch(e=>{MPT=Date.now();MPR=key;toast(sbMsg(e))}).finally(()=>{MPB=null});return MPB}
 const _mpAllC=mpAll;
 mpAll=function(){if(!cloudCur())return _mpAllC();const m=mpS(),d=m.demo;m.demo=false;const a=_mpAllC();m.demo=d;const ids=new Set(a.map(x=>x.id)),now=today();return[...a,...MPC.filter(x=>!ids.has(x.id)&&x.st!="done"&&(!x.e||x.e>=now))]};
@@ -2792,7 +2802,8 @@ function mkPost(){mkHead();
  if(tab=="list"&&cloudCur()&&mpS().reg)mpFetch().catch(()=>{})}
 const _drwMk=draw;draw=function(){const r=_drwMk.apply(this,arguments);try{mkPost()}catch(e){console.error(e)}return r};
 // mpFetch zeichnet nur im Markt neu; Heute und Einkauf sollen die Treffer auch sehen
-const _mpFetchMk=mpFetch;mpFetch=function(f){const p=_mpFetchMk(f);if(p&&p.then)p.then(()=>{if((tab=="home"||tab=="list")&&!document.getElementById("rv")&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||"")){const had=!!Q("#m .mkcard,#m .mkhint");if(!had&&mkNear().length)draw()}}).catch(()=>{});return p};
+let MKSIG="";// Nur neu zeichnen, wenn neue Anzeigen dazukommen (sonst Endlosschleife, wenn nichts zur Liste passt)
+const _mpFetchMk=mpFetch;mpFetch=function(f){const p=_mpFetchMk(f);if(p&&p.then)p.then(()=>{if((tab=="home"||tab=="list")&&!document.getElementById("rv")&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||"")){const had=!!Q("#m .mkcard,#m .mkhint"),sig=tab+":"+mkNear().map(x=>x.id).join();if(!had&&sig.length>tab.length+1&&sig!==MKSIG){MKSIG=sig;draw()}}}).catch(()=>{});return p};
 // Im Markt kein Wischen zwischen den Bereichen (die Karte braucht die Geste)
 const _goGrpMk=goGrp;goGrp=function(g,dir){if(tab=="mp"&&dir!==undefined&&g!="markt")return;return _goGrpMk(g,dir)};
 // Tour: Markt über das Kartensymbol
@@ -2953,7 +2964,7 @@ function algRecNote(){if(tab!="rec"||RM=="plan"||Q("#m .algnote"))return;const m
 function algMark(){if(!algMine().length)return;document.querySelectorAll("#m .card.rc").forEach(c=>{if(c.querySelector(".algtag"))return;const b=c.querySelector("b.sp");if(!b)return;const r=REC.find(x=>x.n==b.textContent.trim());const h=r&&algHit(algOf(r));if(h&&h.length)b.insertAdjacentHTML("afterend",`<span class="tag no algtag">Enthält ${esc(algNames(h))}</span>`)})}
 const _drwAl=draw;draw=function(){const r=_drwAl.apply(this,arguments);try{algRecNote();algMark()}catch(e){console.error(e)}return r};
 const _recDrawAl=recDraw;recDraw=function(){const r=_recDrawAl.apply(this,arguments);try{const rc=REC[RC.i],a=algOf(rc),hit=algHit(a),inn=Q("#rv .rv-in h1");
- if(inn&&a.length&&!Q("#rv .algwarn"))inn.insertAdjacentHTML("afterend",hit.length?`<div class="algwarn bad">${ic("alert",16)}<span><b>Enthält ${esc(algNames(hit))}.</b> Das steht bei deinen Allergien.</span></div>`:`<div class="algwarn"><span>Allergene laut Zutaten: ${esc(algNames(a))}</span></div>`)}catch(e){console.error(e)}return r};
+ if(inn&&a.length&&!Q("#rv .algwarn"))inn.insertAdjacentHTML("afterend",hit.length?`<div class="algwarn bad">${ic("alert",16)}<span><b>Enthält ${esc(algNames(hit))}.</b> Das steht bei deinen Allergien.</span></div>`:`<div class="algwarn info"><span>Allergene laut Zutaten: ${esc(algNames(a))}</span></div>`)}catch(e){console.error(e)}return r};
 // Scannen: eigene Allergene und Spuren hervorheben, im Vorrat am Artikel merken
 const _bcDecoAl=bcDeco;bcDeco=function(p,msg){_bcDecoAl.apply(this,arguments);if(!p)return;const al=algOffKeys(p.al),tr=algOffKeys(p.tr).filter(k=>!al.includes(k)),h=algHit(al),ht=S.cfg.algTr?algHit(tr):[];
  const card=Q("#rv .bcp");if(!card||(!h.length&&!ht.length))return;card.classList.add(h.length?"albad":"alwarn");
@@ -3018,6 +3029,35 @@ function sysBars(){try{const C=window.Capacitor;if(!C||!C.isNativePlatform||!C.i
  const dark=typeof isDarkNow=="function"?isDarkNow():document.documentElement.dataset.theme=="dark";SB.setStyle({style:dark?"DARK":"LIGHT"}).catch(()=>{})}catch(e){}}
 const _applyThemeSys=applyTheme;applyTheme=function(){const r=_applyThemeSys.apply(this,arguments);sysBars();return r};
 sysBars();
+
+// ===== Markt: Anzeige melden, ausblenden, Anbieter blockieren =====
+IC.flag='<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>';IC.block='<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>';
+const REP_R=[["spam","Spam oder Betrug"],["unangemessen","Beleidigend oder unangemessen"],["falsch","Kein Lebensmittel oder falsche Angaben"],["sonstiges","Etwas anderes"]];
+const repS=()=>{const m=mpS();m.hid=Array.isArray(m.hid)?m.hid:[];m.blk=Array.isArray(m.blk)?m.blk:[];return m};
+// Ausgeblendete Anzeigen und blockierte Anbieter erscheinen nirgends mehr (Markt, Karte, Startseite, Einkaufsliste)
+const _mpAllRep=mpAll;mpAll=function(){const a=_mpAllRep.apply(this,arguments),m=repS();if(!m.hid.length&&!m.blk.length)return a;const h=new Set(m.hid),b=new Set(m.blk.map(x=>x.u));return a.filter(x=>x.mine||(!h.has(x.id)&&!(x.u&&b.has(x.u))))};
+function mpReport(id){const x=mpFind(id);if(!x)return;const e=rvEl();
+ e.innerHTML=`<div class="rv-in"><div class="row" style="margin-bottom:6px"><h1 class="sp" style="margin:0">Anzeige melden</h1><button class="iconb" style="margin:0" onclick="mpOpen('${id}')" aria-label="Zurück">${ic("x",18)}</button></div>
+ <div class="mu" style="margin-bottom:14px">„${esc(x.n)}“ von ${esc(x.by||"Unbekannt")}. Was stimmt nicht?</div>
+ <div class="repl">${REP_R.map(([k,l],i)=>`<label class="row repo"><input type="radio" name="rep" value="${k}" ${i==0?"checked":""}><span class="sp">${l}</span></label>`).join("")}</div>
+ <label class="mu">Hinweis (optional)</label><textarea id="repn" maxlength="300" placeholder="Was ist dir aufgefallen?"></textarea>
+ <div class="mu" style="font-size:12px;margin-top:10px">Die Meldung geht an das FreshPlan-Team. Die anbietende Person erfährt nicht, wer gemeldet hat. Die Anzeige wird für dich sofort ausgeblendet.</div>
+ <div class="row" style="margin-top:18px"><button class="sp" onclick="mpOpen('${id}')">Abbrechen</button><button class="pri sp" onclick="mpReportSend('${id}')">Melden</button></div></div>`}
+async function mpReportSend(id){const x=mpFind(id);if(!x)return;const r=(Q('#rv input[name=rep]:checked')||{}).value||"sonstiges",n=((Q("#repn")||{}).value||"").trim().slice(0,300);let sent=false;
+ if(x.cl&&typeof cloudCur=="function"&&cloudCur()){try{await sbReq("/rest/v1/reports",{method:"POST",prefer:"return=minimal",body:{listing_id:String(id),listing_user:x.u||null,reason:r,note:n||null}});sent=true}catch(e){if(e&&(e.status==409||e.code=="23505"))sent=true;else{toast("Meldung nicht gesendet: "+sbMsg(e));return}}}
+ const m=repS();if(!m.hid.includes(id))m.hid.push(id);save();rvClose();draw();toast(sent?"Danke für die Meldung. Die Anzeige ist für dich ausgeblendet.":"Die Anzeige ist für dich ausgeblendet.")}
+function mpBlock(id){const x=mpFind(id);if(!x)return;const e=rvEl();
+ e.innerHTML=`<div class="rv-in rv-c"><h1 style="margin-bottom:8px">${esc(x.by||"Anbieter")} blockieren?</h1><div class="mu" style="margin-bottom:22px;line-height:1.5">Du siehst dann keine Anzeigen dieser Person mehr. Im Profil kannst du das jederzeit aufheben.</div><button class="pri" style="width:100%" onclick="mpBlockOk('${id}')">Blockieren</button><button style="width:100%;margin-top:10px" onclick="mpOpen('${id}')">Abbrechen</button></div>`}
+function mpBlockOk(id){const x=mpFind(id);if(!x)return;const m=repS();if(x.u){if(!m.blk.some(b=>b.u==x.u))m.blk.push({u:x.u,by:String(x.by||"Unbekannt").slice(0,24)})}else if(!m.hid.includes(id))m.hid.push(id);save();rvClose();draw();toast((x.by||"Anbieter")+" ist blockiert.")}
+function mpUnblock(){const m=repS();m.blk=[];m.hid=[];save();if(typeof pfOpen=="function")pfOpen();toast("Alle wieder sichtbar.")}
+// In der Anzeige: Melden und Blockieren unter den Kontaktknöpfen
+const _mpOpenRep=mpOpen;mpOpen=function(id){const r=_mpOpenRep.apply(this,arguments);try{const x=mpFind(id);const inn=Q("#rv .rv-in");if(x&&inn&&!x.mine&&!x.demo&&!inn.querySelector(".repbar"))inn.insertAdjacentHTML("beforeend",`<div class="row repbar"><button class="sm ghost" onclick="mpReport('${id}')">${ic("flag",14)} Melden</button><button class="sm ghost" onclick="mpBlock('${id}')">${ic("block",14)} Anbieter blockieren</button></div>`)}catch(e){console.error(e)}return r};
+// Profil: Übersicht und Aufheben
+const _pfBodyRep=pfBody;pfBody=function(){const h=_pfBodyRep.apply(this,arguments),m=repS();if(!m.blk.length&&!m.hid.length)return h;
+ const c=`<h2>Markt</h2><div class="card row"><div class="sp"><b>${m.blk.length?m.blk.length+(m.blk.length==1?" Anbieter blockiert":" Anbieter blockiert"):"Keine Anbieter blockiert"}</b><div class="mu">${m.hid.length} ${m.hid.length==1?"Anzeige":"Anzeigen"} ausgeblendet${m.blk.length?" · "+esc(m.blk.map(b=>b.by).join(", ")):""}</div></div><button class="sm" onclick="mpUnblock()">Aufheben</button></div>`;
+ return h.includes("<h2>Darstellung</h2>")?h.replace("<h2>Darstellung</h2>",c+"<h2>Darstellung</h2>"):h+c};
+// Tour
+(function(){const s=TOUR.find(t=>t.t=="Anzeigen in der Nähe");if(s&&!/melden/.test(s.x))s.x+=" Passt eine Anzeige nicht, meldest du sie oder blockierst die Person direkt in der Anzeige."})();
 
 draw();remind();
 </script></body></html>
