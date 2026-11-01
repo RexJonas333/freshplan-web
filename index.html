@@ -1276,6 +1276,14 @@ input.bcchk{border-color:var(--honey);box-shadow:0 0 0 3px var(--honey-50)}
 .impbox{margin:var(--s3) 0 var(--s2);padding:var(--s3) var(--s4) var(--s4);border:1px solid var(--line);border-radius:var(--r-m);background:var(--surface)}
 .impbox label{margin-top:0!important}
 .impbox input{flex:1;min-width:0}
+
+/* ── Update in der App ───────────────────────────────────────────────── */
+.updcard{gap:var(--s3);margin-top:var(--s3);cursor:pointer;border-color:var(--brand-100)}
+.updcard .sm{flex:none}
+.updl{margin:8px 0 0;padding-left:18px;display:grid;gap:6px;color:var(--ink-2);font-size:var(--fs-small);line-height:1.45}
+.updbar{height:6px;margin-top:10px;border-radius:3px;background:var(--track);overflow:hidden}
+.updbar i{display:block;height:100%;width:0;background:var(--brand-500);border-radius:3px;transition:width .2s}
+.updpf .sm{flex:none}
 </style></head><body><svg width="0" height="0" style="position:absolute"><defs>
 <filter id="bl"><feGaussianBlur stdDeviation="1.6"/></filter>
 <radialGradient id="gt" cx=".35" cy=".32" r=".85"><stop offset="0" stop-color="#ff7a63"/><stop offset=".35" stop-color="#e8261f"/><stop offset=".8" stop-color="#b3111b"/><stop offset="1" stop-color="#6e0a14"/></radialGradient>
@@ -3083,6 +3091,48 @@ async function recImport(){const g=i=>document.getElementById(i),u=(g("murl")||{
  const host=url.hostname.replace(/^www\./,"");msg(`Übernommen von ${host}`+(sc&&r.y!=2?`, umgerechnet von ${r.y} auf 2 Portionen`:sc?"":", Mengen wie auf der Seite")+(sc&&r.kcal?".":". Kalorien pro Portion bitte selbst eintragen.")+" Bitte kurz prüfen und speichern.")}
 // Tour
 (function(){const s=TOUR.find(t=>t.t=="Suchen und eigene Rezepte");if(s&&!/Link/.test(s.x))s.x+=" Über „Eigenes“ übernimmst du mit Konto auch Rezepte per Link von Websites."})();
+
+// ===== Update direkt in der Android-App (nur APK von der Website, nicht im Play Store) =====
+window.FP_CHANNEL="apk";
+IC.download='<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>';
+const UPD_URL="https://rexjonas333.github.io/freshplan-web/version.json";
+const updP=()=>{try{const C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform()||window.FP_CHANNEL!="apk")return null;return(C.Plugins&&C.Plugins.Updater)||(C.registerPlugin?C.registerPlugin("Updater"):null)}catch(e){return null}};
+let UPD=null,UPDT=0,UPDRUN=false;
+async function updCheck(manual){const P=updP();if(!P){if(manual)toast("Updates gibt es hier über die Website.");return null}
+ try{const cur=await P.info();const r=await fetch(UPD_URL+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("http");const av=await r.json();
+  UPD={cur,av,neu:+av.code>+cur.code};UPDT=Date.now();
+  if(manual)UPD.neu?updOpen():toast("Du hast die neueste Version ("+cur.name+").");
+  if(!manual)try{draw()}catch(e){}return UPD}catch(e){if(manual)toast("Keine Verbindung. Versuch es später noch einmal.");return null}}
+const updNotes=av=>(Array.isArray(av.notes)?av.notes:[]).slice(0,6);
+function updOpen(){if(!UPD||!UPD.neu)return;const {cur,av}=UPD,e=rvEl();e.className="";
+ e.innerHTML=`<div class="rv-in"><div class="row" style="margin-bottom:6px"><h1 class="sp" style="margin:0">Neue Version</h1><button class="iconb" style="margin:0" onclick="if(!UPDRUN)rvClose()" aria-label="Schließen">${ic("x",18)}</button></div>
+ <div class="mu" style="margin-bottom:12px">Version ${esc(av.name)} ist da. Du hast ${esc(cur.name)}. Deine Daten bleiben erhalten.</div>
+ ${updNotes(av).length?`<div class="card"><b>Neu</b><ul class="updl">${updNotes(av).map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`:""}
+ <div id="updst" class="mu" style="margin:14px 2px 0"></div><div class="updbar" id="updbar" hidden><i></i></div>
+ <button class="pri" id="updgo" style="width:100%;margin-top:16px" onclick="updRun()">${ic("download",18)} Jetzt aktualisieren</button>
+ <button style="width:100%;margin-top:8px" onclick="S.cfg.updSkip=${+av.code};save();rvClose();draw()">Später</button></div>`}
+async function updRun(){const P=updP();if(!P||!UPD||UPDRUN)return;const st=t=>{const e=document.getElementById("updst");if(e)e.textContent=t},go=document.getElementById("updgo"),bar=document.getElementById("updbar");
+ try{const info=await P.info();if(!info.canInstall){st("Android fragt einmal, ob FreshPlan Updates installieren darf. Erlaube es auf der nächsten Seite und komm dann zurück.");if(go)go.innerHTML=ic("download",18)+" Erlauben und weiter";UPD.wait=1;await P.allowInstall();return}
+  UPDRUN=true;if(go)go.disabled=true;if(bar)bar.hidden=false;st("Wird geladen …");
+  let h=null;try{h=await P.addListener("progress",ev=>{const p=+ev.percent;const i=Q("#updbar i");if(i&&p>=0)i.style.width=p+"%";if(p>=0)st("Wird geladen … "+p+" %")})}catch(e){}
+  const res=await P.download({url:UPD.av.url});try{h&&h.remove&&h.remove()}catch(e){}
+  if(!res||!(res.bytes>1e6))throw new Error("klein");
+  st("Fertig geladen. Bestätige im nächsten Fenster „Aktualisieren“. Danach startet FreshPlan neu.");await P.install()}
+ catch(e){st("Das Update hat nicht geklappt. Prüf die Verbindung und versuch es noch einmal.");if(go){go.disabled=false;go.innerHTML=ic("download",18)+" Erneut versuchen"}}
+ finally{UPDRUN=false}}
+// Nach dem Erlauben in den Android-Einstellungen automatisch weiter
+document.addEventListener("visibilitychange",()=>{if(document.hidden||!updP())return;if(UPD&&UPD.wait&&document.getElementById("updgo")){UPD.wait=0;updRun();return}if(Date.now()-UPDT>6*3600e3)updCheck(false)});
+// Heute: Hinweis, solange die Version nicht übersprungen wurde
+function updHome(){if(tab!="home"||!UPD||!UPD.neu||Q("#m .updcard")||+S.cfg.updSkip==+UPD.av.code)return;const qa=Q("#m .qa");if(!qa)return;
+ qa.insertAdjacentHTML("afterend",`<div class="card row updcard" role="button" tabindex="0" onclick="updOpen()"><div class="lvb">${ic("download",20)}</div><div class="sp"><b>Neue Version ${esc(UPD.av.name)}</b><div class="mu">${esc(updNotes(UPD.av)[0]||"Verbesserungen und Fehlerbehebungen")}</div></div><span class="sm">Ansehen</span></div>`)}
+const _drwUpd=draw;draw=function(){const r=_drwUpd.apply(this,arguments);try{updHome()}catch(e){console.error(e)}return r};
+// Profil: Version und Suche nach Updates
+const _pfBodyUpd=pfBody;pfBody=function(){const h=_pfBodyUpd.apply(this,arguments);if(!updP())return h;const c=UPD&&UPD.cur;
+ const card=`<h2>App-Version</h2><div class="card row updpf"><div class="sp"><b>${c?"Version "+esc(c.name):"FreshPlan für Android"}</b><div class="mu">${UPD&&UPD.neu?"Version "+esc(UPD.av.name)+" ist verfügbar.":"Neue Versionen installierst du direkt hier."}</div></div><button class="sm ${UPD&&UPD.neu?"pri":""}" onclick="${UPD&&UPD.neu?"updOpen()":"updCheck(true)"}">${UPD&&UPD.neu?"Aktualisieren":"Prüfen"}</button></div>`;
+ return h.includes("<h2>Darstellung</h2>")?h.replace("<h2>Darstellung</h2>",card+"<h2>Darstellung</h2>"):h+card};
+// Tour: im Profil-Schritt erwähnen
+(function(){const s=TOUR.find(t=>t.t=="Profil");if(s&&!/Version/.test(s.x))s.x+=" In der Android-App findest du dort auch die App-Version und installierst neue Versionen mit einem Tipp."})();
+setTimeout(()=>{if(updP())updCheck(false)},2500);
 
 draw();remind();
 </script></body></html>
