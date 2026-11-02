@@ -3287,6 +3287,32 @@ setTimeout(()=>{if(chMe())chFetch(true)},2000);
 // Tour
 (function(){const i=TOUR.findIndex(s=>s.t=="Anzeigen in der Nähe");const st={tab:"mp",el:()=>Q("#m .chbar"),t:"Nachrichten",x:"Ihr schreibt euch direkt in FreshPlan, ohne Telefonnummer. In einer Anzeige tippst du auf „Nachricht schreiben“, Antworten und Anfragen zu deinen Anzeigen findest du hier. Neue Nachrichten zeigt FreshPlan auch auf der Startseite."};TOUR.splice(i>=0?i+1:TOUR.length,0,st)})();
 
+// ===== Benachrichtigungen bei neuen Markt-Nachrichten (Android-App) =====
+// Jedes Gerät bekommt einen zufälligen Schlüssel; Android fragt damit im Hintergrund etwa alle 15 Minuten nach neuen Nachrichten.
+const puP=()=>{try{const C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return null;return(C.Plugins&&C.Plugins.Chatpush)||(C.registerPlugin?C.registerPlugin("Chatpush"):null)}catch(e){return null}};
+const puKey=()=>"fppush:"+(SBS&&SBS.user?SBS.user.id:"");
+function puSecret(){let s=null;try{s=localStorage.getItem(puKey())}catch(e){}if(s&&s.length>=32)return s;const a=new Uint8Array(32);crypto.getRandomValues(a);s=[...a].map(b=>b.toString(16).padStart(2,"0")).join("");try{localStorage.setItem(puKey(),s)}catch(e){}return s}
+let PUON=null,PUFAIL=0;
+async function puSync(){const P=puP();if(!P)return;const me=chMe();
+ if(!me||S.cfg.chatPush===false){if(PUON!==false){PUON=false;try{await P.disable()}catch(e){}}return}
+ if(PUON===me||Date.now()-PUFAIL<6e5)return;const s=puSecret();
+ try{await sbReq("/rest/v1/rpc/push_register",{method:"POST",body:{p_secret:s}});await P.enable({url:SB.u,key:SB.k,secret:s});PUON=me;PUFAIL=0}catch(e){PUON=null;PUFAIL=Date.now()}}
+async function puPerm(){const LN=typeof ntLN=="function"?ntLN():null;if(!LN)return true;try{let p=await LN.checkPermissions();if(p.display!="granted")p=await LN.requestPermissions();return p.display=="granted"}catch(e){return false}}
+async function puToggle(on){S.cfg.chatPush=!!on;save();if(on&&!(await puPerm()))toast("Benachrichtigungen sind für FreshPlan in den Android-Einstellungen ausgeschaltet.");PUON=null;PUFAIL=0;await puSync();if(typeof pfOpen=="function"&&Q("#rv .pucard"))pfOpen();toast(on?"Benachrichtigungen für Nachrichten an":"Benachrichtigungen für Nachrichten aus")}
+// Abmelden: Gerät beim Server austragen und Hintergrundprüfung beenden
+const _authOutPu=authOut;authOut=function(){const P=puP();if(P&&chMe()){let s=null;try{s=localStorage.getItem(puKey())}catch(e){}if(s)sbReq("/rest/v1/rpc/push_unregister",{method:"POST",body:{p_secret:s}}).catch(()=>{});try{P.disable()}catch(e){}PUON=false}return _authOutPu.apply(this,arguments)};
+// App offen: bisherige Nachrichten gelten als gesehen; aus einer Benachrichtigung heraus gleich den Chat öffnen
+async function puResume(){const P=puP();if(!P)return;try{await P.seen()}catch(e){}try{const r=await P.pending();if(r&&r.chat&&chMe()){await chFetch(true);rvClose();chOpen(r.chat)}}catch(e){}}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState=="visible"){puResume();puSync()}});
+setTimeout(()=>{puSync().then(puResume)},2600);
+const _drwPu=draw;draw=function(){const r=_drwPu.apply(this,arguments);try{if(puP()&&chMe()&&PUON!==chMe())puSync()}catch(e){}return r};
+// Profil: Schalter neben den Erinnerungen
+const _pfBodyPu=pfBody;pfBody=function(){const h=_pfBodyPu.apply(this,arguments);if(!puP()||!chMe())return h;const on=S.cfg.chatPush!==false;
+ const c=`<div class="card row pucard" style="margin-top:8px"><div class="sp"><b>Nachrichten im Markt</b><div class="mu">${on?"Android meldet neue Nachrichten, auch wenn FreshPlan geschlossen ist (Prüfung etwa alle 15 Minuten).":"Keine Benachrichtigung bei neuen Nachrichten."}</div></div><button class="sm ${on?"":"pri"}" onclick="puToggle(${on?"false":"true"})">${on?"Aus":"An"}</button></div>`;
+ const i=h.indexOf("ntcard"),j=i<0?-1:h.indexOf("<h2>",i);return j<0?h+c:h.slice(0,j)+c+h.slice(j)};
+// Beim ersten Chat einmal um Erlaubnis für Benachrichtigungen bitten
+const _chOpenPu=chOpen;chOpen=function(){const r=_chOpenPu.apply(this,arguments);try{if(puP()&&S.cfg.chatPush!==false&&!S.cfg.chatPushAsked){S.cfg.chatPushAsked=1;save();puPerm()}}catch(e){}return r};
+
 // ===== Rezept per Link übernehmen (Supabase-Funktion „rezept-import“ liest die Rezeptdaten der Seite) =====
 const IMP_FR={"½":.5,"¼":.25,"¾":.75,"⅓":1/3,"⅔":2/3,"⅛":.125};
 function impNum(s){s=String(s).trim();if(IMP_FR[s]!=null)return IMP_FR[s];const f=s.match(/^(\d+)\s*\/\s*(\d+)$/);if(f)return +f[1]/+f[2];const m=s.match(/^(\d+)\s*([½¼¾⅓⅔⅛])$/);if(m)return +m[1]+IMP_FR[m[2]];return parseFloat(s.replace(",","."))}
@@ -3354,6 +3380,122 @@ setTimeout(()=>{if(updP())updCheck(false)},2500);
 function recMig(){try{const o=+(S.cfg.nb||45);if(o===NB)return;let n=0;Object.values(S.plan||{}).forEach(es=>(es||[]).forEach(e=>{if(e&&e.r>=o){e.r+=NB-o;n++}}));S.cfg.nb=NB;save()}catch(e){console.error(e)}}
 recMig();
 if(typeof reloadState=="function"){const _rsMig=reloadState;reloadState=function(){const r=_rsMig.apply(this,arguments);recMig();return r}}
+
+// ===== Kassenbon ohne KI besser lesen: Bon freistellen, gerade drehen, Licht ausgleichen, Zeilen klüger auswerten =====
+function ocrLoad(src,max){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(src);im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(im.width*k));c.height=Math.max(1,Math.round(im.height*k));c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c)};im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("img"))};im.src=u})}
+const ocrGray=(c)=>{const d=c.getContext("2d").getImageData(0,0,c.width,c.height).data,g=new Float32Array(c.width*c.height);for(let i=0,j=0;j<g.length;i+=4,j++)g[j]=.299*d[i]+.587*d[i+1]+.114*d[i+2];return g};
+function ocrOtsu(g){const h=new Float64Array(256);for(let i=0;i<g.length;i++)h[Math.max(0,Math.min(255,g[i]|0))]++;let sum=0;for(let i=0;i<256;i++)sum+=i*h[i];let sB=0,wB=0,best=0,th=128;const n=g.length;
+ for(let t=0;t<256;t++){wB+=h[t];if(!wB)continue;const wF=n-wB;if(!wF)break;sB+=t*h[t];const mB=sB/wB,mF=(sum-sB)/wF,v=wB*wF*(mB-mF)*(mB-mF);if(v>best){best=v;th=t}}return th}
+function ocrSmall(c,w){const k=w/c.width,s=document.createElement("canvas");s.width=Math.max(1,Math.round(c.width*k));s.height=Math.max(1,Math.round(c.height*k));const x=s.getContext("2d");x.imageSmoothingQuality="high";x.drawImage(c,0,0,s.width,s.height);return s}
+// Hellen Bon im Foto finden (größte helle Fläche über Zeilen- und Spaltenanteile)
+function ocrBox(c){const s=ocrSmall(c,320),g=ocrGray(s),W=s.width,H=s.height,th=ocrOtsu(g),row=new Float32Array(H),col=new Float32Array(W);
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(g[y*W+x]>th){row[y]++;col[x]++}
+ const span=(a,n,m)=>{let best=[0,n-1],bl=0,st=-1;for(let i=0;i<=n;i++){const on=i<n&&a[i]/m>.3;if(on&&st<0)st=i;if(!on&&st>=0){if(i-st>bl){bl=i-st;best=[st,i-1]}st=-1}}return best};
+ const [x0,x1]=span(col,W,H),[y0,y1]=span(row,H,W),k=c.width/W,mx=(x1-x0)*.03,my=(y1-y0)*.02;
+ const b={x:Math.max(0,(x0-mx)*k),y:Math.max(0,(y0-my)*k),w:Math.min(c.width,(x1+mx+1)*k)-Math.max(0,(x0-mx)*k),h:Math.min(c.height,(y1+my+1)*k)-Math.max(0,(y0-my)*k)};
+ return b.w*b.h<c.width*c.height*.12?{x:0,y:0,w:c.width,h:c.height}:b}
+// Schräglage schätzen: Winkel, bei dem die Textzeilen das schärfste Zeilenprofil ergeben
+function ocrSkew(c,b){const t=document.createElement("canvas"),k=Math.min(1,500/b.w);t.width=Math.round(b.w*k);t.height=Math.round(b.h*k);t.getContext("2d").drawImage(c,b.x,b.y,b.w,b.h,0,0,t.width,t.height);
+ ocrFlat(t);const g=ocrGray(t),W=t.width,H=t.height,x0=Math.round(W*.1),x1=Math.round(W*.9),y0=Math.round(H*.08),y1=Math.round(H*.92),inner=[];for(let y=y0;y<y1;y+=2)for(let x=x0;x<x1;x+=2)inner.push(g[y*W+x]);
+ const th=Math.min(200,ocrOtsu(Float32Array.from(inner))),px=[];for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++)if(g[y*W+x]<th)px.push(x-W/2,y-H/2);if(px.length<200)return 0;
+ const score=a=>{const r=a*Math.PI/180,s=Math.sin(r),co=Math.cos(r),hist=new Float32Array(H*2+10);for(let i=0;i<px.length;i+=2){const yy=Math.round(-px[i]*s+px[i+1]*co+H);if(yy>=0&&yy<hist.length)hist[yy]++}let v=0;for(let i=1;i<hist.length;i++){const d=hist[i]-hist[i-1];v+=d*d}return v};
+ let best=0,bv=-1;for(let a=-7;a<=7.01;a+=.5){const v=score(a);if(v>bv){bv=v;best=a}}const c0=best;for(let a=c0-.4;a<=c0+.41;a+=.1){const v=score(a);if(v>bv){bv=v;best=+a.toFixed(2)}}return best}
+
+// Licht ausgleichen: Hintergrund schätzen (helle Umgebung) und herausrechnen, dann Kontrast strecken
+function ocrFlat(c){const W=c.width,H=c.height,g=ocrGray(c),bs=Math.max(8,Math.round(Math.max(W,H)/60)),gw=Math.ceil(W/bs),gh=Math.ceil(H/bs),bg=new Float32Array(gw*gh);
+ for(let by=0;by<gh;by++)for(let bx=0;bx<gw;bx++){const v=[];for(let y=by*bs;y<Math.min(H,(by+1)*bs);y+=2)for(let x=bx*bs;x<Math.min(W,(bx+1)*bs);x+=2)v.push(g[y*W+x]);v.sort((a,b)=>a-b);bg[by*gw+bx]=v[Math.floor(v.length*.9)]||255}
+ const bg2=new Float32Array(gw*gh);for(let y=0;y<gh;y++)for(let x=0;x<gw;x++){let m=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const yy=Math.min(gh-1,Math.max(0,y+dy)),xx=Math.min(gw-1,Math.max(0,x+dx));m=Math.max(m,bg[yy*gw+xx])}bg2[y*gw+x]=m}
+ const out=new Float32Array(W*H);for(let y=0;y<H;y++){const fy=Math.min(gh-1.001,Math.max(0,y/bs-.5)),y0=fy|0,ty=fy-y0;for(let x=0;x<W;x++){const fx=Math.min(gw-1.001,Math.max(0,x/bs-.5)),x0=fx|0,tx=fx-x0,i=y0*gw+x0,
+   b=(bg2[i]*(1-tx)+bg2[i+1]*tx)*(1-ty)+(bg2[i+gw]*(1-tx)+bg2[i+gw+1]*tx)*ty;out[y*W+x]=Math.min(1,g[y*W+x]/Math.max(20,b))}}
+ // Dunklen Rand außerhalb des Bons (Tisch, Schatten) von den Kanten her weiß machen, sonst verschiebt er die Schwelle
+ const mk=new Uint8Array(W*H),st=[];const seed=i=>{if(!mk[i]&&out[i]<.88){mk[i]=1;st.push(i)}};for(let x=0;x<W;x++){seed(x);seed((H-1)*W+x)}for(let y=0;y<H;y++){seed(y*W);seed(y*W+W-1)}
+ while(st.length){const i=st.pop(),x=i%W;if(x>0)seed(i-1);if(x<W-1)seed(i+1);if(i>=W)seed(i-W);if(i<W*(H-1))seed(i+W)}
+ const R=Math.max(3,Math.round(W/250));for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;if(mk[i]!=1)continue;for(let d=1;d<=R;d++){if(x+d<W&&!mk[i+d])mk[i+d]=2;if(x-d>=0&&!mk[i-d])mk[i-d]=2;if(y+d<H&&!mk[i+d*W])mk[i+d*W]=2;if(y-d>=0&&!mk[i-d*W])mk[i-d*W]=2}}
+ for(let i=0;i<out.length;i++)if(mk[i])out[i]=1;
+ const hs=Array.from(out.filter((v,i)=>i%5==0&&!mk[i])).sort((a,b)=>a-b),lo=hs[Math.floor(hs.length*.005)],hi=Math.max(lo+.05,hs[Math.floor(hs.length*.55)]);
+ const im=c.getContext("2d").getImageData(0,0,W,H),d=im.data;for(let j=0,i=0;j<out.length;j++,i+=4){let v=(out[j]-lo)/(hi-lo);v=Math.max(0,Math.min(1,v));v=Math.pow(v,1.6)*255;d[i]=d[i+1]=d[i+2]=v;d[i+3]=255}
+ c.getContext("2d").putImageData(im,0,0);return c}
+async function ocrPrep(src){const c=await ocrLoad(src,2600),b=ocrBox(c),a=ocrSkew(c,b),sc=Math.max(.6,Math.min(3,1100/b.w)),r=a*Math.PI/180;
+ const o=document.createElement("canvas"),cw=b.w*sc,ch=b.h*sc,W=Math.round(Math.abs(cw*Math.cos(r))+Math.abs(ch*Math.sin(r))),H=Math.round(Math.abs(cw*Math.sin(r))+Math.abs(ch*Math.cos(r)));o.width=W;o.height=H;
+ const x=o.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,W,H);x.imageSmoothingQuality="high";x.translate(W/2,H/2);x.rotate(-r);x.drawImage(c,b.x,b.y,b.w,b.h,-cw/2,-ch/2,cw,ch);
+ ocrFlat(o);window.OCRPREP={box:b,angle:a,scale:sc};return await new Promise(res=>o.toBlob(bb=>res(bb||src),"image/png"))}
+
+// Bon-Kürzel in lesbare Namen
+const OCRAB={"VOLLM":"Vollmilch","H-MI":"H-Milch","HALTB":"haltbar","FETTARM":"fettarm","FRISCHM":"Frischmilch","JOGH":"Joghurt","SCHL.SAHNE":"Schlagsahne","SCHLAGS":"Schlagsahne","FR.KAESE":"Frischkäse","KAES":"Käse","GEM.":"gemischt","HAEHN":"Hähnchen","HAEHNCHENBR":"Hähnchenbrust","SCHW.":"Schwein","RINDERHACK":"Rinderhack","TK":"TK","BIO":"Bio","KART.":"Kartoffeln","FESTK.":"festkochend","MEHLIG":"mehlig","TOM.":"Tomaten","PAPR.":"Paprika","ZWIEB.":"Zwiebeln","BROETCH":"Brötchen","WEIZENM":"Weizenmehl","ORANGENS":"Orangensaft","APFELS":"Apfelsaft","MIN.WASSER":"Mineralwasser","MINERALW":"Mineralwasser","SCHOKO":"Schokolade","NATUR":"natur","SCHEIB":"Scheiben","GESCHN":"geschnitten","STK":"Stück"};
+const ocrUml=w=>w.replace(/([^aeiouäöüq])(ae|oe|ue)/gi,(m,a,b)=>a+({ae:"ä",oe:"ö",ue:"ü",AE:"Ä",OE:"Ö",UE:"Ü",Ae:"Ä",Oe:"Ö",Ue:"Ü"}[b]||b)).replace(/^(ae|oe|ue)/i,b=>({ae:"Ä",oe:"Ö",ue:"Ü"}[b.toLowerCase()]));
+function ocrName(n){n=n.replace(/[|_~«»"“”‚‘’`]/g," ").replace(/\b(\d{2,3})6\b/g,(m,a)=>[10,12,15,20,25,30,40,45,50,75,100,125,150,200,250,300,400,450,500,750].includes(+a)?a+"g":m).replace(/\b(\d{2,3})[6G]\b/g,"$1g").replace(/\s+/g," ").trim();
+ const w=n.split(" ").map(t=>{const u=t.toUpperCase();if(OCRAB[u])return OCRAB[u];if(/^\d/.test(t))return t.replace(/G$/,"g").replace(/L$/,"l").replace(/KG$/i,"kg").replace(/ST$/i,"Stk");if(t.length<=2&&!/[a-zäöü]/.test(t))return t;
+  const l=ocrUml(t.toLowerCase());return l});
+ let s=w.join(" ");s=s.charAt(0).toUpperCase()+s.slice(1);return s.slice(0,60)}
+const OCRN=s=>s.toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss");
+// Zeilen auswerten: Preis am Ende (auch mit typischen Lesefehlern), Mengen- und Gewichtszeilen davor oder danach
+function lines2items2(txt){const SK=/summe|gesamt|zwischens|mwst|mehrwertst|\bust\b|netto|brutto|\bbar\b|\bec\b|ec-karte|karte|visa|master|maestro|girocard|kontaktlos|danke|rueckgeld|rückgeld|zahlung|kundenbeleg|\btse\b|datum|uhrzeit|kasse|filiale|\btel\b|www|rabatt|ersparnis|gespart|beleg|steuer|zu zahlen|gegeben|\bgeg\b|punkte|coupon|payback|treuepunkte|\beur\s*$|^\s*eur\b|str\.|strasse|straße|gmbh|\bkg\b.*\bx\b.*\/|^\s*[-=_*]{4,}/i;
+ const PR=/(?:^|\s)(-?)([0-9OoIlSB]{1,3})\s?[.,]\s?([0-9OoIlSB]{2})(?:\s*(?:€|EUR))?\s*(?:[A-Z*]{1,2}|[0-9]|[*])?(?:\s+[|\\ı1l'‚,.;:}\])]){0,2}\s*$/;
+ const fix=s=>s.replace(/[Oo]/g,"0").replace(/[Il]/g,"1").replace(/S/g,"5").replace(/B/g,"8");
+ const QX=/^\s*(\d{1,2})\s*(?:st(?:c?k)?\.?|stück)?\s*[x×*]\s*([0-9OoIlS]{1,3}\s?[.,]\s?[0-9OoIlS]{2})/i,WG=/(\d+[.,]\d{1,3})\s*kg\s*[x×*]\s*([0-9]{1,3}[.,][0-9]{2})/i;
+ const items=[];let pq=0,pu=0;const lines=txt.split("\n").map(l=>l.replace(/\s+/g," ").trim()).filter(Boolean);
+ const cat=n=>{const l=OCRN(n);return NONRX.test(l)||/pfand|tragetasche|spuel|kuechenrolle|taschentu|muellbeutel|waschmittel/.test(l)?-1:FOODRX.test(n.toLowerCase())||FOODRX.test(l)||FOODRX.test(ocrUml(l))?1:0};
+ for(let i=0;i<lines.length;i++){const l=lines[i];if(SK.test(l)){pq=0;continue}
+  const q=l.match(QX);if(q&&l.replace(q[0],"").replace(/[^A-Za-zÄÖÜäöü]/g,"").length<3){const n=+q[1],up=parseFloat(fix(q[2]).replace(",",".").replace(/\s/g,""));
+   // Mengenzeile nach dem Artikel: Stückzahl am vorigen Artikel nachtragen
+   const prev=items[items.length-1];if(prev&&prev.line==i-1&&Math.abs(prev.price-n*up)<.03&&prev.qty==1){prev.qty=n;prev.price=up;pq=0}else{pq=n;pu=up}continue}
+  if(WG.test(l)&&l.replace(WG,"").replace(/[^A-Za-zÄÖÜäöü]/g,"").length<4){pq=0;continue}
+  const m=l.match(PR);if(!m){pq=0;continue}if(m[1]=="-"){pq=0;continue}
+  const pr=parseFloat(fix(m[2])+"."+fix(m[3]));let nm=l.slice(0,m.index).trim();const lq=nm.match(/^\s*(\d{1,2})\s*[x×]\s+/i);let qn=pq&&Math.abs(pr-pq*pu)<.03?pq:1;if(lq){qn=+lq[1];nm=nm.slice(lq[0].length)}pq=0;
+  nm=nm.replace(/\s+\d{1,4}\s*$/,m2=>/\d{4}/.test(m2)?"":m2);
+  if(nm.replace(/[^A-Za-zÄÖÜäöüß]/g,"").length<3||!(pr>0)||pr>300)continue;const c=cat(nm);if(c<0)continue;
+  items.push({name:ocrName(nm),qty:qn,price:+(pr/qn).toFixed(2),ok:c==1,line:i})}
+ // Wiederholte Einzelzeilen desselben Artikels zusammenfassen
+ const out=[];items.forEach(x=>{const o=out.find(y=>y.name==x.name&&Math.abs(y.price-x.price)<.005);if(o)o.qty+=x.qty;else out.push(x)});
+ return{store:"",items:out.map(({line,...x})=>x)}}
+// Einsatz in der App: bessere Vorbereitung, Blockmodus 6, Spaltenmodus 4 als Rückfall
+viaLocal=async function(blob,ctl){await loadScript("https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js");
+ const w=await Tesseract.createWorker("deu",1,{logger:m=>{const e=document.getElementById("rvs");if(e&&m.status)e.textContent=m.status=="recognizing text"?"Text wird erkannt: "+Math.round(m.progress*100)+" %":"Texterkennung wird vorbereitet …"}});
+ ctl.signal.addEventListener("abort",()=>{try{w.terminate()}catch(e){}});
+ try{const src=window.OCRSRC||blob;let img;try{img=await ocrPrep(src)}catch(e){img=await prep(blob)}
+  await w.setParameters({tessedit_pageseg_mode:"6",preserve_interword_spaces:"1"});const r=await w.recognize(img);let res=lines2items2(r.data.text);
+  if(res.items.length<2){await w.setParameters({tessedit_pageseg_mode:"4"});const r2=await w.recognize(img),b=lines2items2(r2.data.text);if(b.items.length>res.items.length)res=b}
+  return res}finally{try{await w.terminate()}catch(e){}}};
+// Für die Texterkennung das Originalfoto verwenden (nicht das verkleinerte für die KI)
+const _ocrO=ocr;ocr=function(inp){window.OCRSRC=inp&&inp.files&&inp.files[0]||null;return _ocrO.apply(this,arguments)};
+// Zeilen aus erkannten Textstücken mit Position zusammensetzen (Android-Texterkennung liefert Namen und Preise oft als getrennte Spalten)
+function ocrRows(ls){ls=(ls||[]).filter(l=>l&&l.t&&l.p&&l.p.length>=8).map(l=>{const p=l.p,cx=(p[0]+p[2]+p[4]+p[6])/4,cy=(p[1]+p[3]+p[5]+p[7])/4,h=Math.hypot(p[6]-p[0],p[7]-p[1])||1,ang=Math.atan2(p[3]-p[1],p[2]-p[0]);return{t:String(l.t).trim(),cx,cy,h,ang,x0:Math.min(p[0],p[6])}}).filter(l=>l.t);
+ if(!ls.length)return"";const med=a=>{const s=[...a].sort((x,y)=>x-y);return s[Math.floor(s.length/2)]},h=med(ls.map(l=>l.h));let a0=med(ls.map(l=>l.ang));
+ const rows=a=>{const s=Math.sin(a),c=Math.cos(a),it=ls.map(l=>({l,y:-l.cx*s+l.cy*c,x:l.cx*c+l.cy*s})).sort((p,q)=>p.y-q.y),out=[];it.forEach(o=>{const r=out[out.length-1];if(r&&Math.abs(o.y-r.y)<h*.5){r.m.push(o);r.y=(r.y*(r.m.length-1)+o.y)/r.m.length}else out.push({y:o.y,m:[o]})});return out};
+ // Ohne Neigungsangabe (alle Kästen waagerecht) den Winkel suchen, bei dem sich die meisten Stücke zu Zeilen fügen
+ if(ls.every(l=>Math.abs(l.ang)<1e-3)){let best=0,bn=1e9;for(let d=-6;d<=6.01;d+=.25){const n=rows(d*Math.PI/180).length;if(n<bn-.5||(n==bn&&Math.abs(d)<Math.abs(best))){bn=n;best=d}}a0=best*Math.PI/180}
+ return rows(a0).map(r=>r.m.sort((p,q)=>p.x-q.x).map(o=>o.l.t).join("   ")).join("\n")}
+// Android: Texterkennung von Google auf dem Gerät (über die Play-Dienste), Tesseract bleibt der Rückfall
+const ocrTS=()=>{try{const C=window.Capacitor;if(!C||!C.isNativePlatform||!C.isNativePlatform())return null;return(C.Plugins&&C.Plugins.Textscan)||(C.registerPlugin?C.registerPlugin("Textscan"):null)}catch(e){return null}};
+const _viaLocal2=viaLocal;viaLocal=async function(blob,ctl){const P=ocrTS();
+ if(P){try{const st=document.getElementById("rvs");if(st)st.innerHTML="<b>Texterkennung auf dem Gerät</b> liest den Bon …";
+  const src=window.OCRSRC||blob,c=await ocrLoad(src,2400),jb=await new Promise(r=>c.toBlob(r,"image/jpeg",.92)),b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(jb)});
+  const r=await P.read({image:b64});if(ctl&&ctl.signal.aborted)throw new Error("abort");const txt=ocrRows(r&&r.lines);window.OCRTXT=txt;const res=lines2items2(txt);if(res.items.length){window.OCRENG="device";return res}}catch(e){(window.OCRERR=window.OCRERR||[]).push("device: "+(e&&(e.code||e.message)))}}
+ return _viaLocal2(blob,ctl)};
+// Hinweis im Prüfdialog passend zur Erkennung
+const _rvDrawO=rvDraw;rvDraw=function(){const r=_rvDrawO.apply(this,arguments);try{if(RV.eng=="device"){const k=Q("#rv .ocrk");if(k)k.textContent="Mit der Texterkennung deines Geräts gelesen. Bitte Namen und Preise kurz prüfen."}}catch(e){}return r};
+
+// ===== Darkmode direkt auf der Startseite =====
+const thIsDark=()=>{let t=S.cfg.theme||"light";if(t=="system")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";return t=="dark"};
+function thToggle(){setTheme(thIsDark()?"light":"dark");toast(thIsDark()?"Dunkles Design an":"Helles Design an")}
+function thBtn(){if(tab!="home")return;const g=Q("#m .vh .grp")||Q("#m .grp");if(!g||g.querySelector(".thb"))return;const d=thIsDark();
+ const b=document.createElement("button");b.className="iconb thb";b.setAttribute("aria-label",d?"Helles Design":"Dunkles Design");b.setAttribute("aria-pressed",String(d));b.onclick=thToggle;b.innerHTML=ic(d?"sun":"moon",18);
+ const h=[...g.querySelectorAll(".iconb")].find(x=>/Hilfe/.test(x.getAttribute("aria-label")||""));g.insertBefore(b,h||g.firstChild)}
+const _drwTh=draw;draw=function(){const r=_drwTh.apply(this,arguments);try{thBtn()}catch(e){console.error(e)}return r};
+
+// ===== Kurze Tour: nur die Kernpunkte, jeder Schritt zeigt auf etwas, das da ist =====
+(function(){const NG=g=>()=>Q(`#n button[data-g="${g}"]`);
+ const st=[
+ {tab:"home",t:"Willkommen bei FreshPlan",x:"FreshPlan zeigt dir, was du zu Hause hast, was bald abläuft und was du daraus kochen kannst. Hier sind die wichtigsten Punkte in einer Minute."},
+ {tab:"home",el:()=>Q("#n"),t:"Drei Bereiche",x:"Unten wechselst du zwischen Vorrat, Heute und Kochen. Tippen oder über den Inhalt wischen."},
+ {tab:"home",el:()=>Q("#m .qa"),t:"Einkauf erfassen",x:"Kassenbon fotografieren oder Barcode scannen. Die Artikel landen mit Haltbarkeit im Vorrat."},
+ {tab:"home",el:()=>Q("#m .hs"),t:"Bald aufbrauchen",x:"Was in den nächsten Tagen abläuft, steht hier ganz oben. So wirfst du weniger weg."},
+ {tab:"inv",el:()=>Q("#m .card.it"),t:"Dein Vorrat",x:"Alles, was du hast, mit Haltbarkeit. Nach rechts wischen heißt verbraucht, nach links einfrieren."},
+ {tab:"rec",rm:"disc",el:()=>Q("#m .card.rc"),t:"Kochen",x:"Rezepte passend zu deinem Vorrat, deiner Ernährung und deinen Allergien. Eingeplante Gerichte kommen in den Wochenplan und auf die Einkaufsliste."},
+ {tab:"home",el:()=>Q("#m .mkb"),t:"Markt",x:"Zu viel gekauft? Über das Kartensymbol verschenkst oder suchst du Lebensmittel in der Nachbarschaft und schreibst direkt in der App."},
+ {tab:"home",el:()=>Q("#m .vh .grp")||Q("#m .grp"),t:"Oben rechts",x:"Mond: dunkles Design. Fragezeichen: diese Erklärung. Person: Profil mit Konto, Haushalt, Allergien und weiteren Einstellungen."},
+ {tab:"home",t:"Fertig!",x:"Mehr musst du nicht wissen. Viel Spaß mit FreshPlan!"}];
+ TOUR.length=0;st.forEach(s=>TOUR.push(s))})();
 
 draw();remind();
 </script></body></html>
