@@ -2097,7 +2097,7 @@ function demoS(){const d=t=>add(today(),t),it=(n,q,e,o)=>{const x=mk(n,q,0,"");x
  list:[{id:"t1",name:"Brot",qty:1,u:"Stk",done:false,who:"m1"},{id:"t2",name:"Bananen",qty:6,u:"Stk",done:false,src:"Standardprodukt"},{id:"t3",name:"Basilikum",qty:1,u:"Stk",done:true}],
  log:[...Array(6)].map((_,i)=>({d:d(-i),t:"eat",n:"Beispiel",k:1500+i*90,p:70,c:170,f:55,r:i%2,sv:i%3?0:1})),
  cfg:{...S.cfg,kcal:S.cfg.kcal||2000,ob:1,tut:1},basics:[{id:"b1",name:"Milch",min:2},{id:"b2",name:"Eier",min:1}],plan:{[today()]:[{r:37,p:2,done:false}],[d(2)]:[{r:21,p:2,done:false}]},myrec:[],
- friends:[{id:"f1",n:"Mia",d:"vegan",lv:3,ln:"Küchenstratege",st:6,pts:210,t:today()}],hh:{id:"demo",name:"WG Beispiel",m:[{id:S.cfg.id,n:S.cfg.name||"Du",c:"#1f9d6b",role:"admin",st:"me"},{id:"m1",n:"Lena",c:"#4f8ff0",role:"member",st:"local"}],sh:{inv:true,list:true,plan:true,basics:true,rec:false}}}}
+ friends:[{id:"f1",n:"Mia",d:"vegan",lv:3,ln:"Küchenstratege",st:6,pts:210,t:today()}],hh:{id:"demo",name:"WG Beispiel",m:[{id:S.cfg.id,n:S.cfg.name||"Du",c:"#1f9d6b",role:"admin",st:"me"},{id:"m1",n:"Lena (Beispiel)",c:"#4f8ff0",role:"member",st:"acc"}],sh:{inv:true,list:true,plan:true,basics:true,rec:false}}}}
 function tourStart(first){if(TS)return;rvClose();TS={i:0,first:!!first,bk:S,vq:VQ,vl:VL};window.TOURING=true;S=demoS();tab="home";RM="disc";VQ="";VL="all";MSG=null;draw();
  const o=document.createElement("div");o.id="tour";o.innerHTML='<div id="tsp"></div><div class="tbk" id="tb0"></div><div class="tbk" id="tb1"></div><div class="tbk" id="tb2"></div><div class="tbk" id="tb3"></div><div class="tbk" id="tbh"></div><div id="ttip"></div>';document.body.appendChild(o);
  document.getElementById("m").scrollTop=0;addEventListener("resize",tourPos);setTimeout(()=>tourGo(0),250)}
@@ -2745,7 +2745,7 @@ async function pushOnce(){const m0=syMeta(),v0=m0.v||0,d=syData(),id=SBS.user.id
  if(!row){const r=await sbReq("/rest/v1/user_state?on_conflict=user_id",{method:"POST",prefer:"resolution=merge-duplicates,return=representation",body:{user_id:id,data:d}});row=Array.isArray(r)?r[0]:r}
  const m=syMeta();sySet({...m,at:row&&row.updated_at,pv:v0,ok:Date.now()});syBaseSet(d);SYERR="";syUi();profPush().catch(()=>{});return"ok"}
 // Holt den Server-Stand und führt ihn mit lokalen Änderungen zusammen. Gibt zurück, ob danach gespeichert werden muss.
-async function pullMerge(first){const r=await sbReq("/rest/v1/user_state?select=data,updated_at&user_id=eq."+SBS.user.id),row=r&&r[0],m=syMeta(),dirty=(m.v||0)!=(m.pv||0)||first;
+async function pullMerge(first){const S0=S,r=await sbReq("/rest/v1/user_state?select=data,updated_at&user_id=eq."+SBS.user.id);if(S!==S0||window.TOURING)return false;const row=r&&r[0],m=syMeta(),dirty=(m.v||0)!=(m.pv||0)||first;
  if(!row)return true;
  if(m.at&&Date.parse(row.updated_at)<=Date.parse(m.at))return(m.v||0)!=(m.pv||0);
  const loc=syData(),hasLoc=loc.inv.length||loc.list.length||loc.log.length||(loc.myrec||[]).length;let d=row.data;
@@ -2766,21 +2766,25 @@ const hhKinds=()=>["inv","list","plan","basics"].filter(k=>S.hh&&S.hh.sh&&S.hh.s
 const hhB=()=>{try{return JSON.parse(localStorage.getItem("fphhb:"+(S.hh&&S.hh.id))||"{}")}catch(e){return{}}},hhBSet=b=>{try{localStorage.setItem("fphhb:"+S.hh.id,JSON.stringify(b))}catch(e){}};
 let HHB=null,HHOK=0,HHERR="";
 async function hhSync(){if(!cloudCur()||!S.hh||!S.hh.cloud||window.TOURING||(typeof TS!="undefined"&&TS))return;if(HHB)return HHB;
+ // Startet währenddessen die Tour (Beispieldaten) oder wird ein anderes Konto geladen, wird abgebrochen und nichts hochgeladen
+ const S0=S,live=()=>S===S0&&!window.TOURING&&!(typeof TS!="undefined"&&TS)&&S.hh&&S.hh.id===H0,H0=S.hh.id;
  HHB=(async()=>{const H=S.hh.id,me=SBS.user.id;
   const [hh,mem,docs]=await Promise.all([sbReq(`/rest/v1/households?select=id,name,code,owner&id=eq.${H}`),sbReq(`/rest/v1/household_members?select=user_id,name,color,role&household_id=eq.${H}&order=joined_at.asc`),sbReq(`/rest/v1/household_docs?select=kind,data,rev&household_id=eq.${H}`)]);
+  if(!live())return;
   if(!hh.length||!mem.some(m=>m.user_id==me)){localStorage.removeItem("fphhb:"+H);S.hh=null;S.list.forEach(x=>delete x.who);save();draw();toast("Du bist nicht mehr im Haushalt.");return}
   const h0=hh[0],B=hhB();let changed=false;
   // Name: Verwaltung darf umbenennen
   if(h0.owner==me&&B.name!==undefined&&S.hh.name!==B.name&&S.hh.name!==h0.name){await sbReq(`/rest/v1/households?id=eq.${H}`,{method:"PATCH",prefer:"return=minimal",body:{name:S.hh.name.slice(0,40)}})}else if(S.hh.name!==h0.name){S.hh.name=h0.name;changed=true}
   B.name=S.hh.name;S.hh.code=h0.code;S.hh.owner=h0.owner;
   // Einstellungen und Personen ohne Konto liegen im Dokument „meta“
-  const loc={sh:S.hh.sh,local:S.hh.m.filter(m=>m.st=="local")},dm=docs.find(d=>d.kind=="meta"),mergedM=dm?m3(B.meta,loc,dm.data):loc;
-  if(!dm||!jeq(mergedM,dm.data))await hhPut(H,"meta",mergedM,dm?dm.rev:0);
+  const loc={sh:S.hh.sh,local:[]},dm=docs.find(d=>d.kind=="meta"),mergedM={...(dm?m3(B.meta,loc,dm.data):loc),local:[]};// Personen ohne Konto gibt es im Online-Haushalt nicht; alte Einträge verschwinden für alle
+  if(!live())return;if(!dm||!jeq(mergedM,dm.data))await hhPut(H,"meta",mergedM,dm?dm.rev:0);if(!live())return;
   if(!jeq(mergedM.sh,S.hh.sh)){S.hh.sh=mergedM.sh;changed=true}B.meta=mergedM;
-  const mem2=[...mem.map((m,i)=>({id:m.user_id,n:m.name||"Mitglied",c:m.color||HCOL[i%HCOL.length],role:m.role,st:m.user_id==me?"me":"acc"})),...(mergedM.local||[])];
+  const mem2=[...mem.map((m,i)=>({id:m.user_id,n:m.name||"Mitglied",c:m.color||HCOL[i%HCOL.length],role:m.role,st:m.user_id==me?"me":"acc"}))];
+
   if(!jeq(mem2,S.hh.m)){S.hh.m=mem2;changed=true}
   for(const k of hhKinds()){const d=docs.find(x=>x.kind==k),L=S[k],R=d?d.data.items:undefined;if(L===undefined&&!d)continue;let M=d?m3(B[k],L,R):L;
-   if(!d||!jeq(M,R)){const res=await hhPut(H,k,M,d?d.rev:0);if(res&&res.ok===false&&res.data){M=m3(B[k],M,res.data.items);await hhPut(H,k,M,res.rev)}}
+   if(!live())return;if(!d||!jeq(M,R)){const res=await hhPut(H,k,M,d?d.rev:0);if(res&&res.ok===false&&res.data){M=m3(B[k],M,res.data.items);await hhPut(H,k,M,res.rev)}}
    if(!jeq(M,L)){S[k]=M;changed=true}B[k]=M}
   hhBSet(B);HHOK=Date.now();HHERR="";
   if(changed){SYNCING=1;try{save()}finally{SYNCING=0}const m=syMeta();m.v=(m.v||0)+1;sySet(m);clearTimeout(SYT);SYT=setTimeout(()=>syPush().catch(()=>{}),2500);
@@ -2793,7 +2797,7 @@ const _hhCreateC=hhCreate;
 hhCreate=async function(){if(!cloudCur())return _hhCreateC();const n=document.getElementById("hn").value.trim();if(!n)return toast("Bitte einen Namen eingeben.");
  try{const h=await sbReq("/rest/v1/rpc/create_household",{method:"POST",body:{p_name:n.slice(0,40),p_member:meName(),p_color:HCOL[0]}});S.hh={id:h.id,name:h.name,code:h.code,owner:h.owner,cloud:1,created:today(),m:[{...meM(),id:SBS.user.id,st:"me",role:"admin"}],sh:{inv:true,list:true,plan:true,basics:true,rec:false}};save();await hhSync().catch(()=>{});hhOpen();toast("Haushalt erstellt")}catch(e){toast(sbMsg(e))}};
 async function hhGoOnline(){if(!cloudCur()||!S.hh||S.hh.cloud)return;const old=S.hh;
- try{const h=await sbReq("/rest/v1/rpc/create_household",{method:"POST",body:{p_name:old.name.slice(0,40),p_member:meName(),p_color:HCOL[0]}});S.hh={id:h.id,name:h.name,code:h.code,owner:h.owner,cloud:1,created:old.created||today(),m:[{...meM(),id:SBS.user.id,st:"me",role:"admin"},...old.m.filter(m=>m.st=="local")],sh:{...old.sh,rec:false}};save();await hhSync().catch(()=>{});hhOpen();toast("Haushalt ist jetzt online")}catch(e){toast(sbMsg(e))}}
+ try{const h=await sbReq("/rest/v1/rpc/create_household",{method:"POST",body:{p_name:old.name.slice(0,40),p_member:meName(),p_color:HCOL[0]}});S.hh={id:h.id,name:h.name,code:h.code,owner:h.owner,cloud:1,created:old.created||today(),m:[{...meM(),id:SBS.user.id,st:"me",role:"admin"}],sh:{...old.sh,rec:false}};save();await hhSync().catch(()=>{});hhOpen();toast("Haushalt ist jetzt online")}catch(e){toast(sbMsg(e))}}
 const _hhJoinC=hhJoin;
 hhJoin=function(){if(!cloudCur())return _hhJoinC();rvEl().innerHTML=`<div class="rv-in"><h1>Haushalt beitreten</h1><label class="mu">Einladungscode</label><input id="hj" autocomplete="off" autocapitalize="characters" placeholder="8 Zeichen" style="font:600 20px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase"><div class="mu" style="font-size:12.5px;margin-top:8px">Den Code bekommst du von einer Person aus dem Haushalt. Dein Vorrat und deine Einkaufsliste werden danach mit dem Haushalt zusammengeführt.</div><div class="row" style="margin-top:16px"><button class="sp" onclick="pfOpen()">Zurück</button><button class="pri sp" onclick="hhJoinOk()">Beitreten</button></div></div>`};
 const _hhJoinOkC=hhJoinOk;
@@ -3312,6 +3316,21 @@ const _pfBodyPu=pfBody;pfBody=function(){const h=_pfBodyPu.apply(this,arguments)
  const i=h.indexOf("ntcard"),j=i<0?-1:h.indexOf("<h2>",i);return j<0?h+c:h.slice(0,j)+c+h.slice(j)};
 // Beim ersten Chat einmal um Erlaubnis für Benachrichtigungen bitten
 const _chOpenPu=chOpen;chOpen=function(){const r=_chOpenPu.apply(this,arguments);try{if(puP()&&S.cfg.chatPush!==false&&!S.cfg.chatPushAsked){S.cfg.chatPushAsked=1;save();puPerm()}}catch(e){}return r};
+
+// ===== Online-Funktionen nur mit Konto: Haushalt, Freunde, Markt (Anzeigen und Nachrichten) =====
+function accNeed(what){const e=rvEl();e.className="";e.innerHTML=`<div class="rv-in rv-c"><div class="mpjic" style="margin:0 auto">${ic("user",28)}</div><h1 style="margin-top:14px">Dafür brauchst du ein Konto</h1><div class="mu" style="margin:6px 0 20px;line-height:1.5">${esc(what)} gehört zu den Online-Funktionen. Damit nur echte, angemeldete Personen mitmachen, brauchst du dafür ein kostenloses Konto.</div><button class="pri" style="width:100%" onclick="rvClose();authOpen('register')">Konto erstellen</button><button style="width:100%;margin-top:8px" onclick="rvClose();authOpen('login')">Anmelden</button><button class="lnk2" style="width:100%;margin-top:6px" onclick="rvClose()">Später</button></div>`}
+const accOn=()=>typeof cloudCur=="function"&&!!cloudCur();
+// Haushalt
+const _hhCardAcc=hhCard;hhCard=function(){if(accOn()||S.hh)return _hhCardAcc.apply(this,arguments);
+ return`<div class="card"><div class="mu" style="margin-bottom:12px">Teile Vorrat, Einkaufsliste und Wochenplan mit Familie oder WG. Alle Mitglieder melden sich mit eigenem Konto an.</div><button class="pri" style="width:100%" onclick="accNeed('Ein Haushalt')">Haushalt erstellen</button><button style="width:100%;margin-top:8px" onclick="accNeed('Einem Haushalt beitreten')">Mit Einladungscode beitreten</button></div>`};
+["hhNew","hhJoin"].forEach(f=>{const o=window[f];window[f]=function(){if(!accOn())return accNeed(f=="hhNew"?"Ein Haushalt":"Einem Haushalt beitreten");return o.apply(this,arguments)}});
+// Im Online-Haushalt keine Personen ohne Konto
+const _hhOpenAcc=hhOpen;hhOpen=function(){const r=_hhOpenAcc.apply(this,arguments);try{if(S.hh&&S.hh.cloud){const b=Q('#rv button[onclick="hhLocal()"]');if(b)b.remove()}}catch(e){}return r};
+const _hhLocAddAcc=hhLocAdd;hhLocAdd=function(){if(S.hh&&S.hh.cloud)return toast("Im Online-Haushalt braucht jede Person ein eigenes Konto.");return _hhLocAddAcc.apply(this,arguments)};
+// Freunde
+const _frOpenAcc=frOpen;frOpen=function(){if(!accOn())return accNeed("Freunde und die Bestenliste");return _frOpenAcc.apply(this,arguments)};
+// Markt: ansehen geht (Beispiele), anbieten und Codes einlesen nur mit Konto
+["mpNew","mpImport","mpFromInv"].forEach(f=>{const o=window[f];if(typeof o!="function")return;window[f]=function(){if(!accOn())return accNeed("Im Markt anbieten oder suchen");return o.apply(this,arguments)}});
 
 // ===== Rezept per Link übernehmen (Supabase-Funktion „rezept-import“ liest die Rezeptdaten der Seite) =====
 const IMP_FR={"½":.5,"¼":.25,"¾":.75,"⅓":1/3,"⅔":2/3,"⅛":.125};
