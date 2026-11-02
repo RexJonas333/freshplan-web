@@ -1284,6 +1284,46 @@ input.bcchk{border-color:var(--honey);box-shadow:0 0 0 3px var(--honey-50)}
 .updbar{height:6px;margin-top:10px;border-radius:3px;background:var(--track);overflow:hidden}
 .updbar i{display:block;height:100%;width:0;background:var(--brand-500);border-radius:3px;transition:width .2s}
 .updpf .sm{flex:none}
+
+/* ===== Markt: Nachrichten ===== */
+.chbar{width:100%;gap:12px;align-items:center;text-align:left;margin:10px 0 12px;cursor:pointer;border:0}
+.chcount{min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:var(--btn);color:var(--btn-ink);font:600 12px/22px var(--sans);text-align:center;font-variant-numeric:tabular-nums}
+.chcount[hidden]{display:none}
+.chav{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--brand-50);color:var(--brand-700,#0F4A36);font:600 15px/1 var(--sans)}
+.chrow{gap:12px;cursor:pointer;align-items:center}
+.chrow.new .chname,.chrow.new .chline{color:var(--ink);font-weight:600}
+.chname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chline{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:var(--fs-small)}
+.chtm{font-size:12px;flex:none}
+.chdot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--honey)}
+.chhome{gap:12px;align-items:center;cursor:pointer}
+#rv.chv{padding:0;background:var(--paper);-webkit-backdrop-filter:none;backdrop-filter:none;overflow:hidden;display:block}
+#rv.chv>.chw{position:relative;display:flex;flex-direction:column;height:100%;max-width:680px;margin:0 auto;animation:fp-fade var(--t-mid) var(--e-soft) both}
+.chhd{display:flex;align-items:center;gap:10px;padding:calc(var(--safe-area-inset-top,env(safe-area-inset-top,0px)) + 10px) var(--gut) 10px;border-bottom:1px solid var(--line);background:var(--paper)}
+.chhd .iconb{margin:0;flex:none}
+.chhd b{display:block;font-size:16px}
+.chlst{display:block;max-width:100%;padding:0;border:0;background:none;color:var(--ink-3);font-size:var(--fs-small);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;min-height:0}
+.chm{flex:1;overflow:auto;padding:14px var(--gut) 10px;background:var(--paper-2);overscroll-behavior:contain}
+.chsafe{display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:1.45;color:var(--ink-3);background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:0 0 12px}
+.chsafe .ic{flex:none;margin-top:1px}
+.chday{text-align:center;font-size:12px;color:var(--ink-3);margin:14px 0 8px}
+.chb{max-width:80%;margin:4px 0;padding:8px 12px 6px;border-radius:18px;line-height:1.4;word-wrap:break-word;overflow-wrap:anywhere}
+.chb.them{background:var(--paper);border:1px solid var(--line);border-bottom-left-radius:6px;margin-right:auto}
+.chb.me{background:var(--btn);color:var(--btn-ink);border-bottom-right-radius:6px;margin-left:auto}
+.chb.pend{opacity:.7}
+.chb.err{background:var(--paper);color:var(--ink);border:1px solid var(--rd)}
+.chtx{white-space:pre-wrap}
+.chmt{font-size:11px;opacity:.7;text-align:right;margin-top:2px}
+.chmt .lnk{font-size:11px;padding:0;min-height:0;color:inherit;text-decoration:underline}
+.chf{display:flex;gap:8px;align-items:flex-end;padding:10px var(--gut) calc(var(--safe-area-inset-bottom,env(safe-area-inset-bottom,0px)) + 10px);border-top:1px solid var(--line);background:var(--paper)}
+.chf textarea{flex:1;margin:0;resize:none;min-height:44px;max-height:120px;border-radius:22px;padding:11px 16px;line-height:1.35}
+.chsend{flex:none;width:44px;height:44px;padding:0;border-radius:50%;display:grid;place-items:center}
+.chblk{flex:1;text-align:center;padding:8px 0;font-size:var(--fs-small)}
+.chblk .lnk{display:inline;padding:0;min-height:0}
+.chmenu{position:absolute;inset:0;background:var(--scrim);display:flex;align-items:flex-end;z-index:3}
+.chmn{width:100%;background:var(--paper);border-radius:20px 20px 0 0;padding:12px var(--gut) calc(var(--safe-area-inset-bottom,env(safe-area-inset-bottom,0px)) + 14px);display:flex;flex-direction:column;gap:6px;animation:fp-sheet .28s var(--e-out) both}
+.chmn>button{display:flex;gap:10px;align-items:center;justify-content:flex-start;width:100%}
+.chmn textarea{margin-top:8px}
 </style></head><body><svg width="0" height="0" style="position:absolute"><defs>
 <filter id="bl"><feGaussianBlur stdDeviation="1.6"/></filter>
 <radialGradient id="gt" cx=".35" cy=".32" r=".85"><stop offset="0" stop-color="#ff7a63"/><stop offset=".35" stop-color="#e8261f"/><stop offset=".8" stop-color="#b3111b"/><stop offset="1" stop-color="#6e0a14"/></radialGradient>
@@ -2286,21 +2326,20 @@ function mpPick(i){const x=MPSR[i];if(!x)return;const a=x.address||{},isCounty=/
 function mpLeave(){if(!confirm("Region verlassen? Deine eigenen Anzeigen bleiben gespeichert."))return;delete S.mp.reg;MPV=null;save();rvClose();draw()}
 function mpFind(id){return mpAll().find(x=>x.id==id)}
 function mpOpen(id){const x=mpFind(id),r=mpS().reg;if(!x)return;const km=r?mpKm(r.lat,r.lng,x.lat,x.lng):0,ph=String(x.c||"").replace(/[^\d+]/g,"");
- const wa=ph?`https://wa.me/${ph.replace(/^\+/,"").replace(/^0/,"49")}?text=${encodeURIComponent("Hallo "+(x.by||"")+", ich habe deine FreshPlan-Anzeige gesehen: „"+x.n+"“. ")}`:"";
- rvEl().innerHTML=`<div class="rv-in"><div class="row" style="margin-bottom:12px"><span class="mptype ${x.k}${x.f?" f":""}">${ic(mpIcon(x),15)} ${x.k=="o"?(x.f?"Zu verschenken":"Angebot"):"Gesuch"}</span><span class="sp"></span><button class="iconb" style="margin:0" onclick="rvClose()" aria-label="Schließen">${ic("x",18)}</button></div>
+  rvEl().innerHTML=`<div class="rv-in"><div class="row" style="margin-bottom:12px"><span class="mptype ${x.k}${x.f?" f":""}">${ic(mpIcon(x),15)} ${x.k=="o"?(x.f?"Zu verschenken":"Angebot"):"Gesuch"}</span><span class="sp"></span><button class="iconb" style="margin:0" onclick="rvClose()" aria-label="Schließen">${ic("x",18)}</button></div>
  <h1 style="margin:0 0 4px">${esc(x.n)}</h1><div class="mpbig">${esc(mpPrice(x))}</div>
  ${x.demo?'<div class="mpnote" style="margin-top:12px">'+ic("info",15)+'<div class="sp">Das ist eine <b>Beispielanzeige</b>, damit du siehst, wie der Markt funktioniert.</div></div>':""}
  <div class="card" style="margin-top:12px">${x.q?`<div class="row li"><span class="sp mu">Menge</span><b>${esc(x.q)}</b></div>`:""}${x.k=="r"&&x.d?`<div class="row li"><span class="sp mu">Gebraucht am</span><b>${mpDay(x.d)}</b></div>`:""}<div class="row li"><span class="sp mu">Ort</span><b>${esc(x.pl||"")} ${x.mine?"":"· "+mpKmT(km)}</b></div><div class="row li"><span class="sp mu">Von</span><b>${esc(x.by||"Unbekannt")}</b></div><div class="row li"><span class="sp mu">Eingestellt</span><b>${mpAgo(x.t)}</b></div>${x.e?`<div class="row li"><span class="sp mu">Läuft bis</span><b>${fd(x.e)}</b></div>`:""}</div>
  ${x.note?`<div class="card" style="line-height:1.5">${esc(x.note)}</div>`:""}
- <div class="mu" style="font-size:12px;margin:2px 2px 14px">${ic("pin",12)} Der Ort auf der Karte ist ungefähr. Den genauen Abholort sprecht ihr direkt ab.</div>
+ <div class="mu" style="font-size:12px;margin:2px 2px 14px">${ic("pin",12)} Der Ort auf der Karte ist ungefähr. Den genauen Abholort sprecht ihr im Chat ab.</div>
  ${x.mine?`<button class="pri" style="width:100%" onclick="mpShare('${x.id}')">${ic("share",18)} In WhatsApp-Gruppe teilen</button>
   <div class="row" style="margin-top:8px"><button class="sp" onclick="mpSt('${x.id}','${x.st=="res"?"open":"res"}')">${x.st=="res"?"Wieder freigeben":"Reserviert"}</button><button class="sp" onclick="mpSt('${x.id}','done')">${ic("check",16)} ${x.k=="o"?"Abgegeben":"Erledigt"}</button></div>
   <div class="row" style="margin-top:8px"><button class="sp" onclick="mpNew('${x.k}',null,'${x.id}')">Bearbeiten</button><button class="sp" style="color:var(--rd)" onclick="mpDel('${x.id}')">Löschen</button></div>`
  :x.demo?`<button style="width:100%" disabled>Kontakt bei Beispielanzeigen nicht möglich</button>`
- :`${wa?`<a class="btn pri" href="${wa}" target="_blank" rel="noopener">${ic("chat",18)} Per WhatsApp schreiben</a><a class="btn" href="tel:${esc(ph)}">${ic("phone",18)} Anrufen</a>`:`<button class="pri" style="width:100%" onclick="mpReply('${x.id}')">${ic("chat",18)} ${x.k=="o"?"Interesse melden":"Ich kann helfen"}</button>`}
+ :`<button class="pri mpchat" style="width:100%" onclick="chStart('${x.id}')">${ic("chat",18)} ${x.k=="o"?"Nachricht schreiben":"Ich kann helfen"}</button>
   ${x.k=="o"?`<button style="width:100%;margin-top:8px" onclick="mpToList('${x.id}')">${ic("list",16)} Als Erinnerung auf die Einkaufsliste</button>`:""}<button class="lnk2" style="width:100%;margin-top:6px" onclick="mpHide('${x.id}')">Anzeige ausblenden</button>`}</div>`}
 const mpCode=x=>enc({t:"mp",v:1,a:[{id:x.id,k:x.k,n:x.n,q:x.q,p:x.p,f:x.f?1:0,note:x.note,lat:x.lat,lng:x.lng,pl:x.pl,by:x.by,c:x.c,t:x.t,e:x.e,d:x.d}]});
-function mpTxt(x){return`FreshPlan-Markt · ${x.k=="o"?(x.f?"Zu verschenken":"Biete"):"Suche"}: ${x.n}${x.q?" ("+x.q+")":""}${x.k=="o"&&!x.f?" · "+mpEur(x.p||0):""}${x.k=="r"&&x.p?" · bis "+mpEur(x.p):""}\n${x.k=="r"&&x.d?"Gebraucht am: "+mpDay(x.d)+"\n":""}Ort: ${x.pl||""} (ungefähr)\n${x.note?x.note+"\n":""}${x.c?"Kontakt: "+x.c+"\n":""}Läuft bis: ${fd(x.e)}\n\nIn FreshPlan unter Markt → Anzeige-Code einfügen öffnen:\nFreshPlan-Anzeige: ${mpCode(x)}`}
+function mpTxt(x){return`FreshPlan-Markt · ${x.k=="o"?(x.f?"Zu verschenken":"Biete"):"Suche"}: ${x.n}${x.q?" ("+x.q+")":""}${x.k=="o"&&!x.f?" · "+mpEur(x.p||0):""}${x.k=="r"&&x.p?" · bis "+mpEur(x.p):""}\n${x.k=="r"&&x.d?"Gebraucht am: "+mpDay(x.d)+"\n":""}Ort: ${x.pl||""} (ungefähr)\n${x.note?x.note+"\n":""}Läuft bis: ${fd(x.e)}\n\nIn FreshPlan unter Markt → Anzeige-Code einfügen öffnen:\nFreshPlan-Anzeige: ${mpCode(x)}`}
 function mpShare(id){const x=mpS().my.find(y=>y.id==id);if(x)shareText("FreshPlan-Markt",mpTxt(x))}
 function mpReply(id){const x=mpFind(id);if(!x)return;shareText("Antwort auf FreshPlan-Anzeige",`Hallo ${x.by||""}, ich habe deine FreshPlan-Anzeige gesehen: „${x.n}“. ${x.k=="o"?"Ist das noch zu haben?":"Ich kann dir damit aushelfen."}`)}
 function mpToList(id){const x=mpFind(id);if(!x)return;S.list.push({id:uid(),name:x.n.slice(0,40),qty:1,u:"Stk",done:false,src:"Markt: "+(x.by||"Nachbar")});save();rvClose();toast("Auf der Einkaufsliste")}
@@ -2320,7 +2359,7 @@ function mpNew(k,pre,edit){const m=mpS();if(!m.reg){mpRegion();return toast("Wä
  <label class="mu">Hinweis (optional)</label><textarea id="mpnote" maxlength="240" style="min-height:70px" placeholder="z. B. Abholung ab 17 Uhr">${esc(v.note||"")}</textarea>
  <label class="mu">Abholort</label><div class="card mploc" style="margin:0"><div class="row"><div class="sp"><b id="mplt">${MPD.lat!=null?"Ungefährer Standort gesetzt":"Mitte deiner Region"}</b><div class="mu" style="font-size:12px">Nachbarn sehen nur die ungefähre Lage, auf rund 300 m gerundet.</div></div><button class="sm" onclick="mpUseLoc()">${ic("locate",16)} Standort</button></div><input id="mppl" maxlength="40" style="margin-top:8px" placeholder="Ortsteil oder Straße (optional), z. B. Ortsmitte" value="${esc(v.pl&&v.pl!=m.reg.name?v.pl:"")}"></div>
  <div class="grid2" style="margin:0"><div><label class="mu">Dein Name</label><input id="mpby" maxlength="24" value="${esc(v.by||S.cfg.name||"")}"></div><div><label class="mu">Läuft</label><select id="mpe">${[[1,"1 Tag"],[3,"3 Tage"],[7,"1 Woche"],[14,"2 Wochen"]].map(o=>`<option value="${o[0]}" ${(x?7:k=="r"?3:7)==o[0]?"selected":""}>${o[1]}</option>`).join("")}</select></div></div>
- <label class="mu">Telefon für WhatsApp (optional)</label><input id="mpc" type="tel" maxlength="24" placeholder="z. B. 0170 1234567" value="${esc(v.c||"")}"><div class="mu" style="font-size:12px;margin-top:4px">Steht nur in den Anzeigen, die du selbst teilst.</div>
+ <div class="mu" style="font-size:12px;margin-top:10px">Interessenten schreiben dir direkt in FreshPlan. Deine Telefonnummer bleibt privat.</div>
  <div class="row" style="margin-top:16px"><button class="sp" onclick="rvClose()">Abbrechen</button><button class="pri sp" onclick="mpSave()">${x?"Speichern":"Veröffentlichen"}</button></div></div>`;
  const pp=document.getElementById("mpp");if(pp&&v.f)pp.disabled=true}
 function mpK(k){MPD.k=k;document.querySelectorAll("#mpk button").forEach((b,i)=>b.classList.toggle("on",(i==0)==(k=="o")));document.getElementById("mpo").hidden=k!="o";document.getElementById("mpr").hidden=k!="r"}
@@ -2330,7 +2369,7 @@ function mpSave(){const m=mpS(),g=id=>document.getElementById(id),n=g("mpn").val
  const k=MPD.k,f=k=="o"&&g("mpf").checked,p=k=="o"?(f?0:mpNum(g("mpp").value)):mpNum(g("mpmax").value);if(k=="o"&&!f&&!(p>0))return toast("Bitte einen Preis eingeben oder „Verschenken“ wählen.");
  let lat=MPD.lat,lng=MPD.lng;if(lat==null){const o=m.reg;lat=o.lat;lng=o.lng}const fz=mpFuzz(lat,lng),pl=g("mppl").value.trim();
  const old=MPD.edit?m.my.find(y=>y.id==MPD.edit):null,days=+g("mpe").value||7;
- const x={id:old?old.id:"mp"+uid()+uid(),k,n:n.slice(0,60),q:g("mpqq").value.trim().slice(0,30),p:p||0,f:!!f,note:g("mpnote").value.trim().slice(0,240),lat:fz[0],lng:fz[1],pl:(pl||m.reg.name).slice(0,60),by:(g("mpby").value.trim()||"Nachbar").slice(0,24),c:g("mpc").value.trim().slice(0,24),t:old?old.t:new Date().toISOString(),e:add(today(),days),d:k=="r"?g("mpd").value:"",st:old?old.st:"open"};
+ const x={id:old?old.id:"mp"+uid()+uid(),k,n:n.slice(0,60),q:g("mpqq").value.trim().slice(0,30),p:p||0,f:!!f,note:g("mpnote").value.trim().slice(0,240),lat:fz[0],lng:fz[1],pl:(pl||m.reg.name).slice(0,60),by:(g("mpby").value.trim()||"Nachbar").slice(0,24),c:"",t:old?old.t:new Date().toISOString(),e:add(today(),days),d:k=="r"?g("mpd").value:"",st:old?old.st:"open"};
  if(old)Object.assign(old,x);else m.my.unshift(x);if(x.by&&!S.cfg.name)S.cfg.name=x.by;save();MPF="all";tab="mp";
  rvEl().innerHTML=`<div class="rv-in rv-c"><div class="mpjic" style="margin:0 auto">${ic("check",30)}</div><h1 style="margin-top:14px">${old?"Gespeichert":"Anzeige ist online auf deiner Karte"}</h1><div class="mu" style="margin:-6px 0 18px;line-height:1.5">Teile sie jetzt in der WhatsApp-Gruppe deines Orts, damit deine Nachbarn sie sehen. Wer FreshPlan nutzt, kann den Code direkt in seine Karte holen.</div><button class="pri" style="width:100%" onclick="mpShare('${x.id}')">${ic("share",18)} Jetzt teilen</button><button style="width:100%;margin-top:10px" onclick="rvClose();draw()">Später</button></div>`;draw()}
 function mpImport(){rvEl().innerHTML=`<div class="rv-in"><div class="row" style="margin-bottom:12px"><h1 class="sp" style="margin:0">Anzeige-Code einfügen</h1><button class="iconb" style="margin:0" onclick="rvClose()" aria-label="Schließen">${ic("x",18)}</button></div><div class="mu" style="margin:-4px 0 10px;line-height:1.5">Kopiere die ganze WhatsApp-Nachricht mit der FreshPlan-Anzeige und füge sie hier ein. Die Anzeige erscheint dann auf deiner Karte.</div><textarea id="mpic" placeholder="Nachricht oder Code einfügen"></textarea><button class="pri" style="width:100%;margin-top:12px" onclick="mpImpOk()">Auf die Karte holen</button></div>`}
@@ -2809,12 +2848,12 @@ let MPC=[],MPT=0,MPR="",MPB=null;
 const mpBox=r=>{const d=(r.r||15)+1,dl=d/111,dg=d/(111*Math.max(.2,Math.cos(r.lat*Math.PI/180)));return[r.lat-dl,r.lat+dl,r.lng-dg,r.lng+dg]};
 async function mpFetch(force){if(!cloudCur())return;const m=mpS(),r=m.reg;if(!r)return;const key=[r.lat.toFixed(3),r.lng.toFixed(3),r.r].join();if(!force&&key==MPR&&Date.now()-MPT<60000)return;if(MPB)return MPB;
  MPB=(async()=>{const b=mpBox(r),now=new Date().toISOString();const rows=await sbReq(`/rest/v1/listings?select=id,user_id,kind,lat,lng,status,data,expires_at&lat=gte.${b[0]}&lat=lte.${b[1]}&lng=gte.${b[2]}&lng=lte.${b[3]}&expires_at=gt.${now}&status=neq.done&order=created_at.desc&limit=200`);
-  const me=SBS.user.id;MPC=rows.filter(x=>x.user_id!=me).map(x=>{const d=x.data||{};return{...d,id:x.id,u:x.user_id,k:x.kind=="r"?"r":"o",lat:x.lat,lng:x.lng,st:x.status,e:String(x.expires_at).slice(0,10),cl:1,n:String(d.n||"").slice(0,60),by:String(d.by||"Nachbar").slice(0,24),c:String(d.c||"").slice(0,24),note:String(d.note||"").slice(0,240),q:String(d.q||"").slice(0,30),p:Math.max(0,Math.min(9999,+d.p||0)),pl:String(d.pl||"").slice(0,60)}});
+  const me=SBS.user.id;MPC=rows.filter(x=>x.user_id!=me).map(x=>{const d=x.data||{};return{...d,id:x.id,u:x.user_id,k:x.kind=="r"?"r":"o",lat:x.lat,lng:x.lng,st:x.status,e:String(x.expires_at).slice(0,10),cl:1,n:String(d.n||"").slice(0,60),by:String(d.by||"Nachbar").slice(0,24),c:"",note:String(d.note||"").slice(0,240),q:String(d.q||"").slice(0,30),p:Math.max(0,Math.min(9999,+d.p||0)),pl:String(d.pl||"").slice(0,60)}});
   MPT=Date.now();MPR=key;if(tab=="mp"&&!document.getElementById("rv"))draw()})().catch(e=>{MPT=Date.now();MPR=key;toast(sbMsg(e))}).finally(()=>{MPB=null});return MPB}
 const _mpAllC=mpAll;
 mpAll=function(){if(!cloudCur())return _mpAllC();const m=mpS(),d=m.demo;m.demo=false;const a=_mpAllC();m.demo=d;const ids=new Set(a.map(x=>x.id)),now=today();return[...a,...MPC.filter(x=>!ids.has(x.id)&&x.st!="done"&&(!x.e||x.e>=now))]};
 async function mpPushMine(){if(!cloudCur())return;const m=mpS(),me=SBS.user.id,pushed=new Set(m.pushed||[]),cur=m.my.map(x=>x.id);
- const rows=m.my.map(x=>({id:x.id,user_id:me,kind:x.k=="r"?"r":"o",lat:x.lat,lng:x.lng,status:x.st||"open",data:{n:x.n,q:x.q,p:x.p,f:x.f,note:x.note,pl:x.pl,by:x.by,c:x.c,t:x.t,d:x.d||""},expires_at:new Date(Math.min(Date.parse((x.e||today())+"T23:59:59Z"),Date.now()+30*864e5)).toISOString()}));
+ const rows=m.my.map(x=>({id:x.id,user_id:me,kind:x.k=="r"?"r":"o",lat:x.lat,lng:x.lng,status:x.st||"open",data:{n:x.n,q:x.q,p:x.p,f:x.f,note:x.note,pl:x.pl,by:x.by,t:x.t,d:x.d||""},expires_at:new Date(Math.min(Date.parse((x.e||today())+"T23:59:59Z"),Date.now()+30*864e5)).toISOString()}));
  try{if(rows.length)await sbReq("/rest/v1/listings?on_conflict=id",{method:"POST",prefer:"resolution=merge-duplicates,return=minimal",body:rows});
   const gone=[...pushed].filter(id=>!cur.includes(id));if(gone.length)await sbReq(`/rest/v1/listings?id=in.(${gone.map(encodeURIComponent).join(",")})`,{method:"DELETE"});
   m.pushed=cur;SYNCING=1;try{save()}finally{SYNCING=0}}catch(e){toast("Anzeige gespeichert, aber noch nicht online: "+sbMsg(e))}}
@@ -3051,7 +3090,7 @@ const _bcDecoAl=bcDeco;bcDeco=function(p,msg){_bcDecoAl.apply(this,arguments);if
  const card=Q("#rv .bcp");if(!card||(!h.length&&!ht.length))return;card.classList.add(h.length?"albad":"alwarn");
  card.insertAdjacentHTML("afterend",`<div class="algwarn ${h.length?"bad":""}">${ic("alert",16)}<span>${h.length?`<b>Achtung: enthält ${esc(algNames(h))}.</b> `:""}${ht.length?`${h.length?"Außerdem k":"K"}ann Spuren von ${esc(algNames(ht))} enthalten.`:""}</span></div>`)};
 // Tour: nach der Ernährungsform
-(function(){const i=TOUR.findIndex(s=>s.t=="Deine Ernährungsform");const st={tab:"rec",rm:"disc",el:()=>Q("#m .algnote"),t:"Allergien",x:"Hier gibst du an, was du nicht verträgst. Rezepte damit blendet FreshPlan aus, im Rezept steht ein Hinweis, und beim Scannen warnt die App bei Allergenen und auf Wunsch auch bei Spuren. Du findest die Einstellung auch im Profil."};TOUR.splice(i>=0?i+1:TOUR.length,0,st)})();
+(function(){let i=TOUR.findIndex(s=>s.t=="Deine Ernährungsform");if(i<0)i=TOUR.findIndex(s=>s.t=="Filter"&&s.tab=="rec");const st={tab:"rec",rm:"disc",el:()=>Q("#m .algnote"),t:"Allergien",x:"Hier gibst du an, was du nicht verträgst. Rezepte damit blendet FreshPlan aus, im Rezept steht ein Hinweis, und beim Scannen warnt die App bei Allergenen und auf Wunsch auch bei Spuren. Du findest die Einstellung auch im Profil."};TOUR.splice(i>=0?i+1:TOUR.length,0,st)})();
 
 // ===== Erinnerungen: in der Android-App im Voraus geplant, kommen auch bei geschlossener App =====
 const NT_IDS=[7100,7101,7102,7103,7104,7105,7106];
@@ -3139,6 +3178,114 @@ const _pfBodyRep=pfBody;pfBody=function(){const h=_pfBodyRep.apply(this,argument
  return h.includes("<h2>Darstellung</h2>")?h.replace("<h2>Darstellung</h2>",c+"<h2>Darstellung</h2>"):h+c};
 // Tour
 (function(){const s=TOUR.find(t=>t.t=="Anzeigen in der Nähe");if(s&&!/melden/.test(s.x))s.x+=" Passt eine Anzeige nicht, meldest du sie oder blockierst die Person direkt in der Anzeige."})();
+
+// ===== Markt: Nachrichten direkt in FreshPlan (statt Telefon oder WhatsApp) =====
+// Server: Tabellen chats und messages, Funktionen chat_open, chat_send, chat_read, chat_block, chat_hide (siehe supabase/chat.sql)
+Object.assign(SBM,{listing_gone:"Diese Anzeige ist nicht mehr online.",own_listing:"Das ist deine eigene Anzeige.",rate:"Du schreibst gerade sehr schnell. Warte bitte einen Moment.",blocked:"In diesem Chat kann nicht mehr geschrieben werden.",no_chat:"Diesen Chat gibt es nicht mehr.",empty:"Die Nachricht ist leer."});
+IC.send='<path d="M4 12l16-8-6 16-3-7z"/><path d="M11 13l9-9"/>';IC.dots='<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>';
+let CHL=[],CHT=0,CHB=null,CHN=0,CHO=null,CHPT=null;
+const chMe=()=>(typeof cloudCur=="function"&&cloudCur()&&SBS&&SBS.user)?SBS.user.id:null;
+const chSide=c=>c.seller==chMe()?"seller":"buyer";
+const chOther=c=>chSide(c)=="seller"?{id:c.buyer,n:c.buyer_name}:{id:c.seller,n:c.seller_name};
+const chNew=c=>!!c.last_sender&&c.last_sender!=chMe()&&Date.parse(c.last_at)>Date.parse(c[chSide(c)+"_read"])+500;
+const chVis=c=>{const h=c[chSide(c)+"_hide"];return!h||Date.parse(c.last_at)>Date.parse(h)};
+const chBlk=c=>c.seller_block||c.buyer_block;
+const chUnread=()=>CHL.filter(c=>chVis(c)&&chNew(c)&&!(CHO&&CHO.id==c.id)).length;
+const chInit=n=>esc(String(n||"N").trim().charAt(0).toUpperCase()||"N");
+function chTime(t){const d=new Date(t),n=new Date();if(d.toDateString()==n.toDateString())return d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});const y=new Date(n);y.setDate(n.getDate()-1);if(d.toDateString()==y.toDateString())return"Gestern";return d.toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit"})}
+function chDay(t){const d=new Date(t),n=new Date();if(d.toDateString()==n.toDateString())return"Heute";const y=new Date(n);y.setDate(n.getDate()-1);if(d.toDateString()==y.toDateString())return"Gestern";return d.toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"})}
+// Liste der Chats holen; meldet neue Nachrichten, wenn man gerade nicht im Chat ist
+async function chFetch(force){if(!chMe())return;if(CHB)return CHB;if(!force&&Date.now()-CHT<8000)return;
+ CHB=(async()=>{const before=chUnread();CHL=await sbReq("/rest/v1/chats?select=*&order=last_at.desc&limit=100")||[];CHT=Date.now();const n=chUnread();
+  if(n>before&&n>CHN){const c=CHL.find(c=>chVis(c)&&chNew(c)&&!(CHO&&CHO.id==c.id));if(c)toast("Neue Nachricht von "+chOther(c).n)}CHN=n;chUi()})().catch(()=>{}).finally(()=>{CHB=null});return CHB}
+// Hinweise auffrischen, ohne die Seite neu zu zeichnen
+function chUi(){const n=chUnread();document.querySelectorAll(".chcount").forEach(e=>{e.textContent=n;e.hidden=!n});
+ document.querySelectorAll("#m .mkb").forEach(b=>{const d=b.querySelector(".mkdot");if(n&&!d)b.insertAdjacentHTML("beforeend",'<i class="mkdot"></i>')});
+ const sub=Q("#m .chbar .mu");if(sub&&chMe())sub.textContent=chSub();
+ if(tab=="home"&&chMe()){const c=Q("#m .chhome");if(n&&!c)chHome();else if(!n&&c){c.previousElementSibling&&c.previousElementSibling.classList.contains("chh2")&&c.previousElementSibling.remove();c.remove()}}
+ if(document.getElementById("chin"))chInboxDraw();if(document.getElementById("mpch"))chListingDraw()}
+const chSub=()=>{const n=chUnread(),a=CHL.filter(chVis).length;return n?n+(n==1?" ungelesene Nachricht":" ungelesene Nachrichten"):a?a+(a==1?" Gespräch":" Gespräche"):"Hier landen deine Gespräche zu Anzeigen."};
+// Markt: Zugang zu den Nachrichten ganz oben
+function chBar(){if(tab!="mp"||Q("#m .chbar"))return;const a=Q("#m .mkq")||Q("#m .gseg")||Q("#m .vh");if(!a)return;const me=chMe(),n=me?chUnread():0;
+ a.insertAdjacentHTML("afterend",`<button class="card row chbar" onclick="${me?"chInbox()":"chGuest()"}"><span class="lvb">${ic("chat",20)}</span><span class="sp" style="text-align:left"><b>Nachrichten</b><span class="mu" style="display:block">${me?esc(chSub()):"Mit einem Konto schreibst du Anbietern direkt hier."}</span></span><span class="chcount"${n?"":" hidden"}>${n}</span></button>`)}
+function chGuest(){const e=rvEl();e.className="";e.innerHTML=`<div class="rv-in rv-c"><div class="mpjic" style="margin:0 auto">${ic("chat",28)}</div><h1 style="margin-top:14px">Schreiben mit Konto</h1><div class="mu" style="margin:6px 0 20px;line-height:1.5">Im Markt schreibt ihr euch direkt in FreshPlan. Telefonnummern braucht niemand. Dafür brauchst du ein kostenloses Konto.</div><button class="pri" style="width:100%" onclick="rvClose();authOpen('register')">Konto erstellen</button><button style="width:100%;margin-top:8px" onclick="rvClose();authOpen('login')">Anmelden</button><button class="lnk2" style="width:100%;margin-top:6px" onclick="rvClose()">Später</button></div>`}
+// Heute: neue Nachrichten ganz oben
+function chHome(){if(tab!="home"||Q("#m .chhome"))return;const n=chUnread();if(!n)return;const c=CHL.find(c=>chVis(c)&&chNew(c)),q=Q("#m .qa");if(!q||!c)return;
+ q.insertAdjacentHTML("afterend",`<h2 class="chh2">Nachrichten</h2><div class="card row chhome" role="button" tabindex="0" onclick="${n==1?`chOpen('${c.id}')`:"chInbox()"}"><span class="chav">${chInit(chOther(c).n)}</span><div class="sp"><b>${n==1?esc(chOther(c).n):n+" neue Nachrichten"}</b><div class="mu chline">${n==1?esc(c.last_text):"Zu deinen Anzeigen im Markt"}</div></div><span class="chcount">${n}</span></div>`)}
+const _drwCh=draw;draw=function(){const r=_drwCh.apply(this,arguments);try{chBar();if(chMe()){chHome();chUi();if(tab=="mp"||tab=="home")chFetch()}}catch(e){console.error(e)}return r};
+// Übersicht aller Gespräche
+function chInbox(){const e=rvEl();e.className="";e.innerHTML=`<div class="rv-in"><div class="row" style="margin-bottom:6px"><h1 class="sp" style="margin:0">Nachrichten</h1><button class="iconb" style="margin:0" onclick="rvClose();draw()" aria-label="Schließen">${ic("x",18)}</button></div><div class="mu" style="margin-bottom:14px">Gespräche zu Anzeigen im Markt</div><div id="chin"></div></div>`;chInboxDraw();chFetch(true)}
+const chRow=c=>{const o=chOther(c),nw=chNew(c);return`<div class="row li chrow${nw?" new":""}" role="button" tabindex="0" onclick="chOpen('${c.id}')"><span class="chav">${chInit(o.n)}</span><div class="sp" style="min-width:0"><div class="row" style="gap:8px"><b class="sp chname">${esc(o.n)}</b><span class="mu chtm">${chTime(c.last_at)}</span></div><div class="mu chline">${esc(c.title)}${c.last_text?" · "+(c.last_sender==chMe()?"Du: ":"")+esc(c.last_text):""}</div></div>${nw?'<i class="chdot"></i>':""}</div>`};
+function chInboxDraw(){const el=document.getElementById("chin");if(!el)return;const l=CHL.filter(chVis);
+ el.innerHTML=l.length?`<div class="card">${l.map(chRow).join("")}</div>`:(CHT?`<div class="card mu" style="line-height:1.5">Noch keine Gespräche. Tippe in einer Anzeige auf „Nachricht schreiben“. Schreibt dir jemand zu deiner Anzeige, erscheint es hier.</div>`:'<div class="spin"></div>')}
+// Eigene Anzeige: Gespräche dazu
+function chListingDraw(){const el=document.getElementById("mpch");if(!el)return;const l=CHL.filter(c=>c.listing_id==el.dataset.id&&chVis(c));el.innerHTML=l.length?`<h2 style="margin-top:18px">Nachrichten</h2><div class="card">${l.map(chRow).join("")}</div>`:""}
+const _mpOpenCh=mpOpen;mpOpen=function(id){const r=_mpOpenCh.apply(this,arguments);try{const x=mpFind(id),inn=Q("#rv .rv-in");if(!x||!inn)return r;
+ if(x.mine&&chMe()){inn.insertAdjacentHTML("beforeend",`<div id="mpch" data-id="${esc(x.id)}"></div>`);chListingDraw();chFetch(true)}
+ else if(!x.mine&&!x.demo){const b=inn.querySelector(".mpchat"),c=CHL.find(c=>c.listing_id==x.id&&c.buyer==chMe());if(b&&c){b.innerHTML=`${ic("chat",18)} Zum Chat`+(chNew(c)?" · neu":"")}
+  if(b&&!chMe())b.insertAdjacentHTML("afterend",`<div class="mu" style="font-size:12px;margin:6px 2px 0;text-align:center">Zum Schreiben brauchst du ein Konto.</div>`)}}catch(e){console.error(e)}return r};
+// Aus der Anzeige heraus: Chat öffnen oder anlegen
+async function chStart(lid){const x=mpFind(lid);if(!chMe())return chGuest();if(!x)return;
+ const ex=CHL.find(c=>c.listing_id==lid&&c.buyer==chMe());if(ex)return chOpen(ex.id);
+ const b=Q("#rv .mpchat");if(b){b.disabled=true;b.textContent="Chat wird geöffnet …"}
+ try{const id=await sbReq("/rest/v1/rpc/chat_open",{method:"POST",body:{p_listing:String(lid)}});await chFetch(true);
+  chOpen(id,x.k=="o"?`Hallo ${x.by||""}, ist „${x.n}“ noch zu haben?`.replace("Hallo ,","Hallo,"):`Hallo ${x.by||""}, ich kann dir mit „${x.n}“ aushelfen.`.replace("Hallo ,","Hallo,"))}
+ catch(e){toast(e&&e.code=="listing_gone"&&!x.cl?"Diese Anzeige ist nicht im Online-Markt. Schreiben geht nur bei Anzeigen aus dem Markt.":sbMsg(e));if(b){b.disabled=false;b.innerHTML=ic("chat",18)+" Nachricht schreiben"}}}
+// Der Chat selbst
+function chOpen(id,draft){const c=CHL.find(c=>c.id==id);if(!c)return chFetch(true).then(()=>CHL.find(c=>c.id==id)&&chOpen(id,draft));
+ chStop();CHO={id,msgs:[],last:0,pend:[]};const o=chOther(c),x=mpFind(c.listing_id),e=rvEl();e.className="chv";
+ e.innerHTML=`<div class="chw"><div class="chhd"><button class="iconb" onclick="chClose()" aria-label="Zurück">${ic("back",18)}</button><span class="chav">${chInit(o.n)}</span><div class="sp" style="min-width:0"><b class="chname">${esc(o.n)}</b><button class="chlst" onclick="chListing('${esc(c.listing_id)}')">${esc(c.title||"Anzeige")}${x?"":" · nicht mehr online"}</button></div><button class="iconb" onclick="chMenu()" aria-label="Mehr">${ic("dots",18)}</button></div>
+ <div class="chm" id="chm"><div class="chsafe">${ic("info",14)}<span>Sprecht hier Abholort und Zeit ab. Gib keine Bank- oder Kartendaten weiter. Passt etwas nicht, kannst du die Person über die drei Punkte melden oder blockieren.</span></div><div id="chms"><div class="spin"></div></div></div>
+ <div class="chf" id="chf">${chBlk(c)?chBlkNote(c):`<textarea id="cht" rows="1" maxlength="1000" placeholder="Nachricht schreiben" aria-label="Nachricht"></textarea><button class="pri chsend" id="chsend" onclick="chSend()" aria-label="Senden">${ic("send",18)}</button>`}</div></div>`;
+ const t=document.getElementById("cht");if(t){if(draft)t.value=draft;const fit=()=>{t.style.height="auto";t.style.height=Math.min(120,t.scrollHeight)+"px"};t.addEventListener("input",fit);t.addEventListener("keydown",ev=>{if(ev.key=="Enter"&&!ev.shiftKey&&!/Android|iPhone|iPad/.test(navigator.userAgent)){ev.preventDefault();chSend()}});fit()}
+ chPoll(true)}
+const chBlkNote=c=>`<div class="chblk mu">${c[chSide(c)+"_block"]?`Du hast ${esc(chOther(c).n)} blockiert. <button class="lnk" onclick="chBlock(false)">Freigeben</button>`:"In diesem Chat kann nicht mehr geschrieben werden."}</div>`;
+function chListing(lid){const x=mpFind(lid);if(!x)return toast("Diese Anzeige ist nicht mehr online.");chStop();rvEl().className="";mpOpen(lid)}
+function chStop(){if(CHPT){clearTimeout(CHPT);CHPT=null}CHO=null}
+function chClose(){chStop();rvClose();if(tab=="mp"||tab=="home")draw();chUi()}
+async function chPoll(first){if(!CHO)return;if(!document.getElementById("chm")){chStop();return}const id=CHO.id;clearTimeout(CHPT);
+ try{const rows=await sbReq(`/rest/v1/messages?chat_id=eq.${id}&id=gt.${CHO.last}&order=id.asc&limit=300`);if(!CHO||CHO.id!=id)return;
+  if(rows&&rows.length){rows.forEach(m=>{if(!CHO.msgs.some(x=>x.id==m.id))CHO.msgs.push(m)});CHO.last=Math.max(CHO.last,...rows.map(m=>+m.id));chDraw(first);
+   if(rows.some(m=>m.sender!=chMe())||first)sbReq("/rest/v1/rpc/chat_read",{method:"POST",body:{p_chat:id}}).then(()=>{const c=CHL.find(c=>c.id==id);if(c)c[chSide(c)+"_read"]=new Date().toISOString();chUi()}).catch(()=>{})}
+  else if(first)chDraw(true)}catch(e){if(first){const el=document.getElementById("chms");if(el)el.innerHTML=`<div class="mu" style="text-align:center;padding:20px">${esc(sbMsg(e))}</div>`}}
+ if(CHO&&CHO.id==id)CHPT=setTimeout(()=>chPoll(false),document.visibilityState=="hidden"?30000:4000)}
+function chDraw(toEnd){const el=document.getElementById("chms"),box=document.getElementById("chm");if(!el||!CHO)return;const me=chMe(),near=box&&box.scrollHeight-box.scrollTop-box.clientHeight<80;let day="",h="";
+ [...CHO.msgs,...CHO.pend].forEach(m=>{const d=chDay(m.created_at);if(d!=day){day=d;h+=`<div class="chday">${d}</div>`}
+  h+=`<div class="chb ${m.sender==me?"me":"them"}${m.err?" err":""}${m.pending?" pend":""}"><div class="chtx">${esc(m.body)}</div><div class="chmt">${m.err?`Nicht gesendet · <button class="lnk" onclick="chRetry('${m.tid}')">Erneut</button>`:m.pending?"Wird gesendet …":new Date(m.created_at).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}</div></div>`});
+ el.innerHTML=h||`<div class="mu" style="text-align:center;padding:24px 10px">Noch keine Nachrichten. Schreib die erste.</div>`;if(box&&(toEnd||near))box.scrollTop=box.scrollHeight}
+async function chSend(again){if(!CHO)return;const t=document.getElementById("cht"),id=CHO.id;let m=again;
+ if(!m){const b=(t&&t.value||"").trim();if(!b)return;m={tid:"t"+uid(),body:b.slice(0,1000),sender:chMe(),created_at:new Date().toISOString(),pending:1};CHO.pend.push(m);t.value="";t.style.height="auto";t.focus()}
+ m.err=0;m.pending=1;chDraw(true);
+ try{const r=await sbReq("/rest/v1/rpc/chat_send",{method:"POST",body:{p_chat:id,p_body:m.body}});if(!CHO||CHO.id!=id)return;CHO.pend=CHO.pend.filter(x=>x!==m);const row=Array.isArray(r)?r[0]:r;
+  if(row&&!CHO.msgs.some(x=>x.id==row.id)){CHO.msgs.push(row);CHO.last=Math.max(CHO.last,+row.id)}chDraw(true);
+  const c=CHL.find(c=>c.id==id);if(c){c.last_at=row.created_at;c.last_text=m.body.slice(0,120);c.last_sender=chMe()}}
+ catch(e){m.pending=0;m.err=1;chDraw(true);toast(sbMsg(e));if(e&&e.code=="blocked"){await chFetch(true);chOpen(id)}}}
+function chRetry(tid){const m=CHO&&CHO.pend.find(x=>x.tid==tid);if(m)chSend(m)}
+// Menü: Anzeige ansehen, melden, blockieren, ausblenden
+function chMenu(){if(!CHO)return;const c=CHL.find(c=>c.id==CHO.id);if(!c)return;const o=chOther(c),mine=c[chSide(c)+"_block"];const w=document.createElement("div");w.className="chmenu";w.id="chmenu";
+ w.innerHTML=`<div class="chmn">${mpFind(c.listing_id)?`<button onclick="chMenuX();chListing('${esc(c.listing_id)}')">${ic("pin",16)} Anzeige ansehen</button>`:""}<button onclick="chMenuX();chReport()">${ic("flag",16)} ${esc(o.n)} melden</button><button onclick="chMenuX();chBlock(${mine?"false":"true"})">${ic("block",16)} ${mine?"Blockierung aufheben":esc(o.n)+" blockieren"}</button><button onclick="chMenuX();chHide()">${ic("x",16)} Chat ausblenden</button><button class="mu" onclick="chMenuX()">Abbrechen</button></div>`;
+ w.onclick=ev=>{if(ev.target===w)chMenuX()};(document.querySelector("#rv .chw")||document.body).appendChild(w)}
+function chMenuX(){const m=document.getElementById("chmenu");if(m)m.remove()}
+async function chBlock(on){if(!CHO)return;const id=CHO.id,c=CHL.find(c=>c.id==id);if(!c)return;const o=chOther(c);
+ if(on&&!confirm(o.n+" blockieren? Ihr könnt euch dann in diesem Chat nicht mehr schreiben, und du siehst die Anzeigen dieser Person nicht mehr."))return;
+ try{await sbReq("/rest/v1/rpc/chat_block",{method:"POST",body:{p_chat:id,p_on:!!on}});const m=repS();if(on){if(!m.blk.some(b=>b.u==o.id))m.blk.push({u:o.id,by:String(o.n||"Nachbar").slice(0,24)})}else m.blk=m.blk.filter(b=>b.u!=o.id);save();
+  await chFetch(true);chOpen(id);toast(on?o.n+" ist blockiert.":o.n+" ist wieder freigegeben.")}catch(e){toast(sbMsg(e))}}
+async function chHide(){if(!CHO)return;const id=CHO.id;if(!confirm("Chat ausblenden? Schreibt die andere Person wieder, taucht er erneut auf."))return;
+ try{await sbReq("/rest/v1/rpc/chat_hide",{method:"POST",body:{p_chat:id}});const c=CHL.find(c=>c.id==id);if(c)c[chSide(c)+"_hide"]=new Date().toISOString();chStop();chInbox();toast("Chat ausgeblendet")}catch(e){toast(sbMsg(e))}}
+function chReport(){if(!CHO)return;const c=CHL.find(c=>c.id==CHO.id);if(!c)return;const o=chOther(c),w=document.createElement("div");w.className="chmenu";w.id="chmenu";
+ w.innerHTML=`<div class="chmn chrep"><b style="display:block;margin:4px 4px 10px">${esc(o.n)} melden</b>${REP_R.map(([k,l],i)=>`<label class="row repo"><input type="radio" name="chr" value="${k}" ${i==0?"checked":""}><span class="sp">${l}</span></label>`).join("")}<textarea id="chrn" maxlength="300" placeholder="Was ist passiert? (optional)"></textarea><div class="mu" style="font-size:12px;margin:8px 4px">Die Meldung geht an das FreshPlan-Team, zusammen mit den letzten Nachrichten dieser Person. Sie erfährt nicht, wer gemeldet hat.</div><div class="row" style="gap:8px"><button class="sp" onclick="chMenuX()">Abbrechen</button><button class="pri sp" onclick="chReportSend()">Melden</button></div></div>`;
+ w.onclick=ev=>{if(ev.target===w)chMenuX()};(document.querySelector("#rv .chw")||document.body).appendChild(w)}
+async function chReportSend(){if(!CHO)return;const c=CHL.find(c=>c.id==CHO.id);if(!c)return;const o=chOther(c),r=(Q('#chmenu input[name=chr]:checked')||{}).value||"sonstiges",n=((Q("#chrn")||{}).value||"").trim();
+ const theirs=CHO.msgs.filter(m=>m.sender==o.id).slice(-3).map(m=>m.body.replace(/\s+/g," ").slice(0,60)).join(" | ");
+ const note=(n+(theirs?(n?" · ":"")+"Chat: "+theirs:"")).slice(0,300)||null;
+ try{await sbReq("/rest/v1/reports",{method:"POST",prefer:"return=minimal",body:{listing_id:"c:"+c.id,listing_user:o.id,reason:r,note}})}catch(e){if(!(e&&(e.status==409||e.code=="23505")))return toast("Meldung nicht gesendet: "+sbMsg(e))}
+ chMenuX();toast("Danke, die Meldung ist beim FreshPlan-Team.");if(confirm(o.n+" auch blockieren?"))chBlock(true)}
+// Laufender Abgleich: alle 25 Sekunden die Chatliste, sofort beim Zurückkehren in die App
+setInterval(()=>{if(chMe()&&document.visibilityState!="hidden"&&!window.TOURING)chFetch()},25000);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState=="visible"&&chMe()){chFetch(true);if(CHO)chPoll(false)}});
+setTimeout(()=>{if(chMe())chFetch(true)},2000);
+// Tour
+(function(){const i=TOUR.findIndex(s=>s.t=="Anzeigen in der Nähe");const st={tab:"mp",el:()=>Q("#m .chbar"),t:"Nachrichten",x:"Ihr schreibt euch direkt in FreshPlan, ohne Telefonnummer. In einer Anzeige tippst du auf „Nachricht schreiben“, Antworten und Anfragen zu deinen Anzeigen findest du hier. Neue Nachrichten zeigt FreshPlan auch auf der Startseite."};TOUR.splice(i>=0?i+1:TOUR.length,0,st)})();
 
 // ===== Rezept per Link übernehmen (Supabase-Funktion „rezept-import“ liest die Rezeptdaten der Seite) =====
 const IMP_FR={"½":.5,"¼":.25,"¾":.75,"⅓":1/3,"⅔":2/3,"⅛":.125};
