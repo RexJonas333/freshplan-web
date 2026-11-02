@@ -1,11 +1,12 @@
 {
-  "code": 27,
-  "name": "1.27",
+  "code": 28,
+  "name": "1.28",
   "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
   "date": "2026-11-02",
   "notes": [
-    "Markt: Nachrichten direkt in der App, ohne Telefonnummer",
-    "Ungelesene Nachrichten auf Heute und im Markt",
-    "Im Chat melden, blockieren oder ausblenden"
+    "Kassenbon-Erkennung deutlich verbessert",
+    "Darkmode direkt oben auf der Startseite",
+    "Kurze Erklärung mit den wichtigsten Punkten",
+    "Benachrichtigung bei neuen Nachrichten im Markt"
   ]
 }
