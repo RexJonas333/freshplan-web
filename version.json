@@ -1,12 +1,12 @@
 {
-  "code": 28,
-  "name": "1.28",
+  "code": 29,
+  "name": "1.29",
   "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
   "date": "2026-11-02",
   "notes": [
-    "Kassenbon-Erkennung deutlich verbessert",
-    "Darkmode direkt oben auf der Startseite",
-    "Kurze Erklärung mit den wichtigsten Punkten",
-    "Benachrichtigung bei neuen Nachrichten im Markt"
+    "Haushalt, Freunde und Markt nur noch mit Konto",
+    "Keine Personen ohne Konto mehr im Online-Haushalt",
+    "Fehler behoben: Beispieldaten der Erklärung konnten in den Haushalt gelangen",
+    "Bessere Kassenbon-Erkennung, Darkmode oben auf der Startseite"
   ]
 }
