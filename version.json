@@ -1,11 +1,11 @@
 {
-  "code": 26,
-  "name": "1.26",
+  "code": 27,
+  "name": "1.27",
   "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
-  "date": "2026-11-01",
+  "date": "2026-11-02",
   "notes": [
-    "Vorrat öffnet wieder den Vorrat statt den Markt",
-    "62 neue Rezepte mit Fotos, jetzt 107 insgesamt",
-    "Updates direkt in der App installieren"
+    "Markt: Nachrichten direkt in der App, ohne Telefonnummer",
+    "Ungelesene Nachrichten auf Heute und im Markt",
+    "Im Chat melden, blockieren oder ausblenden"
   ]
 }
