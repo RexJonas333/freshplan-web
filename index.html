@@ -1324,6 +1324,101 @@ input.bcchk{border-color:var(--honey);box-shadow:0 0 0 3px var(--honey-50)}
 .chmn{width:100%;background:var(--paper);border-radius:20px 20px 0 0;padding:12px var(--gut) calc(var(--safe-area-inset-bottom,env(safe-area-inset-bottom,0px)) + 14px);display:flex;flex-direction:column;gap:6px;animation:fp-sheet .28s var(--e-out) both}
 .chmn>button{display:flex;gap:10px;align-items:center;justify-content:flex-start;width:100%}
 .chmn textarea{margin-top:8px}
+/* ===== Woche zusammenstellen ===== */
+.wkg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wkt{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:14px 14px 12px;border-radius:var(--r-m);border:1px solid var(--line-2);background:var(--surface);min-height:96px}
+.wkt b{font-size:15px;margin-top:6px}.wkt small{color:var(--ink-3);font-size:12px;line-height:1.35}
+.wkt.on{border-color:var(--brand-500);background:var(--brand-50);box-shadow:inset 0 0 0 1px var(--brand-500)}
+.wki{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:var(--brand-50);color:var(--brand-500);flex:none}
+.wkt.on .wki{background:var(--brand-500);color:#fff}
+.wkc{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--brand-500);color:#fff}
+.wkn{display:flex;gap:6px}.wkn .sm{min-width:38px;padding:7px 10px}.wkn .sm.on,.wkd .sm.on{background:var(--btn);border-color:var(--btn);color:var(--btn-ink)}
+.wkst{display:flex;align-items:center;gap:10px}.wkst .sm{width:36px;padding:7px 0}.wkst b{min-width:16px;text-align:center}
+.wks{background:var(--brand-50)}
+.wksg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.wksg small{display:block;font:500 10.5px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.wksg b{display:block;font:400 21px/1.25 var(--sans);margin-top:4px;color:var(--ink)}.wksg b.ok{color:var(--brand-600)}
+.wksh{margin-top:10px}
+.wkdl{display:block;font:500 10.5px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--brand-600);margin-bottom:2px}
+.wkd .thm{width:58px;height:58px;border-radius:12px;object-fit:cover;flex:none}
+.wkw{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.wkw span{font-size:12px;padding:4px 9px;border-radius:999px;background:var(--paper-2);color:var(--ink-2)}
+.wkw span:first-child:not(:only-child){}
+.wkalt{margin-top:10px;border-top:1px solid var(--line);padding-top:6px}
+.wkalt button{width:100%;border:0;border-radius:10px;justify-content:flex-start;text-align:left;gap:12px;padding:8px 4px}.wkalt button:hover{background:var(--hover)}
+.wkalt .thm{width:42px;height:42px;border-radius:10px;object-fit:cover;flex:none}
+.wkb summary{list-style:none;cursor:pointer}.wkb summary::-webkit-details-marker{display:none}.wkb[open] summary{margin-bottom:8px}
+.wke .wki{width:40px;height:40px}
+/* ===== Level, Blätter, Erfolge ===== */
+:root{--gmsky:#dceefa}:root[data-theme=dark]{--gmsky:#1c3450}
+.gav{--gz:46px;position:relative;display:inline-block;width:var(--gz);height:var(--gz);flex:none;border-radius:50%;padding:calc(var(--gz)*.07);background:var(--brand-400)}
+.gav i{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--gc);color:#fff;font:600 calc(var(--gz)*.34)/1 var(--sans);font-style:normal;letter-spacing:.02em;box-shadow:inset 0 0 0 2px rgba(255,255,255,.18)}
+.gav.fr-f_honig{background:linear-gradient(135deg,#ffd27a,#e59a1d)}
+.gav.fr-f_gold{background:conic-gradient(#f7dc8a,#c08a22,#fff3c4,#b37a14,#f7dc8a);box-shadow:0 0 0 1px rgba(160,110,10,.35)}
+.gav.fr-f_regen{background:conic-gradient(#e5484d,#f5a524,#ffd166,#4f9e4a,#3b82c4,#7c5cc4,#e5484d)}
+.gav.fr-f_nacht{background:linear-gradient(160deg,#16213d,#3b4f8a)}
+.gav.fr-f_blatt{background:#cfe8c2}.gav.fr-f_krone{background:conic-gradient(#f2c94c,#a87b12,#ffe9a8,#a87b12,#f2c94c)}
+.gavd{position:absolute;inset:-10%;width:120%;height:120%;pointer-events:none}.gavk{inset:-38% -10% auto;height:70%}
+.gmc{cursor:pointer}.gmc .gmt,.gmhero .gmt{color:var(--ink-3);font-size:13px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gmbal{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;background:var(--brand-50);color:var(--brand-600);font-size:14px;flex:none}.gmbal b{font-weight:600}
+.gmbal.big{padding:8px 12px;font-size:15px}
+.gmst{display:inline-flex;align-items:center;gap:4px;color:var(--honey)}
+.gmcta{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:14px;font-weight:500;color:var(--brand-600)}
+.gmar{transform:rotate(180deg)}
+.gmdot{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--tomato);color:#fff;font:600 11px/1 var(--sans);margin-right:4px}
+.gmseg{overflow-x:auto;scrollbar-width:none}.gmseg::-webkit-scrollbar{display:none}.gmseg button{position:relative}
+.gmpip{position:absolute;top:8px;right:-9px;width:7px;height:7px;border-radius:50%;background:var(--tomato)}
+.gmhero{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:22px}.gmhn{font-size:19px;margin-top:10px}
+.gmkp{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.gmkp b{display:block;font:400 22px/1.1 var(--sans)}.gmkp small{display:block;font-size:11px;color:var(--ink-3);margin-top:3px;line-height:1.25}
+.gmhow .row{gap:12px}.gmhow .ic{color:var(--brand-500);flex:none}.gmhow .mu{text-align:right;font-size:12.5px}
+.gmsw{display:flex;flex-wrap:wrap;gap:10px}
+.gmo{position:relative;padding:3px;border-radius:50%;border:2px solid transparent;background:none}.gmo.on{border-color:var(--brand-500)}
+.gmcol span:first-child{display:block;width:34px;height:34px;border-radius:50%}
+.gmlk{position:absolute;right:-2px;bottom:-2px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--surface);color:var(--ink-3);box-shadow:var(--sh-1)}
+.gmpath{padding-top:6px;padding-bottom:6px}
+.gml{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);opacity:.5}.gml:last-child{border-bottom:0}
+.gml.on{opacity:1}.gml .ic{color:var(--ink-3)}.gml.on .ic{color:var(--brand-500)}
+.gmln{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:500 14px var(--mono);border:1px solid var(--line-2);flex:none}
+.gml.on .gmln{background:var(--brand-50);border-color:transparent;color:var(--brand-600)}.gml.cur .gmln{background:var(--brand-500);color:#fff}
+.gml.cur b{color:var(--brand-600)}
+.gma{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.gma:last-child{border-bottom:0}
+.gmai{position:relative;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--paper-2);color:var(--ink-3)}
+.gmai.t1,.gmbi.t1{background:#f3e0cf;color:#8a5a2b}.gmai.t2,.gmbi.t2{background:#e4e8ee;color:#56657a}.gmai.t3,.gmbi.t3{background:#fbecc0;color:#946b0c}
+:root[data-theme=dark] .gmai.t1,:root[data-theme=dark] .gmbi.t1{background:#4a3424;color:#e9b98a}:root[data-theme=dark] .gmai.t2,:root[data-theme=dark] .gmbi.t2{background:#39414d;color:#cbd5e1}:root[data-theme=dark] .gmai.t3,:root[data-theme=dark] .gmbi.t3{background:#4d3f12;color:#f4d27a}
+.gmbi{position:relative}.gmbi .gmdot{position:absolute;top:-6px;right:-8px;margin:0}
+.gmtier{display:inline-flex;gap:4px}.gmtier i{width:8px;height:8px;border-radius:50%;background:var(--track)}
+.gmtier i.t1{background:#c98a4b}.gmtier i.t2{background:#9aa6b8}.gmtier i.t3{background:#e2b22d}
+.gmcl{flex:none;gap:4px}
+.gmch.done{box-shadow:inset 0 0 0 1px var(--brand-400),var(--sh-1)}
+.gmbox{border:1px dashed var(--line-2);box-shadow:none;background:transparent}.gmbox.on{border-style:solid;border-color:var(--honey);background:var(--honey-50)}
+.gmshop{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.gmit{display:flex;flex-direction:column;gap:4px;padding:10px 10px 12px;border-radius:var(--r-m);background:var(--surface);box-shadow:var(--sh-1)}
+.gmit b{font-size:14px}.gmit small{color:var(--ink-3);font-size:12px;line-height:1.35;flex:1}
+.gmit .sm{margin-top:6px;gap:4px}.gmit.lock{opacity:.6}
+.gmit.own .sm.on{background:var(--brand-50);border-color:transparent;color:var(--brand-600)}
+.gmpv{height:74px;border-radius:12px;background:var(--paper-2);display:grid;place-items:center;overflow:hidden;margin-bottom:4px}
+.gmpv svg{width:100%;height:100%}.gmsc{width:40px;height:40px;border-radius:50%}
+.gmtt{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--brand-50);color:var(--brand-500)}
+.gmpr{display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-size:12.5px;color:var(--ink-3)}
+.gmgp{margin-bottom:6px}
+.gmfx{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;pointer-events:none}
+.gmfx>div{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 22px;border-radius:18px;background:var(--surface);box-shadow:var(--sh-3);animation:gmpop 1.9s var(--e-out) both;text-align:center;max-width:80vw}
+.gmfx b{font-size:17px;color:var(--brand-600)}.gmfx span{font-size:13px;color:var(--ink-3)}
+.gmfx i,.gmupb i{position:absolute;left:50%;top:50%;color:var(--brand-400);animation:gmleaf 1.2s var(--e-out) var(--d) both}
+@keyframes gmpop{0%{opacity:0;transform:scale(.85)}12%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
+@keyframes gmleaf{0%{opacity:0;transform:translate(-50%,-50%) rotate(var(--a)) translateY(0)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(var(--a)) translateY(-78px) rotate(90deg)}}
+.gmup{text-align:center;padding-top:30px}.gmup h1{margin:4px 0 18px}.gmup .card{text-align:left}
+.gmupk{font:500 11px/1.3 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.gmupb{position:relative;width:116px;height:116px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:var(--brand-500);color:#fff;box-shadow:0 0 0 10px var(--brand-50);animation:gmpop2 .6s var(--e-out) both}
+.gmupb span{font:300 50px/1 var(--sans)}.gmupb i{animation-iteration-count:2}
+@keyframes gmpop2{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+.gmspin{animation:gmspin 4s linear infinite}@keyframes gmspin{to{transform:rotate(360deg)}}
+.gmbee{animation:gmbee 3.4s ease-in-out infinite}@keyframes gmbee{0%{transform:translate(8px,-16px)}25%{transform:translate(16px,-24px)}50%{transform:translate(4px,-30px)}75%{transform:translate(-10px,-20px)}100%{transform:translate(8px,-16px)}}
+.gmbird{animation:gmbird 5s ease-in-out infinite}@keyframes gmbird{0%,70%,100%{transform:translateY(0)}75%{transform:translateY(-1.5px)}80%{transform:translateY(0)}85%{transform:translateY(-1.5px)}}
+.gmglow{animation:gmglow 2.4s ease-in-out infinite}@keyframes gmglow{50%{opacity:.45}}
+@media (prefers-reduced-motion:reduce){.gmspin,.gmbee,.gmbird,.gmglow,.gmfx>div,.gmfx i,.gmupb,.gmupb i{animation:none!important}}
+.gm .seg+div+h2{margin-top:var(--s2)}
+.gmun .row{gap:12px}.gmun .mu{margin:4px 0 0 30px}
+.wksg b{font-size:19px;white-space:nowrap}
 </style></head><body><svg width="0" height="0" style="position:absolute"><defs>
 <filter id="bl"><feGaussianBlur stdDeviation="1.6"/></filter>
 <radialGradient id="gt" cx=".35" cy=".32" r=".85"><stop offset="0" stop-color="#ff7a63"/><stop offset=".35" stop-color="#e8261f"/><stop offset=".8" stop-color="#b3111b"/><stop offset="1" stop-color="#6e0a14"/></radialGradient>
@@ -1745,14 +1840,14 @@ V.trk=function(){const dk=S.log.filter(l=>l.d==today()&&l.t=="eat"),k=tot(dk,"k"
  <h2>Darstellung</h2><div class="card set"><select onchange="setTheme(this.value)" aria-label="Darstellung">${[["light","Hell"],["dark","Dunkel"],["system","Automatisch"]].map(o=>`<option value="${o[0]}" ${th==o[0]?"selected":""}>${o[1]}</option>`).join("")}</select></div>
  <h2>Belegerkennung</h2><div class="card set"><label class="mu">Claude-API-Schlüssel (optional)</label><input type="password" autocomplete="off" placeholder="API-Schlüssel einfügen" value="${esc(S.cfg.apiKey||"")}" onchange="S.cfg.apiKey=this.value.trim()||null;save()"><label class="mu">Modell (Standard: claude-sonnet-5-5)</label><input value="${esc(S.cfg.model||"")}" onchange="S.cfg.model=this.value.trim()||null;save()"><div class="mu" style="margin-top:8px">Ohne Schlüssel liest FreshPlan den Bon auf deinem Gerät, das Foto verlässt das Handy nicht. Mit Schlüssel wird das Foto zur Auswertung an Anthropic (Claude, USA) gesendet. Der Schlüssel bleibt nur auf diesem Gerät.</div></div>
  <h2>Daten</h2><div class="card"><button style="width:100%" onclick="bkOpen()">Sichern oder wiederherstellen</button><button style="width:100%;margin-top:8px" onclick="obOpen(0)">Einrichtung wiederholen</button><button style="width:100%;margin-top:8px" onclick="if(confirm('Alle Daten löschen?')){S.inv=[];S.log=[];S.list=[];S.plan={};S.basics=[];save();draw()}">Alle Daten löschen</button></div>`};
-function bkOpen(){const o={v:1,t:new Date().toISOString(),inv:S.inv,list:S.list,basics:S.basics,plan:S.plan,log:S.log,myrec:S.myrec,friends:S.friends,hh:S.hh||null,mp:S.mp||null,cfg:{...S.cfg,apiKey:undefined}};
+function bkOpen(){const o={v:1,t:new Date().toISOString(),inv:S.inv,list:S.list,basics:S.basics,plan:S.plan,log:S.log,myrec:S.myrec,friends:S.friends,hh:S.hh||null,mp:S.mp||null,gm:S.gm||null,cfg:{...S.cfg,apiKey:undefined}};
  rvEl().innerHTML=`<div class="rv-in"><h1>Daten sichern</h1><div class="mu" style="margin:-8px 0 12px">Deine Daten liegen nur auf diesem Gerät. Speichere eine Sicherung oder spiele sie wieder ein.</div><textarea id="bk" readonly style="min-height:110px">${esc(JSON.stringify(o))}</textarea><div class="row" style="margin-top:10px"><button class="sp" onclick="bkCopy()">Kopieren</button><button class="sp" onclick="bkSave()">Als Datei</button></div>
  <h2>Wiederherstellen</h2><label class="qb" style="flex-direction:row;justify-content:center;padding:14px">${ic("package",20)}<span>Sicherungsdatei wählen</span><input type="file" accept=".json,application/json" class="fin" onchange="bkFile(this)" aria-label="Sicherungsdatei wählen"></label><textarea id="br" placeholder="Oder Sicherung hier einfügen" style="margin-top:10px"></textarea><button class="pri" style="width:100%;margin-top:10px" onclick="bkRestore()">Wiederherstellen</button><button style="width:100%;margin-top:10px" onclick="rvClose()">Schließen</button></div>`}
 function bkCopy(){const t=document.getElementById("bk");t.select();try{navigator.clipboard.writeText(t.value).then(()=>toast("Kopiert"),()=>{document.execCommand("copy");toast("Kopiert")})}catch(e){document.execCommand("copy");toast("Kopiert")}}
 function bkSave(){try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([document.getElementById("bk").value],{type:"application/json"}));a.download="freshplan-sicherung-"+today()+".json";document.body.appendChild(a);a.click();a.remove();toast("Sicherung wird gespeichert")}catch(e){toast("Speichern nicht möglich. Bitte kopieren.")}}
 function bkFile(i){const f=i.files&&i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{document.getElementById("br").value=String(r.result)};r.readAsText(f)}
 function bkRestore(){let o;try{o=JSON.parse(document.getElementById("br").value)}catch(e){return toast("Das ist keine gültige Sicherung.")}if(!o||!Array.isArray(o.inv))return toast("Das ist keine gültige Sicherung.");if(!confirm("Aktuelle Daten durch die Sicherung ersetzen?"))return;
- S.inv=o.inv;S.list=Array.isArray(o.list)?o.list:[];S.basics=Array.isArray(o.basics)?o.basics:[];S.plan=o.plan&&typeof o.plan=="object"?o.plan:{};S.log=Array.isArray(o.log)?o.log:[];S.cfg={...S.cfg,...(o.cfg||{}),apiKey:S.cfg.apiKey};S.myrec=Array.isArray(o.myrec)?o.myrec:[];S.friends=Array.isArray(o.friends)?o.friends:[];S.hh=o.hh||null;if(o.mp)S.mp=o.mp;syncMy();save();rvClose();applyTheme();draw();toast("Daten wiederhergestellt")}
+ S.inv=o.inv;S.list=Array.isArray(o.list)?o.list:[];S.basics=Array.isArray(o.basics)?o.basics:[];S.plan=o.plan&&typeof o.plan=="object"?o.plan:{};S.log=Array.isArray(o.log)?o.log:[];S.cfg={...S.cfg,...(o.cfg||{}),apiKey:S.cfg.apiKey};S.myrec=Array.isArray(o.myrec)?o.myrec:[];S.friends=Array.isArray(o.friends)?o.friends:[];S.hh=o.hh||null;if(o.mp)S.mp=o.mp;if(o.gm)S.gm=o.gm;syncMy();save();rvClose();applyTheme();draw();toast("Daten wiederhergestellt")}
 let OB={diet:"alle",kcal:"",budget:"",tone:"motiv"};
 function obOpen(p){const e=rvEl();if(p==0)e.innerHTML=`<div class="rv-in rv-c" style="margin-top:14vh"><div class="logo" style="margin:0 auto 16px;width:76px;height:76px;border-radius:24px"><i class="lm" style="width:52px;height:52px"></i></div><h1 style="margin-bottom:8px">Willkommen bei FreshPlan</h1><div class="mu" style="margin-bottom:22px;line-height:1.5">Behalte Vorrat, Einkauf und Ernährung im Blick. Zwei Angaben machen die App persönlich, beide kannst du jederzeit ändern.</div><button class="pri" style="width:100%" onclick="obOpen(1)">Los geht's</button><button style="width:100%;margin-top:10px" onclick="obDone(true)">Überspringen</button></div>`;
  else e.innerHTML=`<div class="rv-in"><h1>Dein Ziel</h1><div class="mu" style="margin:-8px 0 8px">Alles ist optional.</div><label class="mu">Ernährungsform</label><div class="chips">${DIETS.map(d=>`<button class="sm ${OB.diet==d?"on":""}" onclick="OB.diet='${d}';obOpen(1)">${d}</button>`).join("")}</div><label class="mu">Kalorienziel pro Tag</label><input id="ok" type="number" inputmode="numeric" placeholder="Nicht festgelegt" value="${OB.kcal}" oninput="OB.kcal=this.value"><label class="mu">Monatsbudget für Lebensmittel (€)</label><input id="ob" type="number" inputmode="numeric" placeholder="Nicht festgelegt" value="${OB.budget}" oninput="OB.budget=this.value"><label class="mu">Sprüche in der App</label><div class="chips">${[["motiv","Motivierend"],["frech","Frech"],["sach","Sachlich"],["off","Aus"]].map(o=>`<button class="sm ${OB.tone==o[0]?"on":""}" onclick="OB.tone='${o[0]}';obOpen(1)">${o[1]}</button>`).join("")}</div><div class="row" style="margin-top:20px"><button class="sp" onclick="obOpen(0)">Zurück</button><button class="pri sp" onclick="obDone()">Fertig</button></div></div>`}
@@ -1774,12 +1869,12 @@ function pickMsg(){const t=S.cfg.tone||"motiv";if(t=="off")return"";const s=stat
  return m.replace("{x}",so[0]?so[0].name:"").replace("{n}",so.length).replace("{s}",s.st).replace("{r}",pl?REC[pl.r].n:"").replace("{k}",c=="over"?Math.round(k-g):Math.max(0,Math.round(g-k)))}
 function msgCard(){if((S.cfg.tone||"motiv")=="off")return"";if(MSG===null)MSG=pickMsg();const s=stats();return`<div class="msg card" onclick="MSG=pickMsg();draw()" role="button" aria-label="Neuer Spruch"><div class="mt">${esc(MSG)}</div><div class="mm"><span onclick="event.stopPropagation();tab='trk';draw()">${ic("flame",14)} ${s.st} ${s.st==1?"Tag":"Tage"} Serie · Level ${s.lv+1} · ${s.pts} Punkte</span></div></div>`}
 const BG=[["Erste Mahlzeit","utensils",x=>x.eatN>=1],["3 Tage Serie","flame",x=>x.best>=3],["7 Tage Serie","flame",x=>x.best>=7],["Retter","clock",x=>x.rescAll>=5],["Hobbykoch","utensils",x=>x.cookAll>=5],["Planer","list",x=>Object.keys(S.plan).length>=3],["Kein Müll","leaf",x=>x.dsw>=7&&x.eatN>=3],["Stammkunde","tag",x=>S.basics.length>=3]];
-const lvCard=x=>`<div class="card"><div class="row"><div class="lvb">${ic("star",22)}</div><div class="sp"><b>Level ${x.lv+1}: ${LN[x.lv]}</b><div class="mu">${x.pts} Punkte${x.next?" · noch "+(x.next-x.pts)+" bis Level "+(x.lv+2):" · höchstes Level"}</div></div><div class="strk">${ic("flame",18)}<b>${x.st}</b></div></div><div class="bar" style="margin-top:12px"><i style="width:${x.next?Math.min(100,(x.pts-LV[x.lv])/(x.next-LV[x.lv])*100):100}%"></i></div><div class="mu">Punkte: Mahlzeit +10, Essen vor dem Ablauf gerettet +15, Tagesziel getroffen +20, Weggeworfenes −5.</div></div>`,
+let lvCard=x=>`<div class="card"><div class="row"><div class="lvb">${ic("star",22)}</div><div class="sp"><b>Level ${x.lv+1}: ${LN[x.lv]}</b><div class="mu">${x.pts} Punkte${x.next?" · noch "+(x.next-x.pts)+" bis Level "+(x.lv+2):" · höchstes Level"}</div></div><div class="strk">${ic("flame",18)}<b>${x.st}</b></div></div><div class="bar" style="margin-top:12px"><i style="width:${x.next?Math.min(100,(x.pts-LV[x.lv])/(x.next-LV[x.lv])*100):100}%"></i></div><div class="mu">Punkte: Mahlzeit +10, Essen vor dem Ablauf gerettet +15, Tagesziel getroffen +20, Weggeworfenes −5.</div></div>`,
  goalsCard=x=>{const row=(t,v,m)=>`<div class="gr"><div class="row"><b class="sp">${t}</b><span class="mu">${Math.min(v,m)} von ${m}</span>${v>=m?ic("check",16):""}</div><div class="fb" style="margin-top:8px"><i style="width:${Math.min(100,v/m*100)}%;background:${v>=m?"var(--ac)":"#f5a524"}"></i></div></div>`;return`<div class="card">${row("Tage ohne Verschwendung",x.dsw,7)}${row("3 Gerichte kochen",x.cook,3)}${row("5 Artikel vor dem Ablauf retten",x.resc,5)}${x.g?row("Tagesziel an 4 Tagen treffen",x.gdw,4):'<div class="mu">Lege ein Kalorienziel fest, um das Wochenziel „Tagesziel treffen" zu aktivieren.</div>'}</div>`},
  badgeCard=x=>`<div class="card"><div class="badges">${BG.map(b=>`<div class="bd ${b[2](x)?"on":""}"><div class="bi">${ic(b[1],22)}</div><div>${b[0]}</div></div>`).join("")}</div></div>`,
  toneCard=()=>`<div class="card set"><label class="mu">Ton der Sprüche</label><select onchange="S.cfg.tone=this.value;MSG=null;save()" aria-label="Ton der Sprüche">${[["motiv","Motivierend"],["frech","Frech"],["sach","Sachlich"],["off","Aus"]].map(o=>`<option value="${o[0]}" ${(S.cfg.tone||"motiv")==o[0]?"selected":""}>${o[1]}</option>`).join("")}</select></div>`;
 const _hm=V.home;V.home=function(){return _hm().replace('<div class="hero card">',msgCard()+'<div class="hero card">')};
-const _tr=V.trk;V.trk=function(){const x=stats();return _tr().replace('<h1>Tracker</h1>','<h1>Tracker</h1>'+lvCard(x)).replace('<h2>Ausgaben</h2>','<h2>Wochenziele</h2>'+goalsCard(x)+'<h2>Abzeichen</h2>'+badgeCard(x)+'<h2>Ausgaben</h2>').replace('<h2>Darstellung</h2>','<h2>Motivation</h2>'+toneCard()+'<h2>Darstellung</h2>')};
+const _tr=V.trk;V.trk=function(){const x=stats();return _tr().replace('<h1>Tracker</h1>','<h1>Tracker</h1>'+lvCard(x)).replace('<h2>Ausgaben</h2>','<h2>Challenges</h2>'+goalsCard(x)+'<h2>Erfolge</h2>'+badgeCard(x)+'<h2>Ausgaben</h2>').replace('<h2>Darstellung</h2>','<h2>Motivation</h2>'+toneCard()+'<h2>Darstellung</h2>')};
 
 const DIETS=["alle","vegetarisch","vegan","high-protein","low carb","no carb","primal","koscher","halal"],KOL={f:"fleischig",m:"milchig",p:"parve"},
 DNOTE={"low carb":"Bis etwa 25 g Kohlenhydrate pro Portion.","no carb":"Höchstens 5 g Kohlenhydrate pro Portion.","primal":"Unverarbeitet, ohne Getreide, Hülsenfrüchte und Zucker: viel Fleisch (gern rotes) und Obst, wenig Gemüse.","koscher":"Ohne Schweinefleisch und Meeresfrüchte, Fleisch und Milch nie gemischt. Ob das Fleisch koscher ist, kann die App nicht prüfen.","halal":"Ohne Schweinefleisch und Alkohol. Ob das Fleisch halal geschlachtet ist, kann die App nicht prüfen."};
@@ -2492,7 +2587,7 @@ const _hmv3=V.home;V.home=function(){const p=trkParts();let h=_hmv3();
  // Motivation gehört zum Tag: Level und Serie unter den Spruch, Wochenziele und Abzeichen ans Ende
  const lv=p.lv?p.lv.outerHTML.replace('class="card"','class="card lvc"'):"";
  h=h.replace('<div class="grid2">',lv+'<div class="grid2">');
- return h+outer(p.sec["Wochenziele"])+outer(p.sec["Abzeichen"])};
+ return h+outer(p.sec["Challenges"])+outer(p.sec["Erfolge"])};
 DSEYE.nut="Ernährung";DSEYE.fin="Finanzen";try{if(typeof P!="undefined"){P.nut=P.nut||P.trk||P.home;P.fin=P.fin||P.trk||P.home}}catch(e){}
 try{FIMG.nut=FIMG.trk;FIMG.fin=FIMG.list;VFX.nut=VFX.trk;VFX.fin=VFX.list}catch(e){}
 function v3Nav(){const n=document.getElementById("n"),o=tOrd(),g=gOf();
@@ -3511,6 +3606,296 @@ const _viaLocal2=viaLocal;viaLocal=async function(blob,ctl){const P=ocrTS();
 // Hinweis im Prüfdialog passend zur Erkennung
 const _rvDrawO=rvDraw;rvDraw=function(){const r=_rvDrawO.apply(this,arguments);try{if(RV.eng=="device"){const k=Q("#rv .ocrk");if(k)k.textContent="Mit der Texterkennung deines Geräts gelesen. Bitte Namen und Preise kurz prüfen."}}catch(e){}return r};
 
+// ===== „Worauf hast du Lust?“: Woche zusammenstellen, Zutaten teilen, Vorrat und bald Ablaufendes zuerst =====
+// Packungsgrößen und geschätzte Preise (Discounter, Stand Herbst 2026): [Menge, Einheit, Preis €, Gramm je Stück]
+const WKP={nudeln:[500,"g",1.29],tomate:[500,"g",1.79],zwiebel:[1000,"g",1.49,100],knoblauch:[10,"Stk",.79],hähnchen:[500,"g",4.99],reis:[1000,"g",2.49],paprika:[2,"Stk",1.89,160],linsen:[500,"g",1.99],eier:[10,"Stk",2.49,60],brot:[500,"g",2.49,60],butter:[250,"g",2.19],spinat:[300,"g",1.39],käse:[200,"g",2.29],haferflocken:[500,"g",1.39],joghurt:[500,"g",1.09],banane:[1000,"g",1.79,120],apfel:[1000,"g",2.49,150],tofu:[200,"g",1.99],brokkoli:[500,"g",1.69],kichererbsen:[400,"g",.89],lachs:[250,"g",4.29],kartoffel:[1000,"g",1.99,150],schinken:[150,"g",1.79],karotte:[1000,"g",1.29,80],hack:[500,"g",4.49],
+ zucchini:[1,"Stk",.79,250],zitrone:[3,"Stk",1.29,100],thunfisch:[150,"g",1.49],avocado:[1,"Stk",.99,200],gurke:[1,"Stk",.69,400],blumenkohl:[800,"g",1.99],champignon:[400,"g",1.79,20],rind:[400,"g",6.99],räucherlachs:[100,"g",2.49],forelle:[2,"Stk",5.99,250],pute:[400,"g",4.99],lamm:[300,"g",7.99],pfirsich:[4,"Stk",2.29,150],erdbeer:[500,"g",2.49],heidelbeer:[125,"g",1.99],nuss:[200,"g",2.49],mango:[1,"Stk",1.49,300],orange:[4,"Stk",1.99,200],salat:[1,"Stk",.99,300],ananas:[1,"Stk",1.99,900],sellerie:[500,"g",1.49],mozzarella:[125,"g",.79],basilikum:[1,"Stk",1.49,20],honig:[500,"g",2.99],mehl:[1000,"g",.69],milch:[1000,"ml",1.19],lauch:[1,"Stk",.89,250],sahne:[200,"ml",.99],zucker:[1000,"g",.99],feta:[200,"g",1.49],gnocchi:[500,"g",1.49],bohnen:[250,"g",.79],mais:[140,"g",.89],speck:[150,"g",1.79],pesto:[190,"g",1.99],tortilla:[8,"Stk",1.49],tahin:[250,"g",2.99],couscous:[500,"g",1.49],oliven:[150,"g",1.29],erbsen:[450,"g",1.29],mayonnaise:[250,"g",1.29],brühe:[2000,"ml",.89],essig:[500,"ml",.79],paniermehl:[400,"g",.89],kürbis:[1000,"g",1.99],kokosmilch:[400,"ml",1.29],ingwer:[100,"g",.79],kabeljau:[400,"g",5.49],senf:[200,"g",.69],garnelen:[250,"g",4.99],currypaste:[100,"g",1.99],sojasauce:[250,"ml",1.79],hefe:[42,"g",.15],schmand:[200,"g",.79],blätterteig:[1,"Stk",1.29],quark:[500,"g",1.29],schnittlauch:[1,"Stk",.99,20],grieß:[500,"g",.89],beeren:[300,"g",2.49],aubergine:[1,"Stk",.99,300],süßkartoffel:[1000,"g",2.49,300],bulgur:[500,"g",1.49],seelachs:[400,"g",3.99],olivenöl:[500,"ml",5.99],frischkäse:[200,"g",1.29],aprikose:[200,"g",1.99]};
+// Worauf hast du Lust? (h: harte Bedingung)
+const WKT=[["schnell","Schnell","clock","bis 20 Minuten",r=>r.t<=20],["leicht","Leicht","sun","unter 500 kcal",r=>r.k<500],["protein","Proteinreich","flame","ab 30 g Eiweiß",r=>r.p>=30],["klassik","Klassiker","home","Familienessen",r=>WKRX.kl.test(r.n)],["comfort","Wohlfühlessen","utensils","Suppen, Aufläufe, Pasta",r=>WKRX.co.test(r.n)],["guenstig","Günstig","tag","unter 2 € pro Portion",r=>wkPP(r)<2],["lowcarb","Low Carb","chart","bis 30 g Kohlenhydrate",r=>(r.c||0)<=30],["veggie","Vegetarisch","leaf","ohne Fleisch und Fisch",r=>r.v>=1,1],["vegan","Vegan","leaf","rein pflanzlich",r=>r.v==2,1],["neu","Neues probieren","star","noch nie gekocht",r=>!wkCooked().has(r.n)],["vorrat","Vorrat zuerst","package","nutzt, was da ist",r=>r.i.some(have)]];
+const WKRX={kl:/schnitzel|frikadell|gulasch|kartoffelsuppe|käsespätzle|kaiserschmarrn|bratkartoffel|spaghetti|lasagne|auflauf|eintopf|pfannkuchen|kartoffelsalat|linsensuppe|bolognese|flammkuchen|pizza|chili|erbsensuppe|geschnetzeltes|hähnchensuppe|rahmnudeln|nudelsalat|ofenkartoffel/i,
+ co:/auflauf|gratin|lasagne|suppe|eintopf|curry|risotto|spätzle|schmarrn|chili|dal|gulasch|pasta|nudel|spaghetti|gnocchi|püree|quiche|pizza|flammkuchen|geschnetzeltes/i,
+ nodin:/oats|beeren-nuss|joghurt mit honig|grießbrei|porridge|smoothie|pancakes|milchreis|hummus mit gemüsesticks|bruschetta/i,
+ oven:/backofen|\bofen|°c|überbacken|grill/i,
+ prot:[["hähnchen","Hähnchen"],["pute","Pute"],["hack","Hack"],["rind","Rind"],["lamm","Lamm"],["lachs","Lachs"],["thunfisch","Thunfisch"],["kabeljau","Fisch"],["seelachs","Fisch"],["forelle","Fisch"],["garnelen","Garnelen"],["tofu","Tofu"],["eier","Ei"]],
+ carb:["nudeln","reis","kartoffel","gnocchi","couscous","bulgur","brot","tortilla"]};
+let WK=null,WKCK=null;
+function wkCooked(){if(WKCK&&WKCK.l==S.log.length)return WKCK.s;const s=new Set(S.log.filter(l=>l.t=="eat"&&l.r).map(l=>l.n));WKCK={l:S.log.length,s};return s}
+const wkPk=k=>WKP[k]||null;
+// Menge in die Einheit der Packung umrechnen
+function wkTo(k,a,u){const P=wkPk(k);if(!P)return a;const pu=P[1],w=x=>x=="g"||x=="ml"||x=="kg"||x=="l";a=u=="kg"||u=="l"?a*1000:a;if(w(pu)&&w(u))return a;if(pu=="Stk"&&(u=="Stk"||!w(u)))return a;if(w(pu))return a*(P[3]||100);return a/(P[3]||100)}
+// Was im Vorrat liegt, in der Einheit der Packung
+function wkInv(k){const P=wkPk(k);if(!P)return have(k)?1e9:0;const v=invAmt(k,dimOf(P[1]));return v}
+function wkPP(r){let c=0;(r.ing||[]).forEach(g=>{const P=wkPk(g[0]);c+=P?wkTo(g[0],g[2],g[3])/P[0]*P[2]:.8});return c/2}
+// Zutaten einer Auswahl zusammenrechnen: was gekauft werden muss, was aus dem Vorrat kommt, was einzeln teurer wäre
+function wkEval(set,p){p=p||2;const A={},sn=soon(),rs=new Set(),rem={};let solo=0;
+ set.forEach(i=>{const r=REC[i],seen={};(r.ing||[]).forEach(g=>{const k=g[0],P=wkPk(k),a=P?wkTo(k,g[2]*p/2,g[3]):1;const o=A[k]=A[k]||{k,n:g[1],u:P?P[1]:"Packung",need:0,rec:new Set(),u0:g[3]};o.need+=a;o.rec.add(i);seen[k]=(seen[k]||0)+a});
+  // Vergleich: jedes Gericht für sich eingekauft (der Vorrat wird der Reihe nach aufgebraucht)
+  Object.entries(seen).forEach(([k,a])=>{const P=wkPk(k);if(rem[k]===undefined)rem[k]=wkInv(k);const use=Math.min(rem[k],a);rem[k]-=use;if(!P){if(use<a)solo+=2;return}solo+=Math.ceil((a-use)/P[0]-.02)*P[2]});
+  sn.forEach(x=>{const nm=x.name.toLowerCase();if(r.i.some(g=>nm.includes(g)))rs.add(x.name)})});
+ let cost=0,invVal=0;const buy=[],from=[];
+ Object.values(A).forEach(o=>{const P=wkPk(o.k),inv=wkInv(o.k);o.shared=o.rec.size;
+  if(!P){if(inv>0)from.push(o);else{o.packs=1;o.price=2;cost+=2;buy.push(o)}return}
+  const m=Math.max(0,o.need-inv);o.packs=Math.ceil(m/P[0]-.02);o.price=+(o.packs*P[2]).toFixed(2);o.miss=m;o.left=Math.max(0,o.packs*P[0]-m);cost+=o.price;
+  if(inv>0){invVal+=Math.min(inv,o.need)/P[0]*P[2];from.push(o)}if(o.packs>0)buy.push(o)});
+ return{cost:+cost.toFixed(2),solo:+solo.toFixed(2),save:+Math.max(0,solo-cost).toFixed(2),buy:buy.sort((a,b)=>b.price-a.price),from,rescued:[...rs],shared:Object.values(A).filter(o=>o.shared>1).sort((a,b)=>b.shared-a.shared),invVal:+invVal.toFixed(2)}}
+// Wie gut eine Auswahl ist: Lust, gerettete Lebensmittel, Vorrat, Preis, Abwechslung
+function wkScore(set,o,pre){const e=wkEval(set,o.p);let s=-e.cost+e.rescued.length*5;
+ set.forEach(i=>s+=pre[i]);
+ const pc={},cc={};set.forEach(i=>{const r=REC[i],pg=WKRX.prot.find(x=>r.i.includes(x[0]));if(pg)pc[pg[1]]=(pc[pg[1]]||0)+1;WKRX.carb.forEach(c=>{if(r.i.includes(c))cc[c]=(cc[c]||0)+1})});
+ Object.values(pc).forEach(n=>{if(n>2)s-=(n-2)*5});Object.values(cc).forEach(n=>{if(n>3)s-=(n-3)*3});
+ s+=e.shared.length*.3;return s}
+function wkRand(seed){let x=seed>>>0||1;return()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return((x>>>0)%1e6)/1e6}}
+function wkCands(o){const d=S.cfg.diet||"alle",hard=WKT.filter(t=>t[5]&&o.tags.includes(t[0]));
+ return REC.map((r,i)=>i).filter(i=>{const r=REC[i];if(!r||r.del||!r.ing||!r.ing.length)return false;if(!dietOk(r,d))return false;if(WKRX.nodin.test(r.n))return false;if(o.noOven&&WKRX.oven.test((r.s||[]).join(" ")+" "+r.n))return false;return hard.every(t=>t[4](r))})}
+function wkPre(o,C,rnd){const soft=WKT.filter(t=>!t[5]&&o.tags.includes(t[0])),cut=add(today(),-7),rec=new Set(S.log.filter(l=>l.t=="eat"&&l.r&&l.d>=cut).map(l=>l.n)),pre={};
+ C.forEach(i=>{const r=REC[i];let v=soft.length?soft.filter(t=>t[4](r)).length/soft.length*8:4;if(o.tags.includes("vorrat"))v+=r.i.filter(have).length*1.5;if(rec.has(r.n))v-=4;if((o.avoid||[]).includes(i))v-=3.5;if(r.t>60&&!o.tags.includes("comfort")&&!o.tags.includes("klassik"))v-=1.5;v+=(rnd()-.5)*2.4;pre[i]=v});return pre}
+// Auswahl: erst gierig aufbauen, dann durch Tauschen verbessern
+function wkBuild(o){const rnd=wkRand(o.seed),C=wkCands(o);if(!C.length)return{set:[],C};const pre=wkPre(o,C,rnd),n=Math.min(o.n,C.length);let set=[];
+ while(set.length<n){let b=null,bs=-1e9;C.forEach(i=>{if(set.includes(i))return;const s=wkScore([...set,i],o,pre);if(s>bs){bs=s;b=i}});set.push(b)}
+ let cur=wkScore(set,o,pre);for(let it=0;it<160;it++){const k=rnd()*set.length|0,c=C[rnd()*C.length|0];if(set.includes(c))continue;const t=set.slice();t[k]=c;const s=wkScore(t,o,pre);if(s>cur){set=t;cur=s}}
+ return{set:wkOrder(set),C,pre}}
+// Reihenfolge: was bald abläuft, kommt zuerst dran
+function wkOrder(set){const sn=soon();const urg=i=>{const r=REC[i];let m=99;sn.forEach(x=>{const nm=x.name.toLowerCase();if(r.i.some(g=>nm.includes(g)))m=Math.min(m,diff(x.exp))});
+  if(m==99&&r.i.some(g=>["lachs","forelle","kabeljau","seelachs","hack","garnelen","hähnchen","pute"].includes(g)))m=50;return m};return set.slice().sort((a,b)=>urg(a)-urg(b))}
+function wkFree(start,n){const out=[];for(let k=0;k<21&&out.length<n;k++){const d=add(start,k);if(!(S.plan[d]||[]).some(e=>!e.done))out.push(d)}for(let k=0;out.length<n;k++){const d=add(start,k);if(!out.includes(d))out.push(d)}return out.sort()}
+const wkE=v=>(Math.round(v*100)/100).toFixed(2).replace(".",",")+" €";
+function wkDefP(){const m=S.hh&&S.hh.m?S.hh.m.length:0;return Math.max(1,Math.min(6,m||2))}
+function wkOpen(){const o=WK&&WK.o?WK.o:{tags:["vorrat"],n:5,p:wkDefP(),noOven:false,start:today(),seed:Date.now()%1e6};WK={o,step:1};wkDraw()}
+function wkTog(t){const o=WK.o,i=o.tags.indexOf(t);if(i>=0)o.tags.splice(i,1);else{o.tags.push(t);if(t=="vegan")o.tags=o.tags.filter(x=>x!="veggie");if(t=="veggie")o.tags=o.tags.filter(x=>x!="vegan")}wkDraw()}
+function wkSet(k,v){WK.o[k]=v;wkDraw()}
+function wkGo(re){const o=WK.o;if(re){o.seed=(o.seed*7919+13)%1e6;o.avoid=(WK.set||[]).slice()}else o.avoid=[];const b=wkBuild(o);if(!b.set.length){toast("Keine passenden Rezepte. Wähle weniger Wünsche aus.");return}
+ WK.days=wkFree(o.start,b.set.length);WK.set=wkAssign(b.set,WK.days);WK.C=b.C;WK.pre=b.pre;WK.step=2;WK.sw=null;wkDraw();const m=Q("#rv");if(m)m.scrollTop=0}
+function wkWhy(i,e){const r=REC[i],o=WK.o,out=[];WKT.forEach(t=>{if(o.tags.includes(t[0])&&t[0]!="vorrat"&&t[4](r))out.push(t[1])});
+ const rs=soon().filter(x=>r.i.some(g=>x.name.toLowerCase().includes(g)));if(rs.length)out.unshift("rettet "+rs.slice(0,2).map(x=>x.name).join(", "));
+ const sh=e.shared.filter(s=>s.rec.has(i)).slice(0,3).map(s=>s.n);if(sh.length)out.push("teilt "+sh.join(", "));
+ const h=r.i.filter(have).length;if(h)out.push(h+" aus dem Vorrat");return out}
+function wkTile(t){const on=WK.o.tags.includes(t[0]);return`<button class="wkt${on?" on":""}" aria-pressed="${on}" onclick="wkTog('${t[0]}')"><span class="wki">${ic(t[2],20)}</span><b>${t[1]}</b><small>${t[3]}</small>${on?`<span class="wkc">${ic("check",14)}</span>`:""}</button>`}
+function wkDraw(){const o=WK.o,el=rvEl();
+ if(WK.step==1){const d=S.cfg.diet||"alle",tiles=WKT.filter(t=>!(d=="vegan"&&(t[0]=="veggie"||t[0]=="vegan"))&&!(d=="vegetarisch"&&t[0]=="veggie")),C=wkCands(o).length;
+  el.innerHTML=`<div class="rv-in wk"><div class="row" style="margin-bottom:6px"><h1 class="sp" style="margin:0">Worauf hast du Lust?</h1><button class="iconb" style="margin:0" onclick="rvClose()" aria-label="Schließen">${ic("x",18)}</button></div>
+  <div class="mu" style="margin-bottom:14px">Wähle beliebig viel aus. FreshPlan stellt dir Gerichte zusammen, die sich Zutaten teilen, deinen Vorrat nutzen und bald Ablaufendes zuerst verbrauchen.</div>
+  <div class="wkg">${tiles.map(wkTile).join("")}</div>
+  <h2>Deine Woche</h2><div class="card">
+   <div class="row li"><span class="sp">Wie viele Gerichte?</span><div class="wkn">${[3,4,5,6,7].map(n=>`<button class="sm${o.n==n?" on":""}" onclick="wkSet('n',${n})">${n}</button>`).join("")}</div></div>
+   <div class="row li"><span class="sp">Portionen pro Gericht</span><div class="wkst"><button class="sm" aria-label="Weniger" onclick="wkSet('p',Math.max(1,WK.o.p-1))">−</button><b>${o.p}</b><button class="sm" aria-label="Mehr" onclick="wkSet('p',Math.min(8,WK.o.p+1))">+</button></div></div>
+   <div class="row li"><span class="sp">Los geht's</span><div class="wkn"><button class="sm${o.start==today()?" on":""}" onclick="wkSet('start',today())">Heute</button><button class="sm${o.start==add(today(),1)?" on":""}" onclick="wkSet('start',add(today(),1))">Morgen</button></div></div>
+   <label class="row li"><span class="sp">Ohne Backofen</span><input type="checkbox" ${o.noOven?"checked":""} onchange="wkSet('noOven',this.checked)" style="width:22px;height:22px;flex:none;accent-color:var(--ac)"></label>
+  </div>
+  <div class="mu" style="margin:-2px 2px 14px">${C} passende Rezepte${d!="alle"?" · Ernährung: "+esc(d):""}${(S.cfg.alg||[]).length?" · ohne deine Allergene":""}</div>
+  <button class="pri" style="width:100%" ${C?"":"disabled"} onclick="wkGo()">Woche zusammenstellen</button></div>`;return}
+ const e=wkEval(WK.set,o.p);
+ const sw=WK.sw!=null?wkAlts(WK.sw):null;
+ el.innerHTML=`<div class="rv-in wk"><div class="row" style="margin-bottom:6px"><h1 class="sp" style="margin:0">Deine Woche</h1><button class="iconb" style="margin:0" onclick="rvClose()" aria-label="Schließen">${ic("x",18)}</button></div>
+ <div class="card wks"><div class="wksg"><div><small>Einkauf</small><b>ca. ${wkE(e.cost)}</b></div><div><small>Gespart</small><b class="ok">${e.save>0?"ca. "+wkE(e.save):"–"}</b></div><div><small>Gerettet</small><b>${e.rescued.length}</b></div></div>
+  <div class="mu" style="margin-top:10px">${e.save>0?`Für jedes Gericht einzeln eingekauft wären es ca. ${wkE(e.solo)}. Weil sich die Gerichte Zutaten teilen, brauchst du weniger Packungen.`:`Die Gerichte passen gut zu dem, was du schon hast.`}${e.invVal>0?` Aus deinem Vorrat kommen Zutaten im Wert von ca. ${wkE(e.invVal)}.`:""}${e.rescued.length?` Bald ablaufend und eingeplant: ${esc(e.rescued.slice(0,4).join(", "))}.`:""}</div>
+  ${e.shared.length?`<div class="wksh">${e.shared.slice(0,8).map(s=>`<span class="tag">${esc(s.n)} ×${s.shared}</span>`).join("")}</div>`:""}</div>
+ ${WK.set.map((i,k)=>{const r=REC[i],d=WK.days[k];return`<div class="card wkd"><div class="row" style="gap:12px">${ri(i,"thm")}<div class="sp" style="min-width:0"><small class="wkdl">${d==today()?"Heute":d==add(today(),1)?"Morgen":dayLbl(d)}</small><b>${esc(r.n)}</b><div class="mu">${r.t} min · ${r.k} kcal · ${o.p} ${o.p==1?"Portion":"Portionen"}</div></div></div>
+  <div class="wkw">${wkWhy(i,e).map(t=>`<span>${esc(t)}</span>`).join("")}</div>
+  <div class="row" style="margin-top:10px;gap:8px"><button class="sm sp" onclick="wkRec(${i})">Rezept</button><button class="sm sp${WK.sw===k?" on":""}" onclick="WK.sw=WK.sw===${k}?null:${k};wkDraw()">Tauschen</button><button class="sm" aria-label="Entfernen" onclick="wkDel(${k})">${ic("x",14)}</button></div>
+  ${WK.sw===k?`<div class="wkalt">${sw.map(a=>`<button class="row" onclick="wkSwap(${k},${a.i})">${ri(a.i,"thm")}<div class="sp"><b>${esc(REC[a.i].n)}</b><div class="mu">${REC[a.i].t} min · ${a.d<=-.05?"spart "+wkE(-a.d):a.d>=.05?"+"+wkE(a.d):"gleicher Preis"}</div></div></button>`).join("")||'<div class="mu">Keine weiteren passenden Rezepte.</div>'}</div>`:""}</div>`}).join("")}
+ <details class="card wkb"><summary class="row"><b class="sp">Einkaufsliste · ${e.buy.length} ${e.buy.length==1?"Produkt":"Produkte"}</b><span class="mu">ca. ${wkE(e.cost)}</span></summary>
+  ${e.buy.map(b=>`<div class="row li"><span class="sp">${esc(b.n)}${b.shared>1?` <span class="mu">für ${b.shared} Gerichte</span>`:""}</span><span class="mu">${b.packs>1?b.packs+" × ":""}${wkPkLbl(b.k)}</span><b style="margin-left:10px">${wkE(b.price)}</b></div>`).join("")||'<div class="mu">Alles da.</div>'}
+  ${e.from.length?`<div class="mu" style="margin-top:10px">Aus dem Vorrat: ${esc(e.from.map(f=>f.n).join(", "))}</div>`:""}
+  <div class="mu" style="margin-top:10px;font-size:12px">Preise sind Schätzwerte für übliche Packungsgrößen. Gewürze, Öl und Salz sind nicht eingerechnet.</div></details>
+ <label class="row li card"><span class="sp">Fehlendes auf die Einkaufsliste</span><input type="checkbox" id="wkl" ${WK.list===false?"":"checked"} onchange="WK.list=this.checked" style="width:22px;height:22px;flex:none;accent-color:var(--ac)"></label>
+ <button class="pri" style="width:100%" onclick="wkApply()">In den Wochenplan übernehmen</button>
+ <div class="row" style="margin-top:8px;gap:8px"><button class="sp" onclick="WK.step=1;wkDraw()">Wünsche ändern</button><button class="sp" onclick="wkGo(1)">Andere Vorschläge</button></div></div>`}
+function wkPkLbl(k){const P=wkPk(k);if(!P)return"1 Packung";return P[1]=="Stk"?P[0]+" Stk":P[0]>=1000?(P[0]/1000+"").replace(".",",")+(P[1]=="g"?" kg":" l"):P[0]+" "+P[1]}
+function wkAlts(k){const o=WK.o,base=wkEval(WK.set,o.p).cost,rest=WK.set.filter((_,j)=>j!=k);
+ return WK.C.filter(i=>!WK.set.includes(i)).map(i=>{const t=WK.set.slice();t[k]=i;return{i,s:wkScore(t,o,WK.pre),d:wkEval(t,o.p).cost-base}}).sort((a,b)=>b.s-a.s).slice(0,4)}
+function wkSwap(k,i){WK.set[k]=i;WK.sw=null;wkDraw()}
+function wkDel(k){if(WK.set.length<=1)return toast("Mindestens ein Gericht bleibt im Plan.");WK.set.splice(k,1);WK.days.splice(k,1);WK.sw=null;wkDraw()}
+function wkApply(){const o=WK.o,e=wkEval(WK.set,o.p);WK.set.forEach((i,k)=>{const d=WK.days[k];(S.plan[d]=S.plan[d]||[]).push({r:i,p:o.p,done:false,wk:1})});
+ let n=0;if(WK.list!==false)e.buy.forEach(b=>{const P=wkPk(b.k);let q,u;if(!P){q=1;u="Packung"}else if(P[1]=="Stk"){q=Math.max(1,Math.ceil(b.miss-.02));u="Stk"}else{q=Math.max(50,Math.ceil(b.miss/50)*50);u=P[1]}addList(b.n,q,u,"Wochenplan");n++});
+ try{const g=gmS();g.wk=(g.wk||0)+1;(g.wkd=g.wkd||[]).push(today());g.wkd=g.wkd.slice(-20)}catch(x){}
+ save();rvClose();RM="plan";tab="rec";draw();toast(WK.set.length+" Gerichte eingeplant"+(n?", "+n+" Zutaten auf der Liste":""),n?"Liste":null,n?()=>{tab="list";draw()}:null);WK=null}
+// Einstieg im Wochenplan und auf der Startseite
+const _planViewWk=planView;planView=function(){return`<div class="card wke"><div class="row" style="gap:12px"><span class="wki">${ic("list",20)}</span><div class="sp"><b>Woche zusammenstellen</b><div class="mu">Sag, worauf du Lust hast. Die Gerichte teilen sich Zutaten und nutzen deinen Vorrat.</div></div></div><button class="pri" style="width:100%;margin-top:12px" onclick="wkOpen()">Worauf hast du Lust?</button></div>`+_planViewWk.apply(this,arguments)};
+const _homeWk=V.home;V.home=function(){let h=_homeWk.apply(this,arguments);const any=[...Array(7)].some((_,k)=>(S.plan[add(today(),k)]||[]).some(e=>!e.done));if(any)return h;
+ const c=`<h2>Diese Woche</h2><div class="card wke"><div class="row" style="gap:12px"><span class="wki">${ic("list",20)}</span><div class="sp"><b>Worauf hast du Lust?</b><div class="mu">In einer Minute zur fertigen Woche, mit Einkaufsliste. Gerichte teilen sich Zutaten, das spart Geld.</div></div></div><button class="pri" style="width:100%;margin-top:12px" onclick="wkOpen()">Woche zusammenstellen</button></div>`;
+ let i=h.indexOf("<h2>Einkauf</h2>");if(i<0)i=h.indexOf("<h2>Challenges</h2>");return i>=0?h.slice(0,i)+c+h.slice(i):h+c};
+// Rezept aus der Woche ansehen und wieder zurück
+function wkRec(i){rvEl().dataset.wk="1";recOpen(i,WK.o.p)}
+const _recDrawWk=recDraw;recDraw=function(){const r=_recDrawWk.apply(this,arguments);try{if(WK&&WK.step==2&&(Q("#rv")||{dataset:{}}).dataset.wk=="1"){const h=Q("#rv .rv-in");if(h&&!h.querySelector(".wkback"))h.insertAdjacentHTML("afterbegin",`<button class="sm wkback" style="margin-bottom:10px" onclick="wkDraw()">${ic("back",14)} Zurück zur Woche</button>`)}}catch(e){}return r};
+// Lange Gerichte lieber aufs Wochenende, Dringendes zuerst
+function wkAssign(set,days){const sn=soon(),urg=i=>{const r=REC[i];let m=99;sn.forEach(x=>{if(r.i.some(g=>x.name.toLowerCase().includes(g)))m=Math.min(m,diff(x.exp))});return m};
+ const we=d=>{const w=new Date(Date.parse(d)).getUTCDay();return w==0||w==6},out=Array(days.length).fill(null),rest=set.slice();
+ rest.filter(i=>urg(i)<99).sort((a,b)=>urg(a)-urg(b)).forEach(i=>{const k=out.indexOf(null);out[k]=i;rest.splice(rest.indexOf(i),1)});
+ rest.filter(i=>REC[i].t>=45).forEach(i=>{const k=days.findIndex((d,j)=>out[j]==null&&we(d));if(k>=0){out[k]=i;rest.splice(rest.indexOf(i),1)}});
+ rest.sort((a,b)=>REC[a].t-REC[b].t).forEach(i=>{const k=out.indexOf(null);out[k]=i});return out}
+
+// ===== Level, Blätter, Erfolge, Wochen-Challenges und Laden =====
+// Punkte (bisher) bringen Level und gehen beim Einkaufen im Laden nie verloren. Blätter sind die Währung für den Laden.
+IC.trophy='<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>';
+IC.lock='<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>';
+IC.shield='<path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/>';
+IC.bag='<path d="M6 8h12l-1 13H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>';
+IC.crown='<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>';
+// 20 Level; die ersten sechs Schwellen bleiben wie bisher
+LV.splice(0,LV.length,0,50,150,300,500,800,1150,1550,2000,2500,3100,3800,4600,5500,6500,7600,8800,10100,11500,13000);
+LN.splice(0,LN.length,"Frisch-Starter","Vorratsprofi","Küchenstratege","Frische-Meister","Zero-Waste-Profi","Resteküchen-Held","Wochenplaner","Saisonkenner","Gewürzflüsterer","Küchenchef","Vorratsarchitekt","Retter der Reste","Marktliebling","Gartenmeister","Ernte-Champion","Meister der Frische","Großmeister","Küchenlegende","Zero-Waste-Ikone","FreshPlan-Legende");
+const gmLvR=l=>l<2?0:20+10*(l-1);// Blätter für das Erreichen von Level l
+const GMT=[{b:15,x:20,n:"Bronze"},{b:35,x:50,n:"Silber"},{b:80,x:120,n:"Gold"}];
+function gmS(){let g=S.gm;if(!g||typeof g!="object")g=S.gm={v:1,sp:0,own:[],eq:{fr:"std",co:"brand",ti:null,dh:[]},cl:{},cw:{},frz:0,fu:[],mx:0,wk:0,wkd:[]};
+ g.own=g.own||[];g.eq=g.eq||{fr:"std",co:"brand",ti:null,dh:[]};g.eq.dh=g.eq.dh||[];g.cl=g.cl||{};g.cw=g.cw||{};g.fu=g.fu||[];g.sp=g.sp||0;g.frz=g.frz||0;return g}
+// ── Woche ──
+const gmMon=d=>{const t=new Date(Date.parse(d||today())),w=(t.getUTCDay()+6)%7;return add(t.toISOString().slice(0,10),-w)};
+const gmWeek=k=>[...Array(7)].map((_,i)=>add(k,i));
+// ── Erfolge ──
+function gmCtx(){const x=_statsGmBase(),eats=S.log.filter(l=>l.t=="eat"),ck=eats.filter(l=>l.r),g=S.cfg.kcal||0,byD={};eats.forEach(l=>byD[l.d]=(byD[l.d]||0)+(l.k||0));
+ const wk={};S.log.forEach(l=>{const k=gmMon(l.d);const o=wk[k]=wk[k]||{e:0,w:0};if(l.t=="eat")o.e++;if(l.t=="waste")o.w++});const cur=gmMon();
+ const veg=ck.filter(l=>{const r=REC.find(z=>z.n==l.n);return r&&r.v>=1}).length;let chal=0;Object.values(gmS().cw).forEach(a=>chal+=a.filter(i=>i!="box").length);
+ return{x,cook:ck.length,dist:new Set(ck.map(l=>l.n)).size,own:(S.myrec||[]).filter(r=>!r.del).length,veg,resc:x.rescAll,clean:Object.entries(wk).filter(([k,o])=>k<cur&&o.e>=3&&!o.w).length,share:S.log.filter(l=>l.t=="share").length,
+  plan:Object.values(S.plan||{}).reduce((a,e)=>a+e.length,0),wk:gmS().wk||0,buy:S.log.filter(l=>l.t=="buy").length,best:x.best,days:new Set(S.log.map(l=>l.d)).size,
+  goal:g?Object.entries(byD).filter(([d,k])=>d<today()&&k>=g*.85&&k<=g*1.1).length:0,fr:(S.friends||[]).length,bas:(S.basics||[]).length,coll:gmS().own.length,chal}}
+const GMA=[["Kochen",[["koch","Hobbykoch","utensils","Gerichte gekocht",[5,25,100],c=>c.cook,"Meisterkoch"],["neu","Entdecker","star","verschiedene Rezepte gekocht",[5,15,40],c=>c.dist,"Weltenbummler"],["eig","Eigene Küche","list","eigene Rezepte angelegt",[1,5,15],c=>c.own],["veg","Grüne Küche","leaf","vegetarische Gerichte gekocht",[5,20,60],c=>c.veg]]],
+ ["Retten",[["rett","Retter","clock","Lebensmittel vor dem Ablauf gegessen",[5,25,100],c=>c.resc,"Lebensmittelretter"],["clean","Saubere Woche","check","Wochen ohne Weggeworfenes",[1,4,12],c=>c.clean,"Null Verschwendung"],["teil","Teilen statt wegwerfen","share","Dinge im Markt geteilt",[1,5,20],c=>c.share]]],
+ ["Planen",[["plan","Planer","list","Gerichte eingeplant",[3,15,50],c=>c.plan],["woche","Wochenplaner","today","Wochen zusammengestellt",[1,4,12],c=>c.wk,"Planungsgenie"],["kauf","Einkaufsprofi","basket","Einkäufe erfasst",[10,50,200],c=>c.buy]]],
+ ["Dranbleiben",[["serie","Dranbleiber","flame","Tage Serie am Stück",[3,7,30],c=>c.best,"Unaufhaltsam"],["treu","Treue Seele","bell","Tage mit FreshPlan",[7,30,100],c=>c.days],["ziel","Zielsicher","chart","Tage im Kalorienziel",[3,10,30],c=>c.goal]]],
+ ["Gemeinschaft",[["freund","Freundeskreis","user","Freunde verbunden",[1,3,10],c=>c.fr],["stamm","Stammkunde","tag","Basics angelegt",[3,8,15],c=>c.bas]]],
+ ["Sammeln",[["samm","Sammler","bag","Dinge aus dem Laden",[1,5,12],c=>c.coll],["chal","Herausforderer","trophy","Challenges geschafft",[3,12,40],c=>c.chal,"Champion"]]]];
+const GMAL=GMA.flatMap(c=>c[1].map(a=>({id:a[0],n:a[1],ic:a[2],d:a[3],t:a[4],v:a[5],ti:a[6],cat:c[0]})));
+function gmAch(c){c=c||gmCtx();const g=gmS();return GMAL.map(a=>{const v=a.v(c),got=a.t.filter(t=>v>=t).length,cl=[0,1,2].filter(k=>g.cl[a.id+":"+k]).length;return{...a,val:v,got,cl,claim:got>cl?cl:-1,next:a.t[Math.min(got,2)]}})}
+// ── Wochen-Challenges ──
+const GMC=[["cook3","Koche 3 Gerichte","utensils",3,30,40,(w,c)=>w.ck.length],["resc3","Rette 3 Lebensmittel","clock",3,30,40,w=>w.e.filter(l=>l.sv).length],["plan4","Plane 4 Gerichte ein","list",4,25,30,w=>w.pl],
+ ["new1","Probiere ein neues Rezept","star",1,25,30,w=>w.nw],["buy1","Erfasse einen Einkauf","basket",1,15,20,w=>w.b],["days5","Trag an 5 Tagen etwas ein","today",5,35,50,w=>w.dy],
+ ["clean","4 Mahlzeiten, nichts weggeworfen","leaf",4,35,50,w=>w.w?0:w.e.length],["veg2","Koche 2 vegetarische Gerichte","leaf",2,25,30,w=>w.ck.filter(l=>{const r=REC.find(z=>z.n==l.n);return r&&r.v>=1}).length],
+ ["goal3","Triff 3-mal dein Tagesziel","chart",3,35,50,w=>w.gd,()=>!!S.cfg.kcal],["share1","Teile etwas im Markt","share",1,35,50,w=>w.sh,()=>typeof chMe=="function"&&!!chMe()],["wk1","Stell dir eine Woche zusammen","today",1,20,30,w=>w.wk]];
+function gmWkData(k){const days=gmWeek(k),L=S.log.filter(l=>l.d>=days[0]&&l.d<=days[6]),e=L.filter(l=>l.t=="eat"),ck=e.filter(l=>l.r),before=new Set(S.log.filter(l=>l.t=="eat"&&l.r&&l.d<days[0]).map(l=>l.n)),g=S.cfg.kcal||0,byD={};
+ e.forEach(l=>byD[l.d]=(byD[l.d]||0)+(l.k||0));
+ return{e,ck,w:L.filter(l=>l.t=="waste").length,b:L.filter(l=>l.t=="buy").length,sh:L.filter(l=>l.t=="share").length,dy:new Set(e.map(l=>l.d)).size,nw:new Set(ck.filter(l=>!before.has(l.n)).map(l=>l.n)).size,
+  pl:days.reduce((a,d)=>a+(S.plan[d]||[]).length,0),gd:g?Object.entries(byD).filter(([d,v])=>v>=g*.85&&v<=g*1.1).length:0,wk:(gmS().wkd||[]).filter(d=>d>=days[0]&&d<=days[6]).length}}
+function gmHash(s){let h=2166136261;for(const ch of s){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function gmChal(k){k=k||gmMon();const ok=GMC.filter(c=>!c[7]||c[7]()),r=wkRand(gmHash(k+(S.cfg.id||""))),pool=ok.slice(),pick=[];while(pick.length<3&&pool.length)pick.push(pool.splice(r()*pool.length|0,1)[0]);
+ const w=gmWkData(k),cl=gmS().cw[k]||[];return pick.map(c=>({id:c[0],n:c[1],ic:c[2],g:c[3],b:c[4],x:c[5],v:Math.min(c[3],c[6](w)),done:c[6](w)>=c[3],cl:cl.includes(c[0])}))}
+const GMBOX={b:40,x:60};
+// ── Laden ──
+const GMI=[
+ {id:"zaun",k:"deco",n:"Gartenzaun",p:40,lv:1,d:"Ein weißer Zaun rahmt deine Beete."},{id:"zwerg",k:"deco",n:"Gartenzwerg",p:50,lv:1,d:"Passt auf die Möhren auf."},{id:"vogel",k:"deco",n:"Vogelhäuschen",p:60,lv:2,d:"Mit Besuch am Morgen."},
+ {id:"kuerbis",k:"deco",n:"Kürbisse",p:70,lv:3,d:"Zwei dicke Hokkaido."},{id:"bank",k:"deco",n:"Gartenbank",p:80,lv:2,d:"Zum Ausruhen nach dem Kochen."},{id:"windrad",k:"deco",n:"Windrad",p:90,lv:5,d:"Dreht sich im Wind."},
+ {id:"biene",k:"deco",n:"Bienenstock",p:100,lv:4,d:"Mit fleißigen Bienen."},{id:"teich",k:"deco",n:"Teich",p:120,lv:3,d:"Kleiner Teich mit Schilf."},{id:"laterne",k:"deco",n:"Laterne",p:110,lv:7,d:"Leuchtet am Abend."},
+ {id:"lichter",k:"deco",n:"Lichterkette",p:150,lv:6,d:"Warmes Licht über dem Garten."},{id:"regen",k:"deco",n:"Regenbogen",p:200,lv:8,d:"Erscheint am Tag über den Hügeln."},
+ {id:"f_honig",k:"frame",n:"Honig",p:60,lv:2},{id:"f_blatt",k:"frame",n:"Blätterkranz",p:80,lv:3},{id:"f_gold",k:"frame",n:"Gold",p:120,lv:5},{id:"f_nacht",k:"frame",n:"Sternennacht",p:150,lv:6},{id:"f_regen",k:"frame",n:"Regenbogen",p:220,lv:9},{id:"f_krone",k:"frame",n:"Krone",p:400,lv:12},
+ {id:"c_tomate",k:"color",n:"Tomate",p:25,lv:1,c:"#c8473d"},{id:"c_himmel",k:"color",n:"Himmel",p:25,lv:1,c:"#2f73b5"},{id:"c_beere",k:"color",n:"Beere",p:25,lv:1,c:"#8a3f78"},{id:"c_honig",k:"color",n:"Honig",p:25,lv:1,c:"#b7791f"},{id:"c_nacht",k:"color",n:"Nacht",p:25,lv:1,c:"#283a63"},{id:"c_moos",k:"color",n:"Moos",p:25,lv:1,c:"#56762f"},
+ {id:"t_spar",k:"title",n:"Sparfuchs",p:40,lv:1},{id:"t_nacht",k:"title",n:"Nachtkoch",p:50,lv:2},{id:"t_rest",k:"title",n:"Resteretter",p:60,lv:3},{id:"t_gem",k:"title",n:"Gemüseflüsterer",p:80,lv:4},{id:"t_prep",k:"title",n:"Meal-Prep-Profi",p:80,lv:5},{id:"t_gew",k:"title",n:"Gewürzkönig",p:100,lv:7},
+ {id:"frz",k:"extra",n:"Serienschutz",p:50,lv:1,d:"Vergisst du einen Tag, bleibt deine Serie trotzdem stehen. Wird automatisch eingesetzt, du kannst bis zu 2 besitzen."}];
+const GMK=[["deco","Garten"],["frame","Rahmen"],["color","Farbe"],["title","Titel"],["extra","Extras"]];
+// ── Punkte und Blätter ──
+let _statsGmBase=stats;
+function gmXpBonus(){const g=gmS();let x=0;Object.keys(g.cl).forEach(k=>{const t=+k.split(":")[1];if(GMT[t])x+=GMT[t].x});Object.values(g.cw).forEach(a=>a.forEach(id=>{if(id=="box")x+=GMBOX.x;else{const c=GMC.find(z=>z[0]==id);if(c)x+=c[5]}}));return x}
+stats=function(){const x=_statsGmBase.apply(this,arguments),g=gmS();
+ // Serienschutz: abgedeckte Tage halten die Serie, zählen aber nicht mit
+ if(g.fu.length){const days=new Set(S.log.filter(l=>l.t=="eat").map(l=>l.d)),fu=new Set(g.fu);let st=0,d=today();if(!days.has(d))d=add(d,-1);while(days.has(d)||fu.has(d)){if(days.has(d))st++;d=add(d,-1)}
+  let best=0,run=0,prev=null;[...new Set([...days,...fu])].sort().forEach(z=>{run=prev&&add(prev,1)==z?run+(days.has(z)?1:0):(days.has(z)?1:0);best=Math.max(best,run);prev=z});x.st=st;x.best=Math.max(x.best,best)}
+ x.base=x.pts;x.pts+=gmXpBonus();let lv=0;LV.forEach((t,i)=>{if(x.pts>=t)lv=i});x.lv=lv;x.next=LV[lv+1];return x};
+function gmBal(x){x=x||stats();const g=gmS(),wn=S.log.filter(l=>l.t=="waste").length;let b=Math.floor((x.base+5*wn)/10);
+ Object.keys(g.cl).forEach(k=>{const t=+k.split(":")[1];if(GMT[t])b+=GMT[t].b});Object.values(g.cw).forEach(a=>a.forEach(id=>{if(id=="box")b+=GMBOX.b;else{const c=GMC.find(z=>z[0]==id);if(c)b+=c[4]}}));
+ for(let l=2;l<=g.mx;l++)b+=gmLvR(l);return Math.max(0,b-g.sp)}
+function gmOpenN(){try{const a=gmAch().filter(a=>a.claim>=0).length,c=gmChal().filter(c=>c.done&&!c.cl).length,k=gmMon(),cl=gmS().cw[k]||[],box=gmChal().every(c=>c.cl)&&!cl.includes("box")?1:0;return a+c+box}catch(e){return 0}}
+// ── Aussehen ──
+const gmName=()=>{try{return(S.cfg.name||(typeof cloudAcc=="function"&&cloudAcc()||{}).name||((accs().accounts||[]).find(a=>a.id==curId())||{}).name||"Ich").trim()||"Ich"}catch(e){return S.cfg.name||"Ich"}};
+const gmIni=n=>n.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase()||"?";
+function gmTitle(x){const g=gmS(),t=g.eq.ti;x=x||stats();if(t&&gmTitles(x).some(o=>o.id==t))return gmTitles(x).find(o=>o.id==t).n;return LN[x.lv]}
+function gmTitles(x){x=x||stats();const g=gmS(),out=LN.slice(0,x.lv+1).map((n,i)=>({id:"l"+i,n,src:"Level "+(i+1)}));
+ GMI.filter(i=>i.k=="title"&&g.own.includes(i.id)).forEach(i=>out.push({id:i.id,n:i.n,src:"Laden"}));
+ gmAch().forEach(a=>{if(a.ti&&a.got>=3)out.push({id:"a_"+a.id,n:a.ti,src:"Erfolg „"+a.n+"“ in Gold"})});return out}
+function gmAv(z,fr,co){const g=gmS();fr=fr||g.eq.fr||"std";co=co||g.eq.co||"brand";const c=co=="brand"?"var(--brand)":(GMI.find(i=>i.id==co)||{}).c||"var(--brand)";
+ const deco=fr=="f_blatt"?`<svg class="gavd" viewBox="0 0 100 100" aria-hidden="true">${[0,45,90,135,180,225,270,315].map(a=>`<ellipse cx="50" cy="5" rx="5" ry="9" fill="${a%90?"#6bb866":"#3f8f45"}" transform="rotate(${a+15} 50 50)"/>`).join("")}</svg>`:fr=="f_nacht"?`<svg class="gavd" viewBox="0 0 100 100" aria-hidden="true">${[[18,20],[80,14],[90,62],[12,74],[50,4]].map(([a,b])=>`<path d="M${a} ${b-5}l1.6 3.4 3.4 1.6-3.4 1.6-1.6 3.4-1.6-3.4-3.4-1.6 3.4-1.6z" fill="#ffe9a8"/>`).join("")}</svg>`:fr=="f_krone"?`<svg class="gavd gavk" viewBox="0 0 100 100" aria-hidden="true"><path d="M32 16l8 7 10-14 10 14 8-7-3 15H35z" fill="#f2c94c" stroke="#a87b12" stroke-width="1.5"/></svg>`:"";
+ return`<span class="gav fr-${fr}" style="--gz:${z}px;--gc:${c}"><i>${esc(gmIni(gmName()))}</i>${deco}</span>`}
+// ── Kleine Karte (Startseite, Profil, Heute) ──
+function gmCard(full){const x=stats(),b=gmBal(x),n=gmOpenN(),pr=x.next?Math.min(100,(x.pts-LV[x.lv])/(x.next-LV[x.lv])*100):100,g=gmS();
+ return`<div class="card gmc${full?" gmf":""}" onclick="gmOpen()" role="button" aria-label="Erfolge und Belohnungen öffnen"><div class="row" style="gap:12px">${gmAv(full?58:46)}<div class="sp" style="min-width:0"><b>${full?esc(gmName()):"Level "+(x.lv+1)}</b><div class="gmt">${full?"Level "+(x.lv+1)+" · ":""}${esc(gmTitle(x))}</div></div><div class="gmbal" title="Blätter">${ic("leaf",16)}<b>${b}</b></div></div>
+ <div class="bar" style="margin:12px 0 6px"><i style="width:${pr}%"></i></div><div class="row mu" style="font-size:12px"><span class="sp">${x.pts} Punkte${x.next?" · noch "+(x.next-x.pts)+" bis Level "+(x.lv+2):" · höchstes Level"}</span><span class="gmst">${ic("flame",14)} ${x.st}${g.frz?` · ${ic("shield",14)} ${g.frz}`:""}</span></div>
+ ${full||n?`<div class="row gmcta"><span class="sp">${n?`<span class="gmdot">${n}</span> ${n==1?"Belohnung wartet":"Belohnungen warten"}`:"Erfolge, Challenges und Laden"}</span>${ic("back",16).replace('class="ic"','class="ic gmar"')}</div>`:""}</div>`}
+// ── Großes Fenster ──
+let GMV="ov";
+function gmOpen(v){if(v)GMV=v;const x=stats(),b=gmBal(x),n=gmOpenN(),el=rvEl();el.dataset.gm="1";
+ const tabs=[["ov","Übersicht"],["ach","Erfolge"],["ch","Challenges"],["shop","Laden"]];
+ el.innerHTML=`<div class="rv-in gm"><div class="row" style="margin-bottom:12px"><h1 class="sp" style="margin:0">Erfolge</h1><span class="gmbal big">${ic("leaf",18)}<b>${b}</b></span><button class="iconb" style="margin:0 0 0 8px" onclick="rvClose()" aria-label="Schließen">${ic("x",18)}</button></div>
+ <div class="seg gmseg">${tabs.map(([k,l])=>`<button class="${GMV==k?"on":""}" onclick="gmOpen('${k}')">${l}${k=="ach"&&gmAch().some(a=>a.claim>=0)||k=="ch"&&gmChal().some(c=>c.done&&!c.cl)?'<i class="gmpip"></i>':""}</button>`).join("")}</div>
+ <div style="height:14px"></div>${GMV=="ach"?gmVAch():GMV=="ch"?gmVCh():GMV=="shop"?gmVShop(x,b):gmVOv(x,b)}</div>`}
+function gmVOv(x,b){const g=gmS();
+ return`<div class="card gmhero">${gmAv(84)}<b class="gmhn">${esc(gmName())}</b><div class="gmt">Level ${x.lv+1} · ${esc(gmTitle(x))}</div><div class="bar" style="margin:14px 0 6px;width:100%"><i style="width:${x.next?Math.min(100,(x.pts-LV[x.lv])/(x.next-LV[x.lv])*100):100}%"></i></div><div class="mu">${x.pts} Punkte${x.next?" · noch "+(x.next-x.pts)+" bis Level "+(x.lv+2):""}</div>
+ <div class="gmkp"><div><b>${x.st}</b><small>Tage Serie</small></div><div><b>${gmAch().reduce((a,o)=>a+o.got,0)}</b><small>von ${GMAL.length*3} Stufen</small></div><div><b>${b}</b><small>Blätter</small></div><div><b>${g.frz}</b><small>Serienschutz</small></div></div></div>
+ <h2>So sammelst du</h2><div class="card gmhow">${[["utensils","Mahlzeit eintragen","+10 Punkte, +1 Blatt"],["clock","Vor dem Ablauf gegessen","+5 Punkte extra"],["chart","Tagesziel getroffen","+20 Punkte"],["share","Im Markt geteilt","+15 Punkte"],["trophy","Erfolge und Challenges","Blätter und Bonuspunkte"],["star","Level aufsteigen","Blätter, neue Titel und Dinge im Laden"]].map(r=>`<div class="row li">${ic(r[0],18)}<span class="sp">${r[1]}</span><span class="mu">${r[2]}</span></div>`).join("")}<div class="mu" style="margin-top:8px">Weggeworfenes kostet 5 Punkte. Was du im Laden ausgibst, zieht nur Blätter ab, dein Level bleibt.</div></div>
+ <h2>Aussehen</h2><div class="card">${gmPickers(x)}</div>
+ <h2>Level-Pfad</h2><div class="card gmpath">${LV.map((t,i)=>{const on=i<=x.lv,cur=i==x.lv,un=GMI.filter(o=>o.lv==i+1&&i>0);return`<div class="gml${on?" on":""}${cur?" cur":""}"><span class="gmln">${i+1}</span><div class="sp"><b>${LN[i]}</b><div class="mu">${i?t+" Punkte · +"+gmLvR(i+1)+" Blätter":"Start"}${un.length?" · neu im Laden: "+un.map(o=>o.n).join(", "):""}</div></div>${on?ic("check",16):ic("lock",16)}</div>`}).join("")}</div>`}
+function gmPickers(x){const g=gmS(),own=id=>id=="std"||id=="brand"||g.own.includes(id),frs=[{id:"std",n:"Standard"},...GMI.filter(i=>i.k=="frame")],cos=[{id:"brand",n:"FreshPlan",c:"var(--brand)"},...GMI.filter(i=>i.k=="color")],ts=gmTitles(x);
+ return`<div class="mu" style="margin-bottom:8px">Rahmen</div><div class="gmsw">${frs.map(f=>`<button class="gmo${g.eq.fr==f.id?" on":""}" ${own(f.id)?`onclick="gmEq('fr','${f.id}')"`:`onclick="gmOpen('shop')"`} aria-label="${f.n}">${gmAv(40,f.id)}${own(f.id)?"":`<span class="gmlk">${ic("lock",12)}</span>`}</button>`).join("")}</div>
+ <div class="mu" style="margin:12px 0 8px">Farbe</div><div class="gmsw">${cos.map(c=>`<button class="gmo gmcol${g.eq.co==c.id?" on":""}" ${own(c.id)?`onclick="gmEq('co','${c.id}')"`:`onclick="gmOpen('shop')"`} aria-label="${c.n}"><span style="background:${c.c}"></span>${own(c.id)?"":`<span class="gmlk">${ic("lock",12)}</span>`}</button>`).join("")}</div>
+ <div class="mu" style="margin:12px 0 8px">Titel</div><select onchange="gmEq('ti',this.value||null)" aria-label="Titel wählen"><option value="">Aktueller Level-Titel (${esc(LN[x.lv])})</option>${ts.map(t=>`<option value="${t.id}" ${g.eq.ti==t.id?"selected":""}>${esc(t.n)} · ${esc(t.src)}</option>`).join("")}</select>`}
+function gmEq(k,v){const g=gmS();g.eq[k]=v;save();gmOpen();gmPush()}
+function gmVAch(){const A=gmAch();return GMA.map(([cat])=>`<h2>${cat}</h2><div class="card">${A.filter(a=>a.cat==cat).map(a=>{const nx=a.got>=3?a.t[2]:a.t[a.got],pc=a.got>=3?100:Math.min(100,a.val/nx*100);
+ return`<div class="gma${a.got?" on":""}"><span class="gmai t${a.got}">${ic(a.ic,20)}</span><div class="sp" style="min-width:0"><div class="row"><b class="sp">${a.n}</b><span class="gmtier">${[0,1,2].map(k=>`<i class="${k<a.got?"on t"+(k+1):""}"></i>`).join("")}</span></div>
+ <div class="mu">${a.got>=3?`Alle Stufen geschafft · ${a.val} ${a.d}`:`${Math.min(a.val,nx)} von ${nx} ${a.d}`}${a.ti?` · Gold: Titel „${a.ti}“`:""}</div><div class="fb" style="margin-top:6px"><i style="width:${pc}%;background:var(--brand-400)"></i></div></div>
+ ${a.claim>=0?`<button class="sm pri gmcl" onclick="gmClaimA('${a.id}',${a.claim})">+${GMT[a.claim].b} ${ic("leaf",13)}</button>`:""}</div>`}).join("")}</div>`).join("")}
+function gmVCh(){const k=gmMon(),C=gmChal(k),cl=gmS().cw[k]||[],all=C.every(c=>c.cl),end=add(k,6),dl=Math.max(0,diff(end));
+ return`<div class="mu" style="margin:-4px 2px 12px">Jeden Montag gibt es drei neue Challenges. Noch ${dl==0?"heute":dl==1?"1 Tag":dl+" Tage"}.</div>${C.map(c=>`<div class="card gmch${c.done?" done":""}"><div class="row" style="gap:12px"><span class="gmai${c.done?" t3":""}">${ic(c.ic,20)}</span><div class="sp"><b>${c.n}</b><div class="mu">${c.v} von ${c.g} · ${c.b} Blätter, ${c.x} Punkte</div></div>
+ ${c.cl?ic("check",18):c.done?`<button class="sm pri" onclick="gmClaimC('${c.id}')">Abholen</button>`:""}</div><div class="fb" style="margin-top:10px"><i style="width:${c.v/c.g*100}%;background:${c.done?"var(--brand-400)":"var(--honey)"}"></i></div></div>`).join("")}
+ <div class="card gmbox${all?" on":""}"><div class="row" style="gap:12px"><span class="gmai${all?" t3":""}">${ic("gift",20)}</span><div class="sp"><b>Wochenkiste</b><div class="mu">Schaffe alle drei Challenges: ${GMBOX.b} Blätter und ${GMBOX.x} Punkte extra.</div></div>${cl.includes("box")?ic("check",18):all?`<button class="sm pri" onclick="gmClaimC('box')">Öffnen</button>`:""}</div></div>
+ ${gmPast()}`}
+function gmPast(){const g=gmS(),ks=Object.keys(g.cw).filter(k=>k<gmMon()).sort().reverse().slice(0,4);if(!ks.length)return"";return`<h2>Letzte Wochen</h2><div class="card">${ks.map(k=>`<div class="row li"><span class="sp">Woche ab ${dayLbl(k)}</span><span class="mu">${g.cw[k].filter(i=>i!="box").length} von 3${g.cw[k].includes("box")?" · Kiste":""}</span></div>`).join("")}</div>`}
+function gmVShop(x,b){const g=gmS(),lv=x.lv+1;
+ return`<div class="card gmgp" style="padding:0;overflow:hidden">${typeof garden=="function"?garden().replace('onclick="gInfo()"',''):""}</div>
+ ${GMK.map(([k,l])=>`<h2>${l}</h2><div class="gmshop">${GMI.filter(i=>i.k==k).map(i=>{const own=g.own.includes(i.id)&&i.k!="extra",lock=i.lv>lv,cant=!own&&!lock&&b<i.p,full=i.id=="frz"&&g.frz>=2,on=k=="deco"?own&&!g.eq.dh.includes(i.id):k=="frame"?g.eq.fr==i.id:k=="color"?g.eq.co==i.id:k=="title"?g.eq.ti==i.id:false;
+ return`<div class="gmit${own?" own":""}${lock?" lock":""}"><div class="gmpv">${gmPrev(i)}</div><b>${i.n}</b>${i.d?`<small>${i.d}</small>`:""}
+ ${lock?`<span class="gmpr">${ic("lock",13)} ab Level ${i.lv}</span>`:own?`<button class="sm${on?" on":""}" onclick="gmUse('${i.id}')">${k=="deco"?(on?"Im Garten":"Versteckt"):on?"Angelegt":"Anlegen"}</button>`:full?`<span class="gmpr">2 von 2${ic("shield",13)}</span>`:`<button class="sm${cant?"":" pri"}" ${cant?"disabled":""} onclick="gmBuy('${i.id}')">${ic("leaf",13)} ${i.p}</button>`}</div>`}).join("")}</div>`).join("")}
+ <div class="mu" style="margin:6px 2px 12px">Blätter verdienst du mit Mahlzeiten, Erfolgen, Challenges und neuen Leveln. Echtes Geld gibt es hier nicht.</div>`}
+function gmPrev(i){if(i.k=="deco"){const s=GMD[i.id];return s?`<svg viewBox="${s.pv}" aria-hidden="true"><rect x="-500" y="-500" width="2000" height="2000" fill="var(--gmsky)"/><rect x="-500" y="${s.gy||126}" width="2000" height="400" fill="#7bb870"/>${s.g(false)}</svg>`:""}
+ if(i.k=="frame")return gmAv(46,i.id);if(i.k=="color")return`<span class="gmsc" style="background:${i.c}"></span>`;if(i.k=="title")return`<span class="gmtt">${ic("crown",18)}</span>`;return`<span class="gmtt">${ic("shield",20)}</span>`}
+function gmBuy(id){const i=GMI.find(z=>z.id==id),g=gmS(),x=stats();if(!i||i.lv>x.lv+1)return;if(gmBal(x)<i.p)return toast("Dafür fehlen noch "+(i.p-gmBal(x))+" Blätter.");
+ if(i.id=="frz"){if(g.frz>=2)return;g.frz++;g.sp+=i.p}else{if(g.own.includes(id))return;g.own.push(id);g.sp+=i.p;if(i.k=="frame")g.eq.fr=id;if(i.k=="color")g.eq.co=id;if(i.k=="title")g.eq.ti=id}
+ save();gmOpen("shop");gmPush();toast(i.n+" gekauft","Rückgängig",()=>{const g2=gmS();if(i.id=="frz"){g2.frz=Math.max(0,g2.frz-1)}else{g2.own=g2.own.filter(z=>z!=id);if(g2.eq.fr==id)g2.eq.fr="std";if(g2.eq.co==id)g2.eq.co="brand";if(g2.eq.ti==id)g2.eq.ti=null}g2.sp=Math.max(0,g2.sp-i.p);save();if(Q("#rv")&&Q("#rv").dataset.gm)gmOpen();draw()});
+ if(i.k=="deco")draw()}
+function gmUse(id){const i=GMI.find(z=>z.id==id),g=gmS();if(!i)return;if(i.k=="deco"){g.eq.dh=g.eq.dh.includes(id)?g.eq.dh.filter(z=>z!=id):[...g.eq.dh,id]}else if(i.k=="frame")g.eq.fr=g.eq.fr==id?"std":id;else if(i.k=="color")g.eq.co=g.eq.co==id?"brand":id;else if(i.k=="title")g.eq.ti=g.eq.ti==id?null:id;save();gmOpen("shop");gmPush();if(i.k=="deco")draw()}
+function gmClaimA(id,t){const g=gmS(),a=gmAch().find(z=>z.id==id);if(!a||a.claim!=t)return;const x0=stats();g.cl[id+":"+t]=today();save();gmFx(`+${GMT[t].b} Blätter · +${GMT[t].x} Punkte`,`${a.n}: ${GMT[t].n}${t==2&&a.ti?` · Titel „${a.ti}“ frei`:""}`);gmOpen();gmAfter(x0)}
+function gmClaimC(id){const g=gmS(),k=gmMon(),C=gmChal(k),cl=g.cw[k]=g.cw[k]||[];if(cl.includes(id))return;const x0=stats();
+ if(id=="box"){if(!C.every(c=>c.cl))return;cl.push("box");gmFx(`+${GMBOX.b} Blätter · +${GMBOX.x} Punkte`,"Wochenkiste geöffnet")}else{const c=C.find(z=>z.id==id);if(!c||!c.done)return;cl.push(id);gmFx(`+${c.b} Blätter · +${c.x} Punkte`,c.n)}
+ Object.keys(g.cw).sort().slice(0,-12).forEach(z=>delete g.cw[z]);save();gmOpen();gmAfter(x0)}
+function gmAfter(x0){const x=stats();if(x.lv>x0.lv)setTimeout(gmTick,900);try{draw()}catch(e){}gmPush()}
+// Kurzer Jubel über der Ansicht
+function gmFx(a,b){document.querySelectorAll(".gmfx").forEach(e=>e.remove());const e=document.createElement("div");e.className="gmfx";e.setAttribute("role","status");e.innerHTML=`<div>${[...Array(10)].map((_,k)=>`<i style="--a:${k*36}deg;--d:${k%3*60}ms">${ic("leaf",14)}</i>`).join("")}<b>${esc(a)}</b><span>${esc(b)}</span></div>`;document.body.appendChild(e);setTimeout(()=>e.remove(),1900)}
+// Level-Aufstieg: einmal feiern, danach gibt es die Blätter
+function gmTick(){const g=gmS();if(window.TOURING||(typeof TS!="undefined"&&TS)||!S.cfg.ob)return;const x=stats(),L=x.lv+1;
+ if(!g.mx){g.mx=L;save();try{draw()}catch(e){}return}
+ if(L<=g.mx||Q("#rv"))return;const from=g.mx;g.mx=L;save();let bl=0;for(let l=from+1;l<=L;l++)bl+=gmLvR(l);const un=GMI.filter(o=>o.lv>from&&o.lv<=L);
+ rvEl().innerHTML=`<div class="rv-in gmup"><div class="gmupb">${[...Array(14)].map((_,k)=>`<i style="--a:${k*26}deg;--d:${k%4*90}ms">${ic("leaf",16)}</i>`).join("")}<span>${L}</span></div><small class="gmupk">Level erreicht</small><h1>${esc(LN[x.lv])}</h1>
+ <div class="card"><div class="row li">${ic("leaf",18)}<span class="sp">Blätter</span><b>+${bl}</b></div><div class="row li">${ic("crown",18)}<span class="sp">Neuer Titel</span><b>${esc(LN[x.lv])}</b></div>${un.length?`<div class="li gmun"><div class="row">${ic("bag",18)}<span class="sp">Neu im Laden</span></div><div class="mu">${esc(un.map(o=>o.n).join(", "))}</div></div>`:""}</div>
+ <button class="pri" style="width:100%" onclick="rvClose();gmOpen('shop')">Zum Laden</button><button style="width:100%;margin-top:8px" onclick="rvClose();draw()">Weiter</button></div>`;gmPush()}
+// Serienschutz automatisch einsetzen, wenn gestern (und davor) nichts eingetragen wurde
+function gmFreeze(){const g=gmS();if(!g.frz||g.fc==today()||window.TOURING||(typeof TS!="undefined"&&TS))return;g.fc=today();
+ const days=new Set(S.log.filter(l=>l.t=="eat").map(l=>l.d)),fu=new Set(g.fu),miss=[];let d=add(today(),-1);while(!days.has(d)&&!fu.has(d)&&miss.length<g.frz){miss.push(d);d=add(d,-1)}
+ if(!miss.length||(!days.has(d)&&!fu.has(d)))return;let st=0;while(days.has(d)||fu.has(d)){if(days.has(d))st++;d=add(d,-1)}if(st<2)return;
+ miss.forEach(m=>g.fu.push(m));g.fu=g.fu.slice(-30);g.frz-=miss.length;save();setTimeout(()=>toast(`Serienschutz eingesetzt: Deine Serie von ${st} Tagen bleibt.`),1200)}
+// Freunde sehen Level und gewählten Titel
+const _profileGm=profile;profile=function(){const p=_profileGm.apply(this,arguments);try{p.ln=gmTitle()}catch(e){}return p};
+let GMPT=0;function gmPush(){clearTimeout(GMPT);GMPT=setTimeout(()=>{try{if(typeof profPush=="function")profPush().catch(()=>{})}catch(e){}},1500)}
+// ── Einbau: Startseite, Heute, Profil ──
+lvCard=x=>gmCard(false);
+goalsCard=x=>{const C=gmChal();return`<div class="card gmchs" onclick="gmOpen('ch')" role="button" aria-label="Challenges öffnen">${C.map(c=>`<div class="gr"><div class="row"><b class="sp">${c.n}</b><span class="mu">${c.cl?"geschafft":c.v+" von "+c.g}</span>${c.cl?ic("check",16):c.done?'<span class="gmdot">!</span>':""}</div><div class="fb" style="margin-top:8px"><i style="width:${c.v/c.g*100}%;background:${c.done?"var(--ac)":"#f5a524"}"></i></div></div>`).join("")}<div class="mu" style="margin-top:4px">${C.filter(c=>c.cl).length} von 3 geschafft · Belohnung: Blätter und Punkte</div></div>`};
+badgeCard=x=>{const A=gmAch().map(a=>({...a,pc:a.got>=3?-1:a.val/a.next})).sort((p,q)=>(q.claim>=0)-(p.claim>=0)||q.pc-p.pc).slice(0,4);
+ return`<div class="card" onclick="gmOpen('ach')" role="button" aria-label="Erfolge öffnen"><div class="badges">${A.map(a=>`<div class="bd ${a.got?"on":""}"><div class="bi gmbi t${a.got}">${ic(a.ic,22)}${a.claim>=0?'<span class="gmdot">!</span>':""}</div><div>${a.n}</div><small class="mu">${a.got>=3?"Gold":Math.min(a.val,a.next)+"/"+a.next}</small></div>`).join("")}</div><div class="row gmcta" style="margin-top:12px"><span class="sp">Alle ${GMAL.length} Erfolge</span>${ic("back",16).replace('class="ic"','class="ic gmar"')}</div></div>`};
+const _pfOpenGm=pfOpen;pfOpen=function(){const r=_pfOpenGm.apply(this,arguments);try{const h=Q("#rv .rv-in > .row");if(h&&!Q("#rv .gmf"))h.insertAdjacentHTML("afterend",gmCard(true))}catch(e){}return r};
+const _msgGm=msgCard;msgCard=function(){const h=_msgGm.apply(this,arguments);try{return h.replace(/ Punkte<\/span>/," Punkte · "+gmBal()+" Blätter</span>")}catch(e){return h}};
+const _drwGm=draw;draw=function(){const r=_drwGm.apply(this,arguments);try{gmFreeze();if(!GMTK){GMTK=setTimeout(()=>{GMTK=0;gmTick()},700)}}catch(e){}return r};let GMTK=0;
+// ── Garten-Deko ──
+const GMD={
+ zaun:{pv:"0 100 120 40",gy:126,g:N=>{let s="";for(let x=6;x<360;x+=14)s+=`<path d="M${x} 127V113l3-3 3 3v14z" fill="${N?"#9aa7b5":"#fbfaf5"}" stroke="${N?"#6e7a88":"#c9c2ae"}" stroke-width=".8"/>`;return`<g class="gmz">${s}<path d="M0 117H360M0 123H360" stroke="${N?"#8e9aa8":"#e9e4d4"}" stroke-width="2"/></g>`}},
+ zwerg:{pv:"44 98 50 34",g:N=>`<g transform="translate(66 127)"><ellipse cy="0" rx="7" ry="1.6" fill="rgba(0,0,0,.2)"/><path d="M-5 0v-9h10V0z" fill="#3d6fb6"/><circle cy="-12" r="4.2" fill="#f3c7a1"/><path d="M-4.4-11.5Q0-3 4.4-11.5L3-8.5Q0-6-3-8.5z" fill="#fff"/><path d="M-5-13.5L0-25l5 11.5z" fill="#d64541"/></g>`},
+ vogel:{pv:"0 78 50 54",g:N=>`<g transform="translate(24 128)"><rect x="-1.4" y="-32" width="2.8" height="32" fill="${N?"#4a372a":"#8a6446"}"/><path d="M-11-30H11L0-41z" fill="${N?"#6b2f2a":"#b5523d"}"/><rect x="-9" y="-30" width="18" height="13" rx="1" fill="${N?"#7a6a55":"#e6c79a"}"/><circle cy="-24" r="3" fill="${N?"#2b2219":"#4a3424"}"/><rect x="-5" y="-17.5" width="10" height="1.6" fill="${N?"#4a372a":"#8a6446"}"/>${N?"":`<g class="gmbird"><circle cx="8" cy="-35" r="2.6" fill="#5f88c4"/><circle cx="9.6" cy="-36" r=".6" fill="#111"/><path d="M10.4-35l2 .6-2 .6z" fill="#f2a33a"/></g>`}</g>`},
+ kuerbis:{pv:"316 104 44 28",g:N=>`<g transform="translate(338 127)">${[[-7,0,6],[5,0,7.5]].map(([x,y,r])=>`<ellipse cx="${x}" cy="${y-r*.8}" rx="${r}" ry="${r*.8}" fill="${N?"#9a5a26":"#ef8a2b"}"/><path d="M${x-r*.35} ${y-r*1.5}Q${x-r*.5} ${y-r*.8} ${x-r*.35} ${y}M${x+r*.35} ${y-r*1.5}Q${x+r*.5} ${y-r*.8} ${x+r*.35} ${y}" stroke="${N?"#7b4419":"#d1701b"}" fill="none"/><path d="M${x} ${y-r*1.55}v-3" stroke="#5a7a2e" stroke-width="1.6" stroke-linecap="round"/>`).join("")}</g>`},
+ bank:{pv:"140 100 56 32",g:N=>{const w=N?"#5c4636":"#9b7250";return`<g transform="translate(168 127)"><rect x="-15" y="-12" width="30" height="3" rx="1" fill="${w}"/><rect x="-15" y="-17" width="30" height="2.6" rx="1" fill="${w}"/><rect x="-15" y="-21.5" width="30" height="2.6" rx="1" fill="${w}"/><path d="M-12-9V0M12-9V0M-13-12v-10M13-12v-10" stroke="${N?"#2e2a27":"#4b4038"}" stroke-width="2"/></g>`}},
+ windrad:{pv:"182 62 46 48",gy:102,g:N=>`<g transform="translate(205 102)"><path d="M-1.2 0h2.4l-.6-26h-1.2z" fill="${N?"#a6a9ad":"#f4f4f0"}"/><g class="gmspin" style="transform-origin:0 -26px">${[0,90,180,270].map((a,k)=>`<path d="M0-26c4-2 9-1 10 2L0-26z" fill="${["#e5484d","#f5a524","#4f9e4a","#3b82c4"][k]}" transform="rotate(${a} 0 -26)"/>`).join("")}<circle cy="-26" r="1.6" fill="#555"/></g></g>`},
+ biene:{pv:"214 96 48 36",g:N=>`<g transform="translate(238 127)"><rect x="-1.5" y="-6" width="3" height="6" fill="${N?"#4a372a":"#8a6446"}"/>${[0,1,2].map(k=>`<ellipse cy="${-9-k*5.2}" rx="${9-k*1.8}" ry="3.2" fill="${N?"#a17d2c":"#f2b632"}" stroke="${N?"#7c5f1f":"#cf8f17"}" stroke-width=".7"/>`).join("")}<ellipse cy="-8" rx="1.8" ry="1.3" fill="#3a2a14"/>${N?"":[0,1].map(k=>`<g class="gmbee" style="animation-delay:${-k*1.7}s"><ellipse rx="1.8" ry="1.2" fill="#f2b632"/><path d="M-.5-1.2v2.4M.6-1.2v2.4" stroke="#222" stroke-width=".5"/><ellipse cx="-.3" cy="-1.6" rx="1.2" ry=".8" fill="rgba(255,255,255,.85)"/></g>`).join("")}</g>`},
+ teich:{pv:"88 100 60 32",g:N=>`<g transform="translate(118 122)"><ellipse rx="24" ry="5.2" fill="${N?"#20405e":"#5aa6d6"}"/><ellipse rx="19" ry="3.4" fill="${N?"#2c5778":"#8fcdf0"}" opacity=".7"/><ellipse cx="-6" cy="-1" rx="4" ry=".8" fill="#fff" opacity="${N?".25":".6"}"/>${[[-22,-1],[-19,0],[21,-1]].map(([x,y],k)=>`<path d="M${x} ${y}q${k%2?1:-1} -8 ${k%2?-1:1} -13" stroke="${N?"#2f5a3c":"#4e8a3e"}" stroke-width="1.4" fill="none"/><ellipse cx="${x+(k%2?-1:1)}" cy="${y-12}" rx="1.1" ry="2.6" fill="#7a5537"/>`).join("")}<ellipse cx="9" cy="1" rx="3.2" ry="1.2" fill="#4f9e4a"/></g>`},
+ laterne:{pv:"272 66 40 66",g:N=>`<g transform="translate(290 127)">${N?'<circle cy="-37" r="16" fill="#ffd57a" opacity=".25"/>':""}<rect x="-1.2" y="-34" width="2.4" height="34" fill="#3a3f45"/><rect x="-6" y="-2" width="12" height="2" rx="1" fill="#3a3f45"/><path d="M-5-34h10l-1.5-8h-7z" fill="${N?"#ffe29a":"#f3efe1"}" stroke="#3a3f45" stroke-width="1.2"/><path d="M-6-42h12l-6-4z" fill="#3a3f45"/></g>`},
+ lichter:{pv:"0 0 180 40",gy:300,sky:1,g:N=>{let s=`<path d="M0 10Q90 28 180 10Q270 28 360 10" stroke="${N?"#7b7f86":"#5d5f63"}" stroke-width=".8" fill="none"/>`;for(let k=1;k<18;k++){if(k==9)continue;const x=k*20,t=(x%180)/180,y=10+36*t*(1-t);const c=["#ffd166","#ff8fa3","#8ecae6","#b5e48c"][k%4];s+=`<circle cx="${x}" cy="${(y+2.6).toFixed(1)}" r="${N?2.4:1.9}" fill="${c}" class="${N?"gmglow":""}" style="animation-delay:${-k*.3}s"/>`}return s}},
+ regen:{pv:"0 20 360 100",gy:400,sky:1,day:1,g:N=>N?"":`<g opacity=".55" fill="none" stroke-width="5">${["#e5484d","#f5a524","#ffd166","#4f9e4a","#3b82c4","#7c5cc4"].map((c,k)=>`<path d="M${70+k*5} 100A${110-k*5} ${80-k*5} 0 0 1 ${290-k*5} 100" stroke="${c}"/>`).join("")}</g>`}};
+const _gardenGm=garden;garden=function(hh){let h=_gardenGm.apply(this,arguments);try{const g=gmS(),on=g.own.filter(id=>GMD[id]&&!g.eq.dh.includes(id));if(!on.length)return h;const N=/class="gdn night/.test(h);
+ const sky=on.filter(id=>GMD[id].sky).map(id=>GMD[id].g(N)).join(""),gr=on.filter(id=>!GMD[id].sky).map(id=>GMD[id].g(N)).join("");
+ h=h.replace('<path d="M0 96C60',sky+'<path d="M0 96C60').replace('<rect x="12" y="128"',gr+'<rect x="12" y="128"');
+ const n=on.length;h=h.replace(/(<span class="gtag">[\s\S]*?)<\/span><\/div>$/,`$1 · ${n} ${n==1?"Deko":"Deko-Stücke"}</span></div>`)}catch(e){}return h};
+
 // ===== Darkmode direkt auf der Startseite =====
 const thIsDark=()=>{let t=S.cfg.theme||"light";if(t=="system")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";return t=="dark"};
 function thToggle(){setTheme(thIsDark()?"light":"dark");toast(thIsDark()?"Dunkles Design an":"Helles Design an")}
@@ -3527,9 +3912,9 @@ const _drwTh=draw;draw=function(){const r=_drwTh.apply(this,arguments);try{thBtn
  {tab:"home",el:()=>Q("#m .qa"),t:"Einkauf erfassen",x:"Kassenbon fotografieren oder Barcode scannen. Die Artikel landen mit Haltbarkeit im Vorrat."},
  {tab:"home",el:()=>Q("#m .hs"),t:"Bald aufbrauchen",x:"Was in den nächsten Tagen abläuft, steht hier ganz oben. So wirfst du weniger weg."},
  {tab:"inv",el:()=>Q("#m .card.it"),t:"Dein Vorrat",x:"Alles, was du hast, mit Haltbarkeit. Nach rechts wischen heißt verbraucht, nach links einfrieren."},
- {tab:"rec",rm:"disc",el:()=>Q("#m .card.rc"),t:"Kochen",x:"Rezepte passend zu deinem Vorrat, deiner Ernährung und deinen Allergien. Eingeplante Gerichte kommen in den Wochenplan und auf die Einkaufsliste."},
+ {tab:"rec",rm:"disc",el:()=>Q("#m .card.rc"),t:"Kochen",x:"Rezepte passend zu deinem Vorrat, deiner Ernährung und deinen Allergien. Unter „Worauf hast du Lust?“ stellt FreshPlan dir eine ganze Woche zusammen, mit Einkaufsliste."},
  {tab:"home",el:()=>Q("#m .mkb"),t:"Markt",x:"Zu viel gekauft? Über das Kartensymbol verschenkst oder suchst du Lebensmittel in der Nachbarschaft und schreibst direkt in der App."},
- {tab:"home",el:()=>Q("#m .vh .grp")||Q("#m .grp"),t:"Oben rechts",x:"Mond: dunkles Design. Fragezeichen: diese Erklärung. Person: Profil mit Konto, Haushalt, Allergien und weiteren Einstellungen."},
+ {tab:"home",el:()=>Q("#m .vh .grp")||Q("#m .grp"),t:"Oben rechts",x:"Mond: dunkles Design. Fragezeichen: diese Erklärung. Person: Profil mit Level, Blättern, Erfolgen und Laden, dazu Konto, Haushalt und Allergien."},
  {tab:"home",t:"Fertig!",x:"Mehr musst du nicht wissen. Viel Spaß mit FreshPlan!"}];
  TOUR.length=0;st.forEach(s=>TOUR.push(s))})();
 
