@@ -1,12 +1,11 @@
 {
-  "code": 29,
-  "name": "1.29",
+  "code": 30,
+  "name": "1.30",
   "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
-  "date": "2026-11-02",
+  "date": "2026-11-05",
   "notes": [
-    "Haushalt, Freunde und Markt nur noch mit Konto",
-    "Keine Personen ohne Konto mehr im Online-Haushalt",
-    "Fehler behoben: Beispieldaten der Erklärung konnten in den Haushalt gelangen",
-    "Bessere Kassenbon-Erkennung, Darkmode oben auf der Startseite"
+    "Besser lesbare Knöpfe im dunklen Design",
+    "Klarer Hinweis, wann ein Bonfoto das Gerät verlässt",
+    "Haushalt, Freunde und Markt nur mit Konto"
   ]
 }
