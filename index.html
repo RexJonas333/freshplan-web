@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>FreshPlan – Einkauf & Vorrat</title>
+<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>FreshPlan – Einkauf & Vorrat</title>
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" type="image/png" href="icons/favicon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="FreshPlan"><meta name="theme-color" content="#f3f3ea">
 
 <style data-lib="leaflet">/* required styles */
@@ -2678,7 +2678,9 @@ const pwOk=p=>p.length>=8&&/[A-Za-zÄÖÜäöüß]/.test(p)&&/\d/.test(p);
 const _authRegC=authReg;
 authReg=async function(){if(!SB_OK)return _authRegC();const g=i=>document.getElementById(i).value,n=g("rn").trim(),em=g("re").trim().toLowerCase(),p=g("rp");
  if(n.length<2)return aerr("Bitte gib deinen Namen ein.");if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(em))return aerr("Bitte gib eine gültige E-Mail-Adresse ein.");if(!pwOk(p))return aerr("Das Passwort braucht mindestens 8 Zeichen mit Buchstaben und einer Zahl.");if(p!==g("rq"))return aerr("Die Passwörter stimmen nicht überein.");
- sbBusy(true);try{const r=await sbReq("/auth/v1/signup?redirect_to="+encodeURIComponent(sbSite()),{method:"POST",auth:false,body:{email:em,password:p,data:{name:n.slice(0,40)}}});sbBusy(false);
+ const inv=((document.getElementById("ri")||{}).value||"").toUpperCase().replace(/[^A-Z0-9]/g,"");if(inv.length!=8)return aerr("Bitte gib deinen Einladungscode ein. Er hat 8 Zeichen.");
+ sbBusy(true);try{const ok=await sbReq("/rest/v1/rpc/invite_check",{method:"POST",auth:false,body:{p_code:inv}});if(ok===false){sbBusy(false);return aerr("Dieser Einladungscode gilt nicht oder wurde schon benutzt. Frag nach einem neuen.")}
+  const r=await sbReq("/auth/v1/signup?redirect_to="+encodeURIComponent(sbSite()),{method:"POST",auth:false,body:{email:em,password:p,data:{name:n.slice(0,40),invite:inv}}});sbBusy(false);
   if(r&&r.access_token)return cloudIn(r,n);
   document.getElementById("auth").innerHTML=`<div class="rv-in" style="padding-top:9vh"><h1>Fast geschafft</h1><div class="mu" style="margin:-6px 0 18px;line-height:1.5">Wir haben dir eine E-Mail an <b>${esc(em)}</b> geschickt. Tippe auf den Link darin, um dein Konto zu bestätigen, und melde dich danach hier an.</div><div class="mu" style="font-size:12.5px;margin-bottom:18px">Keine E-Mail da? Schau im Spam-Ordner nach.</div><button class="pri" style="width:100%" onclick="authOpen('login');document.getElementById('le').value='${esc(em)}'">Zur Anmeldung</button></div>`}
  catch(e){sbBusy(false);aerr(sbMsg(e))}};
@@ -3331,6 +3333,21 @@ const _hhLocAddAcc=hhLocAdd;hhLocAdd=function(){if(S.hh&&S.hh.cloud)return toast
 const _frOpenAcc=frOpen;frOpen=function(){if(!accOn())return accNeed("Freunde und die Bestenliste");return _frOpenAcc.apply(this,arguments)};
 // Markt: ansehen geht (Beispiele), anbieten und Codes einlesen nur mit Konto
 ["mpNew","mpImport","mpFromInv"].forEach(f=>{const o=window[f];if(typeof o!="function")return;window[f]=function(){if(!accOn())return accNeed("Im Markt anbieten oder suchen");return o.apply(this,arguments)}});
+
+// ===== Nur auf Einladung: neue Konten brauchen einen Code von jemandem, der FreshPlan schon nutzt =====
+Object.assign(SBM,{invite_required:"Dieser Einladungscode gilt nicht oder wurde schon benutzt. Frag nach einem neuen.",too_many_invites:"Du hast schon 10 offene Einladungen. Warte, bis sie benutzt oder abgelaufen sind.","Database error saving new user":"Dieser Einladungscode gilt nicht oder wurde schon benutzt. Frag nach einem neuen."});
+IC.ticket='<path d="M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4z"/><path d="M14 7v10" stroke-dasharray="2 2"/>';
+// Anmeldeformular: Feld für den Code ganz oben
+const _authOpenInv=authOpen;authOpen=function(m){const r=_authOpenInv.apply(this,arguments);try{if(m=="register"&&typeof SB_OK!="undefined"&&SB_OK&&!document.getElementById("ri")){const n=document.getElementById("rn");const lb=n&&n.previousElementSibling;if(lb)lb.insertAdjacentHTML("beforebegin",`<div class="mu" style="font-size:12.5px;margin:0 2px 4px;line-height:1.45">FreshPlan ist gerade nur auf Einladung. Den Code bekommst du von jemandem, der FreshPlan schon nutzt.</div><label class="mu">Einladungscode</label><input id="ri" autocomplete="off" autocapitalize="characters" maxlength="12" placeholder="8 Zeichen" style="font:600 18px var(--mono);letter-spacing:.12em;text-transform:uppercase">`)}
+  if(m=="welcome"){const p=Q("#auth .mu");if(p&&!/Einladung/.test(p.textContent))p.insertAdjacentHTML("beforeend"," Neue Konten gibt es derzeit nur mit Einladungscode.")}}catch(e){console.error(e)}return r};
+// Profil: Freunde einladen
+let INVL=null;
+function invCard(){const l=INVL||[],open=l.filter(x=>!x.used&&Date.parse(x.expires_at)>Date.now());
+ return`<h2>Freunde einladen</h2><div class="card invcard"><div class="mu" style="margin-bottom:10px">Neue Konten gibt es nur mit Einladungscode. Jeder Code gilt für eine Person und 14 Tage.</div>${open.map(x=>`<div class="row li"><b class="sp" style="font:600 18px var(--mono);letter-spacing:.14em">${esc(x.code)}</b><span class="mu" style="font-size:12px">bis ${new Date(x.expires_at).toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit"})}</span><button class="sm" onclick="invShare('${esc(x.code)}')">${ic("share",14)} Teilen</button></div>`).join("")}<button class="pri" style="width:100%;margin-top:${open.length?10:0}px" onclick="invNew()">${ic("ticket",18)} Einladungscode erstellen</button></div>`}
+async function invLoad(){try{INVL=await sbReq("/rest/v1/rpc/invite_list",{method:"POST",body:{}})||[]}catch(e){INVL=INVL||[]}const c=Q("#rv .invcard");if(c){const h=c.previousElementSibling;const w=document.createElement("div");w.innerHTML=invCard();c.replaceWith(w.children[1]);}}
+async function invNew(){try{const r=await sbReq("/rest/v1/rpc/invite_create",{method:"POST",body:{}});await invLoad();if(r&&r.code)invShare(r.code)}catch(e){toast(sbMsg(e))}}
+function invShare(code){const t=`Ich lade dich zu FreshPlan ein, meiner App für Vorrat, Rezepte und Einkauf.\n\nDein Einladungscode: ${code} (gilt 14 Tage)\n\nAndroid-App: ${SB.site}FreshPlan.apk\nIm Browser oder auf dem iPhone: ${SB.site}`;shareText("Einladung zu FreshPlan",t)}
+const _pfOpenInv=pfOpen;pfOpen=function(){const r=_pfOpenInv.apply(this,arguments);try{if(typeof cloudCur=="function"&&cloudCur()){const a=document.getElementById("acct");if(a&&!Q("#rv .invcard")){a.insertAdjacentHTML("afterend",invCard());invLoad()}}}catch(e){console.error(e)}return r};
 
 // ===== Rezept per Link übernehmen (Supabase-Funktion „rezept-import“ liest die Rezeptdaten der Seite) =====
 const IMP_FR={"½":.5,"¼":.25,"¾":.75,"⅓":1/3,"⅔":2/3,"⅛":.125};
