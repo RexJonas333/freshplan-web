@@ -1,11 +1,11 @@
 {
-  "code": 30,
-  "name": "1.30",
+  "code": 32,
+  "name": "1.32",
   "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
   "date": "2026-11-05",
   "notes": [
-    "Besser lesbare Knöpfe im dunklen Design",
-    "Klarer Hinweis, wann ein Bonfoto das Gerät verlässt",
-    "Haushalt, Freunde und Markt nur mit Konto"
+    "FreshPlan nur auf Einladung: neue Konten brauchen einen Code",
+    "Im Profil Freunde einladen und Codes teilen",
+    "Besser lesbare Knöpfe im dunklen Design"
   ]
 }
