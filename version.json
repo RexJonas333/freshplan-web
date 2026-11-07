@@ -1,11 +1,11 @@
 {
-  "code": 34,
-  "name": "1.34",
+  "code": 35,
+  "name": "1.35",
   "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
   "date": "2026-11-07",
   "notes": [
-    "Sicherer: Rezepte und Sicherungen können nichts mehr kaputt machen",
-    "Wochenplaner kocht Bald-Ablaufendes rechtzeitig, Einkaufsliste ohne doppelte Mengen",
-    "Zurück-Taste schließt Fenster, Darkmode folgt dem Handy, viele Texte und Details verbessert"
+    "Wochenplan übersichtlicher: nur das heutige Gericht ist hervorgehoben",
+    "Erledigtes besser lesbar, kürzeres Bild auf Heute",
+    "Eigene Symbole für Vegan und Low Carb im Wochenplaner"
   ]
 }
