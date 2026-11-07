@@ -9,13 +9,13 @@
 /* Layout: „Bühne“. Jeder Abschnitt stellt genau eine Sache ins Licht; das Handy bleibt beim Scrollen stehen, der Bildschirm wechselt. */
 :root{
   --paper:#FFFFFF;--paper-2:#F4F7F3;--field:#EEF2EC;--ink:#0E1F17;--ink-2:#36463E;--ink-3:#56655D;
-  --brand:#0F4A36;--brand-2:#1E6E50;--mint:#E3EEE6;--honey:#8F5B1C;--line:rgba(14,31,23,.10);
-  --btn:#0F4A36;--btn-ink:#FFFFFF;--glow:rgba(46,129,96,.20);--phone:#0E1A15;--shadow:0 40px 80px -30px rgba(14,31,23,.35),0 18px 36px -24px rgba(14,31,23,.25);
+  --brand:#1B6E3F;--brand-2:#22804A;--mint:#EAF7EE;--honey:#A3530F;--line:rgba(14,31,23,.10);
+  --btn:#22804A;--btn-ink:#FFFFFF;--glow:rgba(46,129,96,.20);--phone:#0E1A15;--shadow:0 40px 80px -30px rgba(14,31,23,.35),0 18px 36px -24px rgba(14,31,23,.25);
   --sans:'Inter Var',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--mono:'Plex Mono',ui-monospace,Menlo,Consolas,monospace;
   --maxw:1180px;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#08130E;--paper-2:#0F1E17;--field:#16281F;--ink:#E9F0EB;--ink-2:#B4C3BA;--ink-3:#8C9C92;--brand:#86CFA6;--brand-2:#7CC69C;--mint:rgba(134,207,166,.12);--honey:#E2AA62;--line:rgba(225,238,230,.10);--btn:#2C8A5E;--btn-ink:#F4F9F5;--glow:rgba(134,207,166,.16);--phone:#020604;--shadow:0 40px 90px -30px rgba(0,0,0,.8);color-scheme:dark}}
-:root[data-theme="dark"]{--paper:#08130E;--paper-2:#0F1E17;--field:#16281F;--ink:#E9F0EB;--ink-2:#B4C3BA;--ink-3:#8C9C92;--brand:#86CFA6;--brand-2:#7CC69C;--mint:rgba(134,207,166,.12);--honey:#E2AA62;--line:rgba(225,238,230,.10);--btn:#2C8A5E;--btn-ink:#F4F9F5;--glow:rgba(134,207,166,.16);--phone:#020604;--shadow:0 40px 90px -30px rgba(0,0,0,.8);color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#0D1210;--paper-2:#151C18;--field:#1D2621;--ink:#EBF0EC;--ink-2:#B4C3BA;--ink-3:#8C9C92;--brand:#8EDCA8;--brand-2:#78D095;--mint:rgba(134,207,166,.12);--honey:#E2AA62;--line:rgba(225,238,230,.10);--btn:#6FCB8E;--btn-ink:#06150C;--glow:rgba(134,207,166,.16);--phone:#020604;--shadow:0 40px 90px -30px rgba(0,0,0,.8);color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#0D1210;--paper-2:#151C18;--field:#1D2621;--ink:#EBF0EC;--ink-2:#B4C3BA;--ink-3:#8C9C92;--brand:#8EDCA8;--brand-2:#78D095;--mint:rgba(134,207,166,.12);--honey:#E2AA62;--line:rgba(225,238,230,.10);--btn:#6FCB8E;--btn-ink:#06150C;--glow:rgba(134,207,166,.16);--phone:#020604;--shadow:0 40px 90px -30px rgba(0,0,0,.8);color-scheme:dark}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--ink);font:400 17px/1.55 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
@@ -97,15 +97,15 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .why-grid p{font-size:16px}
 /* Laden */
 .get{padding-block:110px;background:var(--brand);color:#F4F9F5}
-.get h2{color:#F4F9F5}.get p{color:rgba(244,249,245,.78)}.get .eye{color:#A9DBBF}
+.get h2{color:#F4F9F5}.get p{color:rgba(244,249,245,.78)}.get .eye{color:#A6E7BC}
 .get-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
 .card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:18px}
 .card h3{color:#fff}
 .card ol{margin:0;padding-left:20px;display:grid;gap:8px;color:rgba(244,249,245,.82);font-size:16px}
-.card .btn{background:#F4F9F5;color:#0F4A36;border-color:#F4F9F5;align-self:flex-start}
-.card .url{font:500 13px var(--mono);color:#A9DBBF;word-break:break-all}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .get{background:#0F2A1F}}
-:root[data-theme="dark"] .get{background:#0F2A1F}
+.card .btn{background:#F4F9F5;color:#1B6E3F;border-color:#F4F9F5;align-self:flex-start}
+.card .url{font:500 13px var(--mono);color:#A6E7BC;word-break:break-all}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .get{background:#151C18}}
+:root[data-theme="dark"] .get{background:#151C18}
 footer{padding-block:40px;font-size:14px;color:var(--ink-3)}
 footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
 /* Bewegung */

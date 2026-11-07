@@ -1,11 +1,11 @@
 {
-  "code": 35,
-  "name": "1.35",
+  "code": 36,
+  "name": "1.36",
   "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
   "date": "2026-11-07",
   "notes": [
-    "Wochenplan übersichtlicher: nur das heutige Gericht ist hervorgehoben",
-    "Erledigtes besser lesbar, kürzeres Bild auf Heute",
-    "Eigene Symbole für Vegan und Low Carb im Wochenplaner"
+    "Neue, hellere Farben: frisches Blattgrün statt Dunkelgrün",
+    "Startseite aufgeräumt: oben nur, was heute wichtig ist",
+    "Einstellungen als übersichtliche Liste mit Gruppen"
   ]
 }
