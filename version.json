@@ -1,11 +1,11 @@
 {
-  "code": 36,
-  "name": "1.36",
+  "code": 37,
+  "name": "1.37",
   "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
   "date": "2026-11-07",
   "notes": [
-    "Neue, hellere Farben: frisches Blattgrün statt Dunkelgrün",
-    "Startseite aufgeräumt: oben nur, was heute wichtig ist",
-    "Einstellungen als übersichtliche Liste mit Gruppen"
+    "Knöpfe und Karten reagieren sofort beim Antippen",
+    "Ruhigere, schnellere Übergänge zwischen den Bereichen",
+    "Fühlt sich auf dem Handy mehr wie eine echte App an"
   ]
 }
