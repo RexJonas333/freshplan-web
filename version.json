@@ -1,11 +1,7 @@
 {
-  "code": 39,
-  "name": "1.39",
-  "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
-  "date": "2026-11-18",
-  "notes": [
-    "Rückrufe: FreshPlan meldet offizielle Warnungen, die zu deinem Vorrat oder deinen Einkäufen passen",
-    "Kassenbon: erkennt das genaue Produkt mit Marke, z. B. Saint Albray statt nur Käse",
-    "Kassenbon: Obst und Fleisch nach Gewicht gehen nicht mehr verloren"
-  ]
+ "code": 40,
+ "name": "1.40",
+ "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
+ "date": "2026-11-18",
+ "notes": "Rückrufe von lebensmittelwarnung.de mit Hinweis auf betroffene Produkte im Vorrat. Bon-Scan erkennt genaue Produkte und Marken."
 }

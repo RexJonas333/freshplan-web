@@ -4745,19 +4745,32 @@ const PRODHINT={};
 const PCAT=[[/cream-cheese|fresh-cheese|frischk/,"Frischkäse"],[/chees|fromage|gouda|brie|camembert|mozzarella|emmental/,"Käse"],[/yogh?urt|skyr|quark/,"Joghurt"],[/whipping|cooking-cream|creams$|sahne/,"Sahne"],[/butter(?!milk)/,"Butter"],[/(^|:)milks|whole-milk|semi-skimmed|uht-milk|fresh-milk/,"Milch"],[/eggs/,"Eier"],[/chicken|poultry|turkey/,"Hähnchen"],[/minced|ground-meat|hack/,"Hack"],[/salmon/,"Lachs"],[/pasta|spaghetti|noodle|penne|fusilli/,"Nudeln"],[/(^|:)rices|basmati|jasmine-rice/,"Reis"],[/potato(?!-chips|-crisps)/,"Kartoffel"],[/tomato(?!-sauce|-ketchup)/,"Tomate"],[/bell-pepper|paprika/,"Paprika"],[/onion/,"Zwiebel"],[/garlic/,"Knoblauch"],[/broccoli/,"Brokkoli"],[/spinach/,"Spinat"],[/carrot/,"Karotte"],[/(^|:)apples/,"Apfel"],[/banana/,"Banane"],[/bread|baguette|bun|roll|toast|brot/,"Brot"],[/oat-flake|rolled-oat|oatmeal/,"Haferflocken"],[/lentil/,"Linsen"],[/chickpea/,"Kichererbsen"],[/tofu/,"Tofu"],[/olive-oil/,"Olivenöl"],[/ham(s|$)|schinken/,"Schinken"],
  [/sausage|salami|wurst/,"Wurst"],[/tuna/,"Thunfisch"],[/fish/,"Fisch"],[/juice|nectar/,"Saft"],[/waters|mineral-water/,"Wasser"],[/chocolate/,"Schokolade"],[/muesli|cereal|granola/,"Müsli"],[/chips|crisps/,"Chips"],[/coffee/,"Kaffee"],[/(^|:)teas|herbal-tea/,"Tee"],[/beer/,"Bier"],[/wine/,"Wein"],[/jam|marmalade|fruit-spread/,"Marmelade"],[/honey/,"Honig"],[/flour/,"Mehl"],[/sugar/,"Zucker"],[/(^|:)oils/,"Öl"],[/frozen/,"Tiefkühlware"],[/vegetable/,"Gemüse"],[/fruit/,"Obst"],[/sauce|ketchup|mayonnaise|dressing/,"Soße"],[/biscuit|cookie|cake|pastr/,"Gebäck"],[/sweet|candy|confection|gum/,"Süßigkeiten"],[/meat/,"Fleisch"]];
 const pKind=c=>{const s=(c||[]).join(" ");for(const [re,k] of PCAT)if(re.test(s))return k;return ""};
-const pN=s=>String(s||"").toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g," ").trim();
+// Umlaute auf den Grundvokal, weil Bons oft „MULLER“ statt „MÜLLER“ drucken
+const pN=s=>String(s||"").toLowerCase().replace(/ä|ae(?=[^aeiou]|$)/g,"a").replace(/ö|oe(?=[^aeiou]|$)/g,"o").replace(/ü|ue(?=[^aeiou]|$)/g,"u").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g," ").trim();
 const PSTOP=new Set("und mit ohne der die das in im aus von a je pro x g kg ml l stk st stueck pack packung gramm liter bio".split(" "));
 const pTok=s=>pN(s).split(" ").filter(w=>w.length>=2&&!PSTOP.has(w)&&!/^\d/.test(w));
 // Suchbegriff aus der Bonzeile: Mengen und Prozente raus, Abkürzungspunkte zu Leerzeichen
 const pQuery=x=>String(x.raw||x.name||"").replace(/\d+[.,]?\d*\s*(%|g|kg|ml|l|st|stk)\b/gi," ").replace(/[.\/]/g," ").replace(/\s+/g," ").trim().slice(0,70);
-function pScore(x,c){const it=pTok(pQuery(x)),ct=pTok(c.n+" "+c.b);if(!it.length||!ct.length)return 0;let hit=0,long=0;
- for(const w of it){const ok=ct.some(v=>v==w||(w.length>=3&&v.startsWith(w))||(v.length>=4&&w.startsWith(v)));if(ok){hit++;if(w.length>=4)long++}}
- if(!long)return 0;let s=hit/it.length;if(c.c&&c.c.length)s+=.08;if(c.b)s+=.04;s+=Math.min(.06,Math.log10(1+(c.s||0))/50);return s}
+// Treffer nur, wenn alle Wörter der Bonzeile im Produkt vorkommen (bei langen Zeilen darf eins fehlen); kurze Kürzel wie „ST“ zählen nur als Bonus
+function pScore(x,c){const all=pTok(pQuery(x)),it=all.filter(w=>w.length>=3),ct=pTok(c.n+" "+c.b);if(!it.length||!ct.length)return 0;let hit=0,long=0;
+ const m=w=>ct.some(v=>v==w||(w.length>=3&&v.startsWith(w))||(v.length>=4&&w.startsWith(v)));
+ for(const w of it)if(m(w)){hit++;if(w.length>=4)long++}
+ if(!long||!(hit==it.length||(it.length>=4&&hit>=it.length-1)))return 0;
+ const extra=pTok(c.n).filter(v=>!all.some(w=>v==w||v.startsWith(w)||w.startsWith(v))).length;
+ let s=hit/it.length-Math.min(.15,.03*extra);if(c.c&&c.c.length)s+=.08;if(c.b)s+=.04;s+=Math.min(.06,Math.log10(1+(c.s||0))/50);return s}
+// Passende Marke aus „Barilla Norge AS, Barilla“: die, die auf dem Bon steht, sonst die kürzeste
+function pBrand(c,x){const seg=String(c.b||"").split(",").map(t=>t.trim()).filter(Boolean);if(!seg.length)return"";const q=pTok(pQuery(x)+" "+c.n);
+ const hit=seg.filter(b=>pTok(b).every(w=>q.some(v=>v==w||v.startsWith(w)||w.startsWith(v))));return(hit.length?hit:seg).sort((a,b)=>a.length-b.length)[0]}
 const pTitle=s=>String(s||"").replace(/(^|[\s\-&/])([a-zäöü])/g,(m,a,b)=>a+b.toUpperCase());
-function pName(c,x){const br=String(c.b||"").split(",")[0].trim();let n=String(c.n||"").trim();
- if(br&&n.toLowerCase().startsWith(br.toLowerCase()))n=br+n.slice(br.length);else if(br&&!n.toLowerCase().includes(br.toLowerCase()))n=br+" "+n;
+// Name für die App: nur mit Marke vom Bon; hat die Datenbank zusätzliche Sortenwörter, bleibt der Bon-Name (plus Marke)
+function pName(c,x){const br=pBrand(c,x),qt=pTok(pQuery(x)),has=(a,b)=>pN(a).includes(pN(b));
+ if(br&&!pTok(br).some(w=>qt.some(v=>v==w||(w.length>=4&&v.length>=4&&(v.startsWith(w)||w.startsWith(v))))))return "";
+ const extra=pTok(c.n).filter(v=>!qt.some(w=>v==w||v.startsWith(w)||w.startsWith(v))).length;
+ let n=String(c.n||"").trim();const dash=n.match(/^([^-–]{2,24})\s[-–]\s(.+)$/);if(dash&&br&&has(dash[2],br))n=dash[2];
+ if(extra>=2){n=String(x.name||"").trim();if(br&&!has(n,br))n=br+" "+n;return n.slice(0,60)}
+ if(br&&pN(n).startsWith(pN(br)))n=br+n.slice(br.length);else if(br&&!has(n,br))n=br+" "+n;
  if(n==n.toLowerCase()||/^[a-zäöü]/.test(n))n=pTitle(n);
- const q=String(c.q||"").replace(/\s+/g," ").trim();if(q&&q.length<=10&&/\d/.test(q)&&!/pcs|stk|stück/i.test(q)&&!n.includes(q))n+=" "+q;return n.slice(0,60)}
+ const q=String(c.q||"").replace(/\s+/g," ").trim();if(q&&q.length<=10&&/\d/.test(q)&&!/pcs|stk|stück|ca/i.test(q)&&!n.includes(q))n+=" "+q;return n.slice(0,60)}
 async function prodEnrich(){const R=RV;if(!R||!Array.isArray(R.items)||!R.items.length||R.pst)return;
  const idx=R.items.map((x,i)=>i).filter(i=>{const x=R.items[i];return pQuery(x).replace(/[^A-Za-zÄÖÜäöüß]/g,"").length>=3}).slice(0,30);if(!idx.length)return;
  R.pst="busy";rvDraw();let res=null;
@@ -4765,10 +4778,10 @@ async function prodEnrich(){const R=RV;if(!R||!Array.isArray(R.items)||!R.items.
  if(RV!==R)return;
  if(!Array.isArray(res)){R.pst="off";rvDraw();return}
  let n=0;idx.forEach((i,k)=>{const x=R.items[i],cs=(res[k]||[]).map(c=>({...c,sc:pScore(x,c)})).filter(c=>c.sc>=.62).sort((a,b)=>b.sc-a.sc);if(!cs.length)return;
-  const c=cs[0];x.alts=cs.slice(0,3);x.prod={n:pName(c,x),b:String(c.b||"").split(",")[0].trim(),kind:x.kind||pKind(c.c),code:c.code};
+  const c=cs[0],pn=pName(c,x);x.alts=cs.slice(0,3).filter(a=>pName(a,x));x.prod=pn?{n:pn,b:pBrand(c,x),kind:x.kind||pKind(c.c),code:c.code}:{n:x.name,b:"",kind:x.kind||pKind(c.c),code:"",only:1};if(!x.prod.kind&&x.prod.only){x.prod=null;return}
   const ki=x.brand&&R.eng&&R.eng!="local"&&R.eng!="device";if(!x.keep&&!ki){if(!x.raw)x.raw=x.name;x.name=x.prod.n;if(x.ok===false)x.ok=true}n++});
  R.pst=n?"done":"none";rvDraw()}
-function prodPick(i,k){const x=RV.items[i];if(!x)return;if(k<0){x.keep=1;x.name=x.raw||x.name;x.prod=null}else{const c=x.alts&&x.alts[k];if(!c)return;x.keep=0;x.prod={n:pName(c,x),b:String(c.b||"").split(",")[0].trim(),kind:x.kind||pKind(c.c),code:c.code};x.name=x.prod.n;x.alt=k}rvDraw()}
+function prodPick(i,k){const x=RV.items[i];if(!x)return;if(k<0){x.keep=1;x.name=x.raw||x.name;x.prod=null}else{const c=x.alts&&x.alts[k];if(!c)return;x.keep=0;x.prod={n:pName(c,x),b:pBrand(c,x),kind:x.kind||pKind(c.c),code:c.code};x.name=x.prod.n;x.alt=k}rvDraw()}
 // Zusatzzeile unter jedem Artikel in der Bon-Prüfung
 const _rvDrawP=rvDraw;rvDraw=function(){const r=_rvDrawP.apply(this,arguments);try{const inn=Q("#rv .rv-in");if(!inn||!RV||!RV.items)return r;
  const st=RV.pst=="busy"?"Produkte werden in der Datenbank gesucht …":RV.pst=="done"?"Genaue Produkte aus der Datenbank Open Food Facts zugeordnet. Bitte kurz prüfen.":RV.pst=="off"?"Produktdatenbank gerade nicht erreichbar, Namen stammen vom Bon.":"";
