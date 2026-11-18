@@ -4823,7 +4823,10 @@ function rkMatchAll(){const bl=rkBL(),now=Date.now(),R=(RK.items||[]).filter(r=>
    let lvl=0;if(h.code&&h.code.length>=8&&txt.includes(h.code))lvl=2;
    if(!lvl){const it=rkT(h.n+" "+h.b),same=it.filter(w=>rt.some(v=>v==w||(w.length>=5&&v.length>=5&&(v.startsWith(w)||w.startsWith(v)))));
     const strong=same.filter(w=>!gen(w)),g=same.filter(gen);
-    if(strong.length&&(g.length||strong.length>=2))lvl=2;
+    // „wahrscheinlich“ nur mit Marke oder Hersteller: erstes Wort der Produktbezeichnung, Hersteller, Bildquelle
+    const pt0=rkT(r.p||r.t),bt=new Set([pt0[0],...rkT(r.m),...(r.q&&!/bild|kundenaushang|website|pr[uü]fbericht|beh[oö]rde/i.test(r.q)?rkT(r.q):[])].filter(w=>w&&!gen(w)));
+    const brand=same.some(w=>bt.has(w)||[...bt].some(v=>v.length>=5&&w.length>=5&&(v.startsWith(w)||w.startsWith(v))));
+    if(brand&&(same.length>=2||/produkte|sorten|artikel\b|sortiment/i.test(r.p+" "+r.t)))lvl=2;
     else if(h.inv&&(g.length||strong.length)&&rd&&now-rd<21*864e5){const pt=rkT(r.p||r.t),head=pt[pt.length-1];if(same.includes(head)||same.some(w=>head&&head.startsWith(w)&&w.length>=5))lvl=1}}
    if(lvl&&(!best||lvl>best.lvl))best={r,h,lvl}});
   if(best)res.push(best)});
