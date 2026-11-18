@@ -1,11 +1,11 @@
 {
-  "code": 37,
-  "name": "1.37",
+  "code": 38,
+  "name": "1.38",
   "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
-  "date": "2026-11-07",
+  "date": "2026-11-18",
   "notes": [
-    "Knöpfe und Karten reagieren sofort beim Antippen",
-    "Ruhigere, schnellere Übergänge zwischen den Bereichen",
-    "Fühlt sich auf dem Handy mehr wie eine echte App an"
+    "Rückrufe: FreshPlan meldet offizielle Warnungen, die zu deinem Vorrat oder deinen Einkäufen passen",
+    "Kassenbon: erkennt das genaue Produkt mit Marke, z. B. Saint Albray statt nur Käse",
+    "Kassenbon: Obst und Fleisch nach Gewicht gehen nicht mehr verloren"
   ]
 }

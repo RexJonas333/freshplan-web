@@ -1646,8 +1646,8 @@ const rvEl=()=>{let e=document.getElementById("rv");if(!e){e=document.createElem
 const rvClose=()=>{const e=document.getElementById("rv");if(e)e.remove()};
 function shrink(file){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(file);im.onload=()=>{const k=Math.min(1,1800/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?res(b):rej(new Error("blob")),"image/jpeg",.88)};im.onerror=()=>rej(new Error("img"));im.src=u})}
 const OCRP=`Du liest einen Kassenbon oder Einkaufszettel auf dem Foto. Gib ausschließlich JSON ohne weiteren Text zurück:
-{"store":string|null,"date":"JJJJ-MM-TT"|null,"items":[{"name":string,"qty":number,"price":number}]}
-Regeln: Nur gekaufte Lebensmittel und Getränke aufnehmen; Non-Food wie Tüten, Haushalts-, Drogerie- und Zeitschriftenartikel weglassen. Zeilen mit Gewicht oder Einzelpreis (z. B. 0,428 kg x 2,99 EUR/kg) gehören zum Artikel darüber. Summe, Zwischensumme, MwSt, Zahlungsart, Rückgeld, Pfand, Rabatt- und Werbezeilen weglassen. Abkürzungen auf Kassenbons in einen gut lesbaren deutschen Produktnamen auflösen (z. B. "BIO VOLLM 1L" wird "Bio-Vollmilch 1 L"). qty ist die gekaufte Stückzahl (Standard 1; bei Wiegeware 1). price ist der Einzelpreis in Euro als Zahl mit Punkt (ohne Währungszeichen); steht nur der Zeilenbetrag da, teile ihn durch qty; ohne erkennbaren Preis 0. Ist das Foto kein Beleg oder nicht lesbar, gib {"store":null,"date":null,"items":[]} zurück.`;
+{"store":string|null,"date":"JJJJ-MM-TT"|null,"items":[{"name":string,"brand":string|null,"kind":string,"qty":number,"price":number}]}
+Regeln: Nur gekaufte Lebensmittel und Getränke aufnehmen; Non-Food wie Tüten, Haushalts-, Drogerie- und Zeitschriftenartikel weglassen. Zeilen mit Gewicht oder Einzelpreis (z. B. 0,428 kg x 2,99 EUR/kg) gehören zum Artikel darüber. Summe, Zwischensumme, MwSt, Zahlungsart, Rückgeld, Pfand, Rabatt- und Werbezeilen weglassen. name ist das genaue Produkt so, wie es auf der Packung heißt, mit Marke und Sorte, nicht nur die Warengruppe; Abkürzungen auflösen (z. B. "ST.ALBRAY 180G" wird "Saint Albray 180 g", "MILB.JOGH.NAT" wird "Milbona Naturjoghurt", "BIO VOLLM 1L" wird "Bio-Vollmilch 1 L"). Eigenmarken der Händler (z. B. Milbona, Pilos, Milsani, ja!, Gut&Günstig, K-Classic) gelten als Marke. brand ist die Marke oder null, wenn keine erkennbar ist. kind ist die allgemeine Lebensmittelart auf Deutsch in einem Wort (z. B. "Käse", "Joghurt", "Milch", "Brot", "Bananen"). qty ist die gekaufte Stückzahl (Standard 1; bei Wiegeware 1). price ist der Einzelpreis in Euro als Zahl mit Punkt (ohne Währungszeichen); steht nur der Zeilenbetrag da, teile ihn durch qty; ohne erkennbaren Preis 0. Ist das Foto kein Beleg oder nicht lesbar, gib {"store":null,"date":null,"items":[]} zurück.`;
 async function ocr(inp){const file=inp.files&&inp.files[0];inp.value="";if(!file)return;
  const ctl=new AbortController(),el=rvEl();el.innerHTML=`<div class="rv-in rv-c"><div class="spin"></div><b>Beleg wird gelesen</b><div class="mu" id="rvs" style="margin:4px 0 16px">Das dauert einige Sekunden.</div><button id="rvx">Abbrechen</button></div>`;
  document.getElementById("rvx").onclick=()=>{ctl.abort();rvClose()};
@@ -1656,7 +1656,7 @@ async function ocr(inp){const file=inp.files&&inp.files[0];inp.value="";if(!file
  for(const eng of [SMP?"claude":null,S.cfg.apiKey?"api":null,"local"].filter(Boolean)){if(ctl.signal.aborted)return;const st=document.getElementById("rvs");if(st)st.innerHTML=eng=="claude"?"<b>Claude-KI</b> liest den Bon …":eng=="api"?"<b>Claude-KI</b> (dein API-Schlüssel) liest den Bon …":"<b>Einfache Texterkennung ohne KI</b> wird geladen …";
   try{window.OCRENG=eng;r=await tmo(eng=="claude"?SMP.json(OCRP,{images:[blob],signal:ctl.signal,cache:false}):eng=="api"?viaApi(blob,ctl):viaLocal(blob,ctl),eng=="local"?120000:70000);last=null;break}catch(e){if(ctl.signal.aborted)return;last=e;r=null;(window.OCRERR=window.OCRERR||[]).push(eng+": "+(e&&(e.code||e.message)))}}
  if(ctl.signal.aborted)return;if(!r)return ocrFail(last);
- const it=(Array.isArray(r&&r.items)?r.items:[]).map(x=>({name:String(x.name||"").trim().slice(0,60),qty:Math.max(1,Math.round(+x.qty||1)),price:Math.max(0,+x.price||0),ok:x.ok})).filter(x=>x.name);
+ const it=(Array.isArray(r&&r.items)?r.items:[]).map(x=>({name:String(x.name||"").trim().slice(0,60),qty:Math.max(1,Math.round(+x.qty||1)),price:Math.max(0,+x.price||0),ok:x.ok,raw:String(x.raw||x.name||"").trim().slice(0,60),brand:String(x.brand||"").trim().slice(0,40),kind:String(x.kind||"").trim().slice(0,30),kg:+x.kg||0})).filter(x=>x.name);
  if(!it.length){rvClose();return toast("Auf dem Foto wurden keine Artikel erkannt.")}
  RV={items:it,store:String(r.store||"").slice(0,40),eng:window.OCRENG};rvDraw()}
 function ocrFail(e){const c=e&&e.code,m=e&&e.message,why=c=="img"?"Das Foto konnte nicht geöffnet werden. Versuche ein anderes Foto im JPG- oder PNG-Format.":c=="timeout"?"Die Erkennung hat zu lange gebraucht.":c=="not_granted"?"Der Zugriff auf die Belegerkennung wurde nicht erlaubt.":c=="rate_limited"?"Gerade sind zu viele Anfragen unterwegs. Bitte kurz warten.":c=="auth"?"Der API-Schlüssel wurde nicht akzeptiert.":m=="load"||/fetch|network|load/i.test(m||"")?"Die Texterkennung konnte nicht geladen werden. Dafür ist eine Internetverbindung nötig.":"Der Beleg konnte nicht gelesen werden.";
@@ -3621,7 +3621,7 @@ const OCRAB={"VOLLM":"Vollmilch","H-MI":"H-Milch","HALTB":"haltbar","FETTARM":"f
 const ocrUml=w=>w.replace(/([^aeiouäöüq])(ae|oe|ue)/gi,(m,a,b)=>a+({ae:"ä",oe:"ö",ue:"ü",AE:"Ä",OE:"Ö",UE:"Ü",Ae:"Ä",Oe:"Ö",Ue:"Ü"}[b]||b)).replace(/^(ae|oe|ue)/i,b=>({ae:"Ä",oe:"Ö",ue:"Ü"}[b.toLowerCase()]));
 function ocrName(n){n=n.replace(/[|_~«»"“”‚‘’`]/g," ").replace(/\b(\d{2,3})6\b/g,(m,a)=>[10,12,15,20,25,30,40,45,50,75,100,125,150,200,250,300,400,450,500,750].includes(+a)?a+"g":m).replace(/\b(\d{2,3})[6G]\b/g,"$1g").replace(/\s+/g," ").trim();
  const w=n.split(" ").map(t=>{const u=t.toUpperCase();if(OCRAB[u])return OCRAB[u];if(/^\d/.test(t))return t.replace(/G$/,"g").replace(/L$/,"l").replace(/KG$/i,"kg").replace(/ST$/i,"Stk");if(t.length<=2&&!/[a-zäöü]/.test(t))return t;
-  const l=ocrUml(t.toLowerCase());return l});
+  const l=ocrUml(t.toLowerCase());return /^(und|mit|ohne|in|aus|im|vom|von|zum|zur|der|die|das|auf|a|à|je|pro|oder)$/.test(l)?l:l.replace(/(^|[-&/.])([a-zäöü])/g,(m,a,b)=>a+b.toUpperCase())});
  let s=w.join(" ");s=s.charAt(0).toUpperCase()+s.slice(1);return s.slice(0,60)}
 const OCRN=s=>s.toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss");
 // Zeilen auswerten: Preis am Ende (auch mit typischen Lesefehlern), Mengen- und Gewichtszeilen davor oder danach
@@ -3629,18 +3629,26 @@ function lines2items2(txt){const SK=/summe|gesamt|zwischens|mwst|mehrwertst|\bus
  const PR=/(?:^|\s)(-?)([0-9OoIlSB]{1,3})\s?[.,]\s?([0-9OoIlSB]{2})(?:\s*(?:€|EUR))?\s*(?:[A-Z*]{1,2}|[0-9]|[*])?(?:\s+[|\\ı1l'‚,.;:}\])]){0,2}\s*$/;
  const fix=s=>s.replace(/[Oo]/g,"0").replace(/[Il]/g,"1").replace(/S/g,"5").replace(/B/g,"8");
  const QX=/^\s*(\d{1,2})\s*(?:st(?:c?k)?\.?|stück)?\s*[x×*]\s*([0-9OoIlS]{1,3}\s?[.,]\s?[0-9OoIlS]{2})/i,WG=/(\d+[.,]\d{1,3})\s*kg\s*[x×*]\s*([0-9]{1,3}[.,][0-9]{2})/i;
- const items=[];let pq=0,pu=0;const lines=txt.split("\n").map(l=>l.replace(/\s+/g," ").trim()).filter(Boolean);
+ const items=[];let pq=0,pu=0,pend=null;const lines=txt.split("\n").map(l=>l.replace(/\s+/g," ").trim()).filter(Boolean);
  const cat=n=>{const l=OCRN(n);return NONRX.test(l)||/pfand|tragetasche|spuel|kuechenrolle|taschentu|muellbeutel|waschmittel/.test(l)?-1:FOODRX.test(n.toLowerCase())||FOODRX.test(l)||FOODRX.test(ocrUml(l))?1:0};
- for(let i=0;i<lines.length;i++){const l=lines[i];if(SK.test(l)){pq=0;continue}
+ for(let i=0;i<lines.length;i++){const l=lines[i];
+  const wg=l.match(WG);if(wg&&l.replace(WG,"").replace(/eur|kg|€|\b[A-Z]\b/gi,"").replace(/[^A-Za-zÄÖÜäöü]/g,"").length<3){pq=0;
+   // Wiegeware: Name steht in der Zeile davor (ohne Preis), der Betrag in der Gewichtszeile
+   const kg=parseFloat(wg[1].replace(",",".")),pm=l.slice(wg.index+wg[0].length).match(PR),tot=pm?parseFloat(fix(pm[2])+"."+fix(pm[3])):+(kg*parseFloat(wg[2].replace(",","."))).toFixed(2);
+   const prev=items[items.length-1];
+   if(pend&&pend.i==i-1&&tot>0&&tot<300){const c=cat(pend.n);if(c>=0)items.push({name:ocrName(pend.n),raw:pend.n.trim().slice(0,60),qty:1,price:tot,ok:c==1,line:i,kg})}
+   else if(prev&&prev.line==i-1)prev.kg=kg;
+   pend=null;continue}
+  if(SK.test(l)){pq=0;pend=null;continue}
   const q=l.match(QX);if(q&&l.replace(q[0],"").replace(/[^A-Za-zÄÖÜäöü]/g,"").length<3){const n=+q[1],up=parseFloat(fix(q[2]).replace(",",".").replace(/\s/g,""));
    // Mengenzeile nach dem Artikel: Stückzahl am vorigen Artikel nachtragen
-   const prev=items[items.length-1];if(prev&&prev.line==i-1&&Math.abs(prev.price-n*up)<.03&&prev.qty==1){prev.qty=n;prev.price=up;pq=0}else{pq=n;pu=up}continue}
-  if(WG.test(l)&&l.replace(WG,"").replace(/[^A-Za-zÄÖÜäöü]/g,"").length<4){pq=0;continue}
-  const m=l.match(PR);if(!m){pq=0;continue}if(m[1]=="-"){pq=0;continue}
+   const prev=items[items.length-1];if(prev&&prev.line==i-1&&prev.qty==1&&(Math.abs(prev.price-n*up)<.03||Math.abs(prev.price-up)<.03)){prev.qty=n;prev.price=up;pq=0}else{pq=n;pu=up}continue}
+
+  const m=l.match(PR);if(!m){pq=0;pend=l.replace(/[^A-Za-zÄÖÜäöüß]/g,"").length>=3?{n:l.replace(/^\d{4,8}\s+/,""),i}:null;continue}pend=null;if(m[1]=="-"){pq=0;continue}
   const pr=parseFloat(fix(m[2])+"."+fix(m[3]));let nm=l.slice(0,m.index).trim();const lq=nm.match(/^\s*(\d{1,2})\s*[x×]\s+/i);let qn=pq&&Math.abs(pr-pq*pu)<.03?pq:1;if(lq){qn=+lq[1];nm=nm.slice(lq[0].length)}pq=0;
-  nm=nm.replace(/\s+\d{1,4}\s*$/,m2=>/\d{4}/.test(m2)?"":m2);
+  nm=nm.replace(/\s+\d{1,4}\s*$/,m2=>/\d{4}/.test(m2)?"":m2).replace(/^\s*\d{4,8}\s+/,"");
   if(nm.replace(/[^A-Za-zÄÖÜäöüß]/g,"").length<3||!(pr>0)||pr>300)continue;const c=cat(nm);if(c<0)continue;
-  items.push({name:ocrName(nm),qty:qn,price:+(pr/qn).toFixed(2),ok:c==1,line:i})}
+  items.push({name:ocrName(nm),raw:nm.trim().slice(0,60),qty:qn,price:+(pr/qn).toFixed(2),ok:c==1,line:i})}
  // Wiederholte Einzelzeilen desselben Artikels zusammenfassen
  const out=[];items.forEach(x=>{const o=out.find(y=>y.name==x.name&&Math.abs(y.price-x.price)<.005);if(o)o.qty+=x.qty;else out.push(x)});
  return{store:"",items:out.map(({line,...x})=>x)}}
@@ -4728,6 +4736,168 @@ function fp7Post(){const m=document.getElementById("m");if(!m)return;
  const li=document.getElementById("li");if(li&&!li.hasAttribute("enterkeyhint"))li.setAttribute("enterkeyhint","done");
  const bm=document.getElementById("bm");if(bm&&!bm.hasAttribute("inputmode"))bm.setAttribute("inputmode","numeric")}
 const _drw7=draw;draw=function(){const r=_drw7.apply(this,arguments);try{fp7Post()}catch(e){console.error(e)}return r};
+// ===== Bon-Scan: genaues Produkt mit Marke über Open Food Facts (Server-Funktion „produkte“) =====
+// Nach der Texterkennung wird jede Bonzeile in der Produktdatenbank gesucht. Bei einem sicheren Treffer
+// wird aus „St.albray 180g“ „Saint Albray 180 g“ (Marke Savencia, Art Käse). Die Bonzeile bleibt sichtbar.
+const PRODU=SB.u+"/functions/v1/produkte";
+const PRODHINT={};
+// Open-Food-Facts-Kategorien -> Art (die ersten Einträge passen zu den Haltbarkeiten in der App)
+const PCAT=[[/cream-cheese|fresh-cheese|frischk/,"Frischkäse"],[/chees|fromage|gouda|brie|camembert|mozzarella|emmental/,"Käse"],[/yogh?urt|skyr|quark/,"Joghurt"],[/whipping|cooking-cream|creams$|sahne/,"Sahne"],[/butter(?!milk)/,"Butter"],[/(^|:)milks|whole-milk|semi-skimmed|uht-milk|fresh-milk/,"Milch"],[/eggs/,"Eier"],[/chicken|poultry|turkey/,"Hähnchen"],[/minced|ground-meat|hack/,"Hack"],[/salmon/,"Lachs"],[/pasta|spaghetti|noodle|penne|fusilli/,"Nudeln"],[/(^|:)rices|basmati|jasmine-rice/,"Reis"],[/potato(?!-chips|-crisps)/,"Kartoffel"],[/tomato(?!-sauce|-ketchup)/,"Tomate"],[/bell-pepper|paprika/,"Paprika"],[/onion/,"Zwiebel"],[/garlic/,"Knoblauch"],[/broccoli/,"Brokkoli"],[/spinach/,"Spinat"],[/carrot/,"Karotte"],[/(^|:)apples/,"Apfel"],[/banana/,"Banane"],[/bread|baguette|bun|roll|toast|brot/,"Brot"],[/oat-flake|rolled-oat|oatmeal/,"Haferflocken"],[/lentil/,"Linsen"],[/chickpea/,"Kichererbsen"],[/tofu/,"Tofu"],[/olive-oil/,"Olivenöl"],[/ham(s|$)|schinken/,"Schinken"],
+ [/sausage|salami|wurst/,"Wurst"],[/tuna/,"Thunfisch"],[/fish/,"Fisch"],[/juice|nectar/,"Saft"],[/waters|mineral-water/,"Wasser"],[/chocolate/,"Schokolade"],[/muesli|cereal|granola/,"Müsli"],[/chips|crisps/,"Chips"],[/coffee/,"Kaffee"],[/(^|:)teas|herbal-tea/,"Tee"],[/beer/,"Bier"],[/wine/,"Wein"],[/jam|marmalade|fruit-spread/,"Marmelade"],[/honey/,"Honig"],[/flour/,"Mehl"],[/sugar/,"Zucker"],[/(^|:)oils/,"Öl"],[/frozen/,"Tiefkühlware"],[/vegetable/,"Gemüse"],[/fruit/,"Obst"],[/sauce|ketchup|mayonnaise|dressing/,"Soße"],[/biscuit|cookie|cake|pastr/,"Gebäck"],[/sweet|candy|confection|gum/,"Süßigkeiten"],[/meat/,"Fleisch"]];
+const pKind=c=>{const s=(c||[]).join(" ");for(const [re,k] of PCAT)if(re.test(s))return k;return ""};
+const pN=s=>String(s||"").toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g," ").trim();
+const PSTOP=new Set("und mit ohne der die das in im aus von a je pro x g kg ml l stk st stueck pack packung gramm liter bio".split(" "));
+const pTok=s=>pN(s).split(" ").filter(w=>w.length>=2&&!PSTOP.has(w)&&!/^\d/.test(w));
+// Suchbegriff aus der Bonzeile: Mengen und Prozente raus, Abkürzungspunkte zu Leerzeichen
+const pQuery=x=>String(x.raw||x.name||"").replace(/\d+[.,]?\d*\s*(%|g|kg|ml|l|st|stk)\b/gi," ").replace(/[.\/]/g," ").replace(/\s+/g," ").trim().slice(0,70);
+function pScore(x,c){const it=pTok(pQuery(x)),ct=pTok(c.n+" "+c.b);if(!it.length||!ct.length)return 0;let hit=0,long=0;
+ for(const w of it){const ok=ct.some(v=>v==w||(w.length>=3&&v.startsWith(w))||(v.length>=4&&w.startsWith(v)));if(ok){hit++;if(w.length>=4)long++}}
+ if(!long)return 0;let s=hit/it.length;if(c.c&&c.c.length)s+=.08;if(c.b)s+=.04;s+=Math.min(.06,Math.log10(1+(c.s||0))/50);return s}
+const pTitle=s=>String(s||"").replace(/(^|[\s\-&/])([a-zäöü])/g,(m,a,b)=>a+b.toUpperCase());
+function pName(c,x){const br=String(c.b||"").split(",")[0].trim();let n=String(c.n||"").trim();
+ if(br&&n.toLowerCase().startsWith(br.toLowerCase()))n=br+n.slice(br.length);else if(br&&!n.toLowerCase().includes(br.toLowerCase()))n=br+" "+n;
+ if(n==n.toLowerCase()||/^[a-zäöü]/.test(n))n=pTitle(n);
+ const q=String(c.q||"").replace(/\s+/g," ").trim();if(q&&q.length<=10&&/\d/.test(q)&&!/pcs|stk|stück/i.test(q)&&!n.includes(q))n+=" "+q;return n.slice(0,60)}
+async function prodEnrich(){const R=RV;if(!R||!Array.isArray(R.items)||!R.items.length||R.pst)return;
+ const idx=R.items.map((x,i)=>i).filter(i=>{const x=R.items[i];return pQuery(x).replace(/[^A-Za-zÄÖÜäöüß]/g,"").length>=3}).slice(0,30);if(!idx.length)return;
+ R.pst="busy";rvDraw();let res=null;
+ try{const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),15000);const r=await fetch(PRODU,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({qs:idx.map(i=>pQuery(R.items[i]))}),signal:ac.signal});clearTimeout(tm);if(r.ok)res=(await r.json()).res}catch(e){}
+ if(RV!==R)return;
+ if(!Array.isArray(res)){R.pst="off";rvDraw();return}
+ let n=0;idx.forEach((i,k)=>{const x=R.items[i],cs=(res[k]||[]).map(c=>({...c,sc:pScore(x,c)})).filter(c=>c.sc>=.62).sort((a,b)=>b.sc-a.sc);if(!cs.length)return;
+  const c=cs[0];x.alts=cs.slice(0,3);x.prod={n:pName(c,x),b:String(c.b||"").split(",")[0].trim(),kind:x.kind||pKind(c.c),code:c.code};
+  const ki=x.brand&&R.eng&&R.eng!="local"&&R.eng!="device";if(!x.keep&&!ki){if(!x.raw)x.raw=x.name;x.name=x.prod.n;if(x.ok===false)x.ok=true}n++});
+ R.pst=n?"done":"none";rvDraw()}
+function prodPick(i,k){const x=RV.items[i];if(!x)return;if(k<0){x.keep=1;x.name=x.raw||x.name;x.prod=null}else{const c=x.alts&&x.alts[k];if(!c)return;x.keep=0;x.prod={n:pName(c,x),b:String(c.b||"").split(",")[0].trim(),kind:x.kind||pKind(c.c),code:c.code};x.name=x.prod.n;x.alt=k}rvDraw()}
+// Zusatzzeile unter jedem Artikel in der Bon-Prüfung
+const _rvDrawP=rvDraw;rvDraw=function(){const r=_rvDrawP.apply(this,arguments);try{const inn=Q("#rv .rv-in");if(!inn||!RV||!RV.items)return r;
+ const st=RV.pst=="busy"?"Produkte werden in der Datenbank gesucht …":RV.pst=="done"?"Genaue Produkte aus der Datenbank Open Food Facts zugeordnet. Bitte kurz prüfen.":RV.pst=="off"?"Produktdatenbank gerade nicht erreichbar, Namen stammen vom Bon.":"";
+ if(st){const d=document.createElement("div");d.className="pst mu";d.setAttribute("role","status");d.textContent=st;const h=inn.querySelector("h1");h&&h.nextElementSibling?h.nextElementSibling.after(d):inn.prepend(d)}
+ const rows=[...inn.querySelectorAll(".rv-r")].filter(e=>!e.classList.contains("mu"));
+ RV.items.forEach((x,i)=>{const row=rows[i];if(!row)return;const raw=x.raw&&x.raw.toLowerCase()!=String(x.name).toLowerCase()?x.raw:"";
+  if(!x.prod&&!raw&&!(x.alts&&x.alts.length))return;const d=document.createElement("div");d.className="psub mu";
+  let h="";if(x.prod){const k=x.prod.kind?" · "+esc(x.prod.kind):"";h+=`<span><b>${esc(x.prod.n)}</b>${x.prod.b&&!x.prod.n.toLowerCase().includes(x.prod.b.toLowerCase())?" · "+esc(x.prod.b):""}${k}</span>`}
+  if(raw)h+=`<span>Bon: ${esc(raw)}</span>`;
+  const alts=(x.alts||[]).map((c,k)=>k).filter(k=>!x.prod||k!=(x.alt||0));
+  if(alts.length)h+=`<button class="lnk" onclick="prodPick(${i},${alts[0]})">Anderes Produkt</button>`;
+  if(x.prod&&raw)h+=`<button class="lnk" onclick="prodPick(${i},-1)">Bon-Text nehmen</button>`;
+  d.innerHTML=h;row.after(d)})}catch(e){}return r};
+// Nach jedem Scan suchen
+const _ocrP=ocr;ocr=async function(){const r=await _ocrP.apply(this,arguments);try{if(RV&&RV.items&&RV.items.length&&!RV.pst)prodEnrich()}catch(e){}return r};
+// Beim Übernehmen: Art für die Haltbarkeit, Marke und Barcode am Artikel merken
+const _rvOkP=rvOk;rvOk=function(){try{(RV.items||[]).forEach(x=>{const k=x.prod&&x.prod.kind||x.kind||"";if(x.name)PRODHINT[x.name]={kind:k,brand:x.prod&&x.prod.b||x.brand||"",code:x.prod&&x.prod.code||"",raw:x.raw||""}})}catch(e){}return _rvOkP.apply(this,arguments)};
+const _mkP=mk;mk=function(name,qty,price,store){const h=PRODHINT[name];if(!h)return _mkP.apply(this,arguments);
+ let it;if(!find(name)&&h.kind&&find(h.kind)){it=_mkP.call(this,h.kind,qty,price,store);it.name=name}else it=_mkP.apply(this,arguments);
+ if(h.brand)it.brand=h.brand;if(h.code)it.code=h.code;if(h.kind)it.kind=h.kind;return it};
+(function(){const s=document.createElement("style");s.textContent=`
+.pst{margin:-4px 0 10px;font-size:13px}
+.psub{display:flex;flex-wrap:wrap;justify-content:flex-start;text-align:left;gap:2px 14px;align-items:center;width:auto;margin:-4px 0 10px 34px;font-size:12.5px;line-height:1.4}
+#rv .psub .lnk{display:inline-flex;flex:0 0 auto;width:auto;height:auto;min-height:32px;margin:0;padding:4px 0;background:none;border:0;box-shadow:none;border-radius:0;color:var(--brand-600);font:inherit;font-weight:600;cursor:pointer}
+.psub .lnk:focus-visible{outline:2px solid var(--brand-500);outline-offset:2px;border-radius:4px}`;document.head.appendChild(s)})();
+// ===== Rückrufe: offizielle Warnungen von lebensmittelwarnung.de, abgeglichen mit Vorrat und Einkäufen =====
+// Quelle: Server-Funktion „rueckrufe“ (liest den RSS-Feed des Portals der Bundesländer und des BVL).
+// Treffer „wahrscheinlich“: Marke oder besonderes Wort plus Produktart stimmen überein -> Karte auf Heute + Benachrichtigung.
+// Treffer „prüfen“: nur die Produktart stimmt (z. B. Leberwurst) -> nur in der Rückruf-Übersicht.
+const RKU=SB.u+"/functions/v1/rueckrufe";
+const RKBL={BW:"Baden-Württemberg",BY:"Bayern",BE:"Berlin",BB:"Brandenburg",HB:"Bremen",HH:"Hamburg",HE:"Hessen",MV:"Mecklenburg-Vorpommern",NI:"Niedersachsen",NW:"Nordrhein-Westfalen",RP:"Rheinland-Pfalz",SL:"Saarland",SN:"Sachsen",ST:"Sachsen-Anhalt",SH:"Schleswig-Holstein",TH:"Thüringen"};
+let RK={items:[],at:0,busy:false,err:""},RKM=null;
+try{const c=JSON.parse(localStorage.getItem("fprk")||"null");if(c&&Array.isArray(c.items)){RK.items=c.items;RK.at=+c.at||0}}catch(e){}
+const rkS=()=>{if(!S.rk||typeof S.rk!="object")S.rk={};const r=S.rk;r.dis=Array.isArray(r.dis)?r.dis:[];r.seen=Array.isArray(r.seen)?r.seen:[];r.kh=Array.isArray(r.kh)?r.kh:[];if(r.on===undefined)r.on=true;return r};
+const rkN=s=>String(s||"").toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g," ").trim();
+const RKSTOP=new Set(("und mit ohne der die das in im aus von vom zum zur fuer auf je pro st stk stueck mg ml liter gramm kilogramm packung pack beutel glas dose flasche becher bio fein frisch frische verschiedene sorten sorte diverse produkte produkt update zu des den dem ein eine original classic natur gmbh co ag mbh firma deutschland handels vertriebs sowie bzw oder als nach art typ "+
+ "lidl aldi edeka rewe kaufland netto penny norma globus rossmann marktkauf").split(" "));
+const rkT=s=>[...new Set(rkN(s).split(" ").filter(w=>w.length>=3&&!RKSTOP.has(w)&&!/^\d/.test(w)))];
+// Bundesland: Einstellung, sonst aus der Markt-Region ablesen
+function rkBL(){const c=S.cfg&&S.cfg.bl;if(c)return c=="alle"?"":c;const n=String(S.mp&&S.mp.reg&&S.mp.reg.name||"").toLowerCase();for(const k in RKBL)if(n.includes(RKBL[k].toLowerCase()))return k;return ""}
+const rkDate=r=>Date.parse(r.d||"")||0;
+// Was man hat oder kürzlich gekauft hat
+function rkHave(){const out=[];(S.inv||[]).forEach(x=>{if(x&&x.name)out.push({n:x.name,b:x.brand||"",code:x.code||"",id:x.id,inv:1,d:x.bought||""})});
+ rkS().kh.forEach(k=>{if(!out.some(o=>o.inv&&rkN(o.n)==rkN(k.n)))out.push({n:k.n,b:k.b||"",code:k.code||"",d:k.d,inv:0})});return out}
+function rkMatchAll(){const bl=rkBL(),now=Date.now(),R=(RK.items||[]).filter(r=>r&&r.id),have=rkHave();if(!R.length||!have.length)return[];
+ const df={};R.forEach(r=>rkT(r.p+" "+r.t).forEach(w=>df[w]=(df[w]||0)+1));
+ const gen=w=>(df[w]||0)>4||DB.some(d=>rkN(d[0])==w);
+ const res=[],dis=rkS().dis;
+ R.forEach(r=>{if(dis.includes(r.id))return;if(bl&&r.states&&r.states.length&&!r.states.includes(bl))return;const rd=rkDate(r);if(rd&&now-rd>120*864e5)return;
+  const rt=rkT(r.p+" "+r.t+" "+(r.q&&!/bild|kundenaushang|website|pr[uü]fbericht|beh[oö]rde/i.test(r.q)?r.q:"")),txt=r.p+" "+r.los+" "+r.mhd;let best=null;
+  have.forEach(h=>{if(!h.inv){const hd=Date.parse(h.d||"")||0;if(hd&&rd&&hd<rd-60*864e5)return}
+   let lvl=0;if(h.code&&h.code.length>=8&&txt.includes(h.code))lvl=2;
+   if(!lvl){const it=rkT(h.n+" "+h.b),same=it.filter(w=>rt.some(v=>v==w||(w.length>=5&&v.length>=5&&(v.startsWith(w)||w.startsWith(v)))));
+    const strong=same.filter(w=>!gen(w)),g=same.filter(gen);
+    if(strong.length&&(g.length||strong.length>=2))lvl=2;
+    else if(h.inv&&(g.length||strong.length)&&rd&&now-rd<21*864e5){const pt=rkT(r.p||r.t),head=pt[pt.length-1];if(same.includes(head)||same.some(w=>head&&head.startsWith(w)&&w.length>=5))lvl=1}}
+   if(lvl&&(!best||lvl>best.lvl))best={r,h,lvl}});
+  if(best)res.push(best)});
+ return res.sort((a,b)=>b.lvl-a.lvl||rkDate(b.r)-rkDate(a.r))}
+const rkMatches=()=>RKM||(RKM=rkMatchAll());
+const rkHit=id=>rkMatches().find(m=>m.h.id==id&&m.lvl==2);
+// Laden: beim Start, beim Zurückkehren in die App und alle 3 Stunden
+async function rkLoad(force){if(RK.busy)return;if(!force&&RK.items.length&&Date.now()-RK.at<2*3600e3){rkCheck();return}
+ RK.busy=true;try{const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),20000);const r=await fetch(RKU,{signal:ac.signal});clearTimeout(tm);const j=await r.json();if(!r.ok||!Array.isArray(j.items))throw new Error("rk");
+  RK.items=j.items.slice(0,400);RK.at=Date.now();RK.err="";try{localStorage.setItem("fprk",JSON.stringify({items:RK.items,at:RK.at}))}catch(e){}}catch(e){RK.err="offline"}finally{RK.busy=false}
+ RKM=null;rkCheck();if(Q("#rv .rkv"))rkOpen(RKF)}
+function rkNotify(m){const LN=typeof ntLN=="function"&&typeof ntNative=="function"&&ntNative()?ntLN():null,t="Rückruf: "+m.h.n,b=(m.r.grund?m.r.grund+". ":"")+"Tippe für Details.";
+ if(LN&&LN.schedule){let h=0;for(const c of m.r.id)h=(h*31+c.charCodeAt(0))|0;try{LN.schedule({notifications:[{id:800000+Math.abs(h)%99999,title:t,body:b,smallIcon:"ic_stat_freshplan",iconColor:"#22804A",extra:{go:"rk",rk:m.r.id}}]})}catch(e){}}
+ else toast(t,"Ansehen",()=>rkShow(m.r.id))}
+function rkCheck(){RKM=null;const s=rkS(),ms=rkMatches().filter(m=>m.lvl==2&&!s.seen.includes(m.r.id));
+ if(ms.length){ms.forEach(m=>{s.seen.push(m.r.id);if(s.on)rkNotify(m)});s.seen=s.seen.slice(-300);save()}
+ if(typeof tab!="undefined"&&(tab=="home"||tab=="inv"))rkDecorate()}
+// Einkäufe merken (90 Tage), damit auch Verbrauchtes noch abgeglichen wird
+const _mkRK=mk;mk=function(){const it=_mkRK.apply(this,arguments);try{if(it&&it.name&&!(typeof TS!="undefined"&&TS)&&S.cfg&&S.cfg.ob){const s=rkS(),k={n:it.name,b:it.brand||"",code:it.code||"",d:today()};s.kh=s.kh.filter(x=>Date.parse(x.d||"")>Date.now()-90*864e5&&!(rkN(x.n)==rkN(k.n)&&x.d==k.d));s.kh.push(k);if(s.kh.length>300)s.kh=s.kh.slice(-300);RKM=null}}catch(e){}return it};
+// Startseite und Vorrat: Hinweise einblenden
+function rkDecorate(){try{const m=document.getElementById("m");if(!m)return;const ms=rkMatches().filter(x=>x.lvl==2);
+ if(tab=="home"&&ms.length&&!m.querySelector(".rkc")){const a=ms[0],more=ms.length-1,d=document.createElement("div");d.className="card rkc";d.setAttribute("role","alert");
+  d.innerHTML=`<div class="row"><span class="rki">${ic("alert",20)}</span><div class="sp"><div class="rkk">Rückruf${more?" · "+ms.length+" Treffer":""}</div><b>${esc(a.r.p||a.r.t)}</b><div class="mu">${a.h.inv?"Du hast":"Du hast kürzlich gekauft:"} ${esc(a.h.n)}${a.r.grund?" · Grund: "+esc(a.r.grund):""}</div></div></div><div class="row" style="margin-top:12px;justify-content:flex-end"><button class="sm" onclick="rkOpen('mine')">Alle ansehen</button><button class="sm pri" onclick="rkShow('${esc(a.r.id).replace(/'/g,"&#39;")}')">Details</button></div>`;
+  const hero=m.querySelector(".hero");hero?hero.after(d):m.prepend(d)}
+ if(tab=="inv")ms.forEach(x=>{if(!x.h.id)return;const row=m.querySelector(`.it[data-id="${CSS.escape(String(x.h.id))}"] b`);if(row&&!row.parentNode.querySelector(".rkt")){const t=document.createElement("button");t.className="tag rkt";t.textContent="Rückruf";t.setAttribute("aria-label","Rückruf ansehen");t.onclick=e=>{e.stopPropagation();rkShow(x.r.id)};row.after(" ",t)}})}catch(e){}}
+const _drawRK=draw;draw=function(){const r=_drawRK.apply(this,arguments);try{if(tab=="home"||tab=="inv"){RKM=null;rkDecorate()}}catch(e){}return r};
+// Übersicht
+let RKF="mine";
+const rkWhen=r=>{const t=rkDate(r);if(!t)return"";const d=Math.round((Date.now()-t)/864e5);return d<=0?"heute":d==1?"gestern":d<8?"vor "+d+" Tagen":new Date(t).toLocaleDateString("de-DE",{day:"numeric",month:"short"})};
+const rkStates=r=>!r.states||!r.states.length?"":r.alle||r.states.length>=16?"ganz Deutschland":r.states.map(k=>RKBL[k]||k).join(", ");
+function rkRow(r,m){const id=esc(r.id).replace(/'/g,"&#39;");return `<button class="rkr" onclick="rkShow('${id}')">${r.img?`<img src="${esc(r.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">`:`<span class="rkph">${ic("alert",18)}</span>`}<span class="sp"><b>${esc(r.p||r.t)}</b><span class="mu">${esc(r.grund||"Warnung")} · ${rkWhen(r)}</span>${m?`<span class="rkm ${m.lvl==2?"hi":""}">${m.lvl==2?"Betrifft dich vielleicht":"Bitte prüfen"}: ${esc(m.h.n)}</span>`:""}</span></button>`}
+function rkOpen(f){RKF=f||RKF||"mine";const bl=rkBL(),ms=rkMatches(),R=(RK.items||[]).filter(r=>!bl||!r.states||!r.states.length||r.states.includes(bl));
+ const list=RKF=="mine"?ms.map(m=>rkRow(m.r,m)).join(""):R.slice(0,80).map(r=>rkRow(r,ms.find(m=>m.r.id==r.id))).join("");
+ const empty=RK.busy?"Rückrufe werden geladen …":RK.err&&!RK.items.length?"Gerade keine Verbindung. Die Liste lädt, sobald du online bist.":RKF=="mine"?"Keiner der aktuellen Rückrufe passt zu deinem Vorrat oder deinen letzten Einkäufen.":"Keine aktuellen Rückrufe.";
+ rvEl().innerHTML=`<div class="rv-in rkv"><div class="row" style="margin-bottom:6px"><h1 class="sp" style="margin:0">Rückrufe</h1><button class="iconb" style="margin:0" onclick="rvClose()" aria-label="Schließen">${ic("x",18)}</button></div>
+ <div class="mu" style="margin-bottom:14px">Offizielle Warnungen von lebensmittelwarnung.de, abgeglichen mit deinem Vorrat und deinen Einkäufen der letzten 90 Tage.${RK.at?" Stand: "+new Date(RK.at).toLocaleString("de-DE",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})+".":""}</div>
+ <div class="gseg rkseg" role="tablist"><button role="tab" aria-selected="${RKF=="mine"}" class="${RKF=="mine"?"on":""}" onclick="rkOpen('mine')">Betrifft dich (${ms.length})</button><button role="tab" aria-selected="${RKF=="all"}" class="${RKF=="all"?"on":""}" onclick="rkOpen('all')">Alle aktuellen</button></div>
+ <label class="mu" for="rkbl" style="display:block;margin:12px 0 4px">Bundesland</label><select id="rkbl" onchange="S.cfg.bl=this.value;save();RKM=null;rkOpen()"><option value="">${S.mp&&S.mp.reg&&!S.cfg.bl&&bl?"Automatisch ("+esc(RKBL[bl])+")":"Automatisch"}</option><option value="alle" ${S.cfg.bl=="alle"?"selected":""}>Alle Bundesländer</option>${Object.keys(RKBL).map(k=>`<option value="${k}" ${S.cfg.bl==k?"selected":""}>${RKBL[k]}</option>`).join("")}</select>
+ <div class="rkl">${list||`<div class="mu" style="padding:18px 2px">${empty}</div>`}</div>
+ <div class="row" style="margin-top:14px"><button class="sp" onclick="rkLoad(true)" ${RK.busy?"disabled":""}>Aktualisieren</button></div></div>`}
+function rkShow(id){const r=(RK.items||[]).find(x=>x.id==id);if(!r)return toast("Diese Meldung ist nicht mehr aktuell.");const m=rkMatches().find(x=>x.r.id==id),sid=esc(id).replace(/'/g,"&#39;");
+ const f=(k,v)=>{v=String(v||"").replace(/^\s*(Mindesthaltbarkeitsdat(um|en)|Verbrauchsdat(um|en)|Chargennummer(n)?|Los-?Kennzeichnung)\s*:?\s*/i,"").trim();return v?`<div class="rkf"><span class="mu">${k}</span><div>${esc(v).replace(/\n/g,"<br>")}</div></div>`:""};
+ rvEl().innerHTML=`<div class="rv-in rkd"><div class="row" style="margin-bottom:10px"><button class="iconb" style="margin:0" onclick="rkOpen()" aria-label="Zurück zu den Rückrufen">${ic("back",18)}</button><h1 class="sp" style="margin:0 0 0 6px;font-size:22px">Rückruf</h1><button class="iconb" style="margin:0" onclick="rvClose()" aria-label="Schließen">${ic("x",18)}</button></div>
+ ${m?`<div class="card rkc" style="margin:0 0 14px"><div class="rkk">${m.lvl==2?"Betrifft dich vielleicht":"Bitte prüfen"}</div><b>${m.h.inv?"Im Vorrat":"Gekauft"}: ${esc(m.h.n)}</b><div class="mu">Vergleiche Marke, Mindesthaltbarkeit und Charge auf der Packung mit den Angaben unten.</div></div>`:""}
+ ${r.img?`<img class="rkimg" src="${esc(r.img)}" alt="Produktfoto aus der Meldung" referrerpolicy="no-referrer" onerror="this.remove()">`:""}
+ <h2 style="margin-top:6px">${esc(r.p||r.t)}</h2>${f("Grund",r.grund)}${f("Mindesthaltbarkeit",r.mhd)}${f("Charge / Los",r.los)}${f("Packung",r.pack)}${f("Hersteller / Inverkehrbringer",r.m)}${f("Betroffene Bundesländer",rkStates(r))}${f("Veröffentlicht",r.d?new Date(r.d).toLocaleDateString("de-DE",{day:"numeric",month:"long",year:"numeric"}):"")}
+ <div class="mu" style="margin:12px 0">Betroffene Ware nicht essen. Du kannst sie meist im Markt zurückgeben, auch ohne Kassenbon.</div>
+ <div class="row" style="flex-wrap:wrap;gap:8px"><a class="btn" href="${esc(r.link)}" target="_blank" rel="noopener">Zur offiziellen Meldung</a>${m&&m.h.id&&S.inv.some(x=>x.id==m.h.id)?`<button onclick="rkRemove('${esc(m.h.id)}','${sid}')">Aus dem Vorrat nehmen</button>`:""}${m?`<button onclick="rkDismiss('${sid}')">Habe ich nicht</button>`:""}</div></div>`}
+function rkDismiss(id){const s=rkS();if(!s.dis.includes(id))s.dis.push(id);s.dis=s.dis.slice(-300);save();RKM=null;rvClose();draw();toast("Ausgeblendet.")}
+function rkRemove(iid,id){const x=S.inv.find(y=>y.id==iid);if(!x)return;S.inv=S.inv.filter(y=>y.id!=iid);S.log.push({d:today(),t:"recall",n:x.name});const s=rkS();if(!s.dis.includes(id))s.dis.push(id);save();RKM=null;rvClose();draw();toast(x.name+" aus dem Vorrat genommen.")}
+// Profil > Benachrichtigungen: Rückrufe
+const _pfBodyRK=pfBody;pfBody=function(){let h=_pfBodyRK.apply(this,arguments);const s=rkS(),n=rkMatches().filter(m=>m.lvl==2).length;
+ const c=`<h2>Rückrufe</h2><div class="card set rkset"><div class="row"><div class="sp"><b>${s.on?"An":"Aus"}</b><div class="mu">Meldet sich, wenn ein offizieller Rückruf zu deinem Vorrat oder deinen Einkäufen passt.</div></div><button class="sm ${s.on?"":"pri"}" aria-pressed="${s.on}" onclick="rkS().on=!rkS().on;save();pfOpen()">${s.on?"Ausschalten":"Einschalten"}</button></div><button class="sm" style="margin-top:12px" onclick="rkOpen('${n?"mine":"all"}')">Rückrufe ansehen${n?" ("+n+")":""}</button></div>`;
+ return h.includes("<h2>Darstellung</h2>")?h.replace("<h2>Darstellung</h2>",c+"<h2>Darstellung</h2>"):h+c};
+// In der Einstellungsliste unter „Benachrichtigungen“ einsortieren
+const _pfOpenRK=pfOpen;pfOpen=function(){try{if(typeof F5GR!="undefined"){const g=F5GR.find(x=>x.k=="nb");if(g&&g.h&&!g.h.includes("Rückrufe"))g.h.push("Rückrufe")}}catch(e){}return _pfOpenRK.apply(this,arguments)};
+// Tippen auf die Benachrichtigung öffnet die Meldung
+(function(){try{if(typeof ntNative!="function"||!ntNative())return;const LN=ntLN();if(!LN||!LN.addListener)return;LN.addListener("localNotificationActionPerformed",a=>{const x=a&&a.notification&&a.notification.extra;if(x&&x.go=="rk"&&x.rk)setTimeout(()=>{try{rkShow(x.rk)}catch(e){}},80)})}catch(e){}})();
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)rkLoad(false)});
+setTimeout(()=>rkLoad(false),2500);setInterval(()=>{if(!document.hidden)rkLoad(true)},3*3600e3);
+(function(){const s=document.createElement("style");s.textContent=`
+.rkc{border-left:4px solid var(--berry);background:color-mix(in srgb,var(--berry) 9%,var(--paper))}
+.rkc .rki{color:var(--berry);display:inline-flex;margin-right:10px;align-self:flex-start;padding-top:2px}
+.rkk{font:600 11px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--berry);margin-bottom:3px}
+.rkt{background:color-mix(in srgb,var(--berry) 14%,var(--paper));color:var(--berry);border:0;cursor:pointer;min-height:24px}
+.rkl{display:flex;flex-direction:column;gap:2px;margin-top:10px}
+.rkr{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 2px;min-height:64px;color:inherit;font:inherit;cursor:pointer}
+.rkr img,.rkph{width:52px;height:52px;border-radius:10px;object-fit:cover;flex:none;background:var(--field);display:inline-flex;align-items:center;justify-content:center;color:var(--ink-3)}
+.rkr .sp{display:flex;flex-direction:column;gap:2px;min-width:0}.rkr b{overflow-wrap:anywhere}
+.rkm{font-size:12.5px;color:var(--ink-2)}.rkm.hi{color:var(--berry);font-weight:600}
+.rkseg{margin-top:4px}
+.rkimg{width:100%;max-height:220px;object-fit:contain;border-radius:14px;background:var(--field);margin-bottom:6px}
+.rkf{padding:9px 0;border-bottom:1px solid var(--line)}.rkf .mu{display:block;font-size:12px;margin-bottom:2px}.rkf div{overflow-wrap:anywhere;line-height:1.45}
+.rkd a.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:12px;background:var(--btn);color:var(--btn-ink);text-decoration:none;font-weight:600}`;document.head.appendChild(s)})();
 // Zusammenführung: neue Rückfragen aus Paket 1 (Ablaufdatum, hoher Preis) im App-Dialog aus Paket 4 zeigen
 if(typeof fp4Gate=="function"){if(typeof adOk=="function")adOk=fp4Gate(adOk);if(typeof rvOk=="function")rvOk=fp4Gate(rvOk)}
 
