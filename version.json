@@ -1,7 +1,11 @@
 {
- "code": 40,
- "name": "1.40",
- "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
- "date": "2026-11-18",
- "notes": "Rückrufe von lebensmittelwarnung.de mit Hinweis auf betroffene Produkte im Vorrat. Bon-Scan erkennt genaue Produkte und Marken."
+  "code": 40,
+  "name": "1.40",
+  "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
+  "date": "2026-11-18",
+  "notes": [
+    "Kassenbon: Marke wird nur übernommen, wenn sie auf dem Bon steht",
+    "Kassenbon: keine erfundenen Sorten mehr, z. B. „glutenfrei“ bei normalen Spaghetti",
+    "Rückrufe und genaue Produktsuche aus 1.39 bleiben aktiv"
+  ]
 }
