@@ -1,11 +1,11 @@
 {
-  "code": 40,
-  "name": "1.40",
+  "code": 41,
+  "name": "1.41",
   "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
-  "date": "2026-11-18",
+  "date": "2026-11-20",
   "notes": [
-    "Kassenbon: Marke wird nur übernommen, wenn sie auf dem Bon steht",
-    "Kassenbon: keine erfundenen Sorten mehr, z. B. „glutenfrei“ bei normalen Spaghetti",
-    "Rückrufe und genaue Produktsuche aus 1.39 bleiben aktiv"
+    "Bewegung: Zeilen rücken beim Entfernen und Abhaken weich nach",
+    "Abhaken federt, Zutaten fliegen im Bogen zum Vorrat",
+    "Ladebalken, wenn eine Antwort länger dauert; Meldungen lassen sich wegwischen"
   ]
 }
