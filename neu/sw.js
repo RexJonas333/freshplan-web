@@ -1,5 +1,5 @@
 // Service Worker: App-Hülle vorab, Bilder beim ersten Ansehen, Server-Anfragen nie aus dem Cache.
-const V = "fp2-76f728d5a1";
+const V = "fp2-0b5fe12752";
 const SHELL = ["./","index.html","app.js","app.css","manifest.webmanifest","assets/icon.svg"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(V).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k.startsWith("fp2-") && k !== V).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });
