@@ -275,88 +275,9 @@ body:has(.fab) .toast { bottom: calc(var(--nav-h) + var(--safe-b) + var(--s4) + 
 }
 @media (min-width: 720px) { :root { --gut: 28px; } .hero { height: 180px; } }
 
-/* Designrichtungen zur Auswahl. Jede Richtung überschreibt nur Variablen und wenige Bausteine.
-   Aktiv über <html data-look="…">. Nach der Entscheidung wird die gewählte Richtung zur Grundlage. */
-
-/* ───────────── A „Studio“: Weiß, Schwarz, ein Signalorange. Große Schrift statt Foto. ───────────── */
-:root[data-look="studio"] {
-  --paper: #ffffff; --surface: #f6f6f4; --surface-2: #ececea;
-  --ink: #0b0b0c; --ink-2: #3a3a3d; --ink-3: #75757a; --ink-on: #ffffff;
-  --line: rgba(11, 11, 12, .08); --line-2: rgba(11, 11, 12, .14);
-  --brand-50: #f1f1ef; --brand-100: #e6e6e3; --brand-500: #0b0b0c; --brand-600: #0b0b0c; --brand-700: #0b0b0c;
-  --apricot: #e8590c; --apricot-50: #fdeee4; --berry: #d6336c; --berry-50: #fce8ef; --sky: #1c7ed6; --sky-50: #e7f3fc;
-  --r-s: 14px; --r-m: 20px; --r-l: 28px;
-  --sh-1: 0 1px 2px rgba(0, 0, 0, .04);
-}
-@media (prefers-color-scheme: dark) { :root[data-look="studio"]:not([data-theme="hell"]) {
-  --paper: #0b0b0c; --surface: #161618; --surface-2: #202023; --ink: #f4f4f2; --ink-2: #c4c4c7; --ink-3: #8b8b90; --ink-on: #0b0b0c;
-  --line: rgba(255, 255, 255, .08); --line-2: rgba(255, 255, 255, .15); --brand-50: #1c1c1f; --brand-100: #2a2a2e; --brand-500: #f4f4f2; --brand-600: #f4f4f2; --brand-700: #f4f4f2;
-  --apricot: #ff8a3d; --apricot-50: rgba(255, 138, 61, .14); --berry: #f06595; --berry-50: rgba(240, 101, 149, .14); --sky: #74c0fc; --sky-50: rgba(116, 192, 252, .13);
-} }
-:root[data-look="studio"][data-theme="dunkel"] {
-  --paper: #0b0b0c; --surface: #161618; --surface-2: #202023; --ink: #f4f4f2; --ink-2: #c4c4c7; --ink-3: #8b8b90; --ink-on: #0b0b0c;
-  --line: rgba(255, 255, 255, .08); --line-2: rgba(255, 255, 255, .15); --brand-50: #1c1c1f; --brand-100: #2a2a2e; --brand-500: #f4f4f2; --brand-600: #f4f4f2; --brand-700: #f4f4f2;
-  --apricot: #ff8a3d; --apricot-50: rgba(255, 138, 61, .14); --berry: #f06595; --berry-50: rgba(240, 101, 149, .14); --sky: #74c0fc; --sky-50: rgba(116, 192, 252, .13);
-}
-[data-look="studio"] .hero { height: auto; background: var(--paper); color: var(--ink); }
-[data-look="studio"] .hero img, [data-look="studio"] .hero::after { display: none; }
-[data-look="studio"] .hero__in { padding-bottom: 0; gap: 28px; }
-[data-look="studio"] .hero__kicker { margin-top: 8px; color: var(--apricot); opacity: 1; }
-[data-look="studio"] .hero h1 { font-size: 44px; font-weight: 700; letter-spacing: -.045em; line-height: 1; }
-[data-look="studio"] .hero .icon-btn { color: var(--ink); background: var(--surface); border-color: var(--line); backdrop-filter: none; }
-[data-look="studio"] .stat b { font-size: 34px; letter-spacing: -.04em; }
-[data-look="studio"] .stat--warn { background: var(--apricot); border-color: var(--apricot); }
-[data-look="studio"] .stat--warn b, [data-look="studio"] .stat--warn span { color: #fff; }
-[data-look="studio"] .btn, [data-look="studio"] .chip { border-radius: 999px; }
-[data-look="studio"] .card, [data-look="studio"] .group, [data-look="studio"] .stat { border-color: transparent; }
-[data-look="studio"] .nav button[aria-current="page"] span.ic-wrap { background: var(--ink); color: var(--paper); }
-[data-look="studio"] .nav button[aria-current="page"] { color: var(--ink); }
-[data-look="studio"] .rec__meta b { color: var(--ink); }
-[data-look="studio"] .section__head .mono { color: var(--ink); }
-
-/* ───────────── B „Zitrus“: Weiß, Tinte, leuchtendes Limettengelb. Kräftig, modern. ───────────── */
-:root[data-look="zitrus"] {
-  --paper: #fbfbf8; --surface: #ffffff; --surface-2: #f0f0ea;
-  --ink: #111410; --ink-2: #3c4039; --ink-3: #737868; --ink-on: #111410;
-  --line: rgba(17, 20, 16, .08); --line-2: rgba(17, 20, 16, .16);
-  --brand-50: #f4fbd2; --brand-100: #e8f7a6; --brand-500: #c8f031; --brand-600: #3f5a00; --brand-700: #2b3d00;
-  --apricot: #ef6b2d; --apricot-50: #fdebe1; --berry: #e03e52; --berry-50: #fce6e9; --sky: #2f6fde; --sky-50: #e6eefc;
-  --r-s: 16px; --r-m: 22px; --r-l: 30px;
-  --sh-1: 0 1px 3px rgba(17, 20, 16, .06), 0 8px 24px rgba(17, 20, 16, .04);
-}
-@media (prefers-color-scheme: dark) { :root[data-look="zitrus"]:not([data-theme="hell"]) {
-  --paper: #0f110e; --surface: #181b16; --surface-2: #22261f; --ink: #f2f5ec; --ink-2: #c3c9b8; --ink-3: #8d9483; --ink-on: #111410;
-  --line: rgba(242, 245, 236, .08); --line-2: rgba(242, 245, 236, .16); --brand-50: rgba(200, 240, 49, .10); --brand-100: rgba(200, 240, 49, .18); --brand-500: #c8f031; --brand-600: #d8f76a; --brand-700: #e6fb9b;
-  --apricot: #ff9156; --apricot-50: rgba(255, 145, 86, .14); --berry: #ff6b7d; --berry-50: rgba(255, 107, 125, .14); --sky: #7aa7ff; --sky-50: rgba(122, 167, 255, .13);
-} }
-:root[data-look="zitrus"][data-theme="dunkel"] {
-  --paper: #0f110e; --surface: #181b16; --surface-2: #22261f; --ink: #f2f5ec; --ink-2: #c3c9b8; --ink-3: #8d9483; --ink-on: #111410;
-  --line: rgba(242, 245, 236, .08); --line-2: rgba(242, 245, 236, .16); --brand-50: rgba(200, 240, 49, .10); --brand-100: rgba(200, 240, 49, .18); --brand-500: #c8f031; --brand-600: #d8f76a; --brand-700: #e6fb9b;
-  --apricot: #ff9156; --apricot-50: rgba(255, 145, 86, .14); --berry: #ff6b7d; --berry-50: rgba(255, 107, 125, .14); --sky: #7aa7ff; --sky-50: rgba(122, 167, 255, .13);
-}
-[data-look="zitrus"] .hero { height: auto; background: #131611; color: #fff; border-radius: 0 0 32px 32px; }
-[data-look="zitrus"] .hero img, [data-look="zitrus"] .hero::after { display: none; }
-[data-look="zitrus"] .hero__in { gap: 36px; padding-bottom: 28px; }
-[data-look="zitrus"] .hero__brand svg { color: var(--brand-500); }
-[data-look="zitrus"] .hero__kicker { color: var(--brand-500); opacity: 1; margin-top: 0; }
-[data-look="zitrus"] .hero h1 { font-size: 40px; font-weight: 700; letter-spacing: -.04em; }
-[data-look="zitrus"] .card, [data-look="zitrus"] .group, [data-look="zitrus"] .stat { border-color: transparent; box-shadow: var(--sh-1); }
-[data-look="zitrus"] .stat:first-child { background: var(--brand-500); }
-[data-look="zitrus"] .stat:first-child b, [data-look="zitrus"] .stat:first-child span { color: #131611; }
-[data-look="zitrus"] .btn--pri { box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .08); }
-[data-look="zitrus"] .btn, [data-look="zitrus"] .chip { border-radius: 999px; }
-[data-look="zitrus"] .chip[aria-pressed="true"] { background: #131611; border-color: #131611; color: #c8f031; }
-[data-look="zitrus"] .nav { background: rgba(19, 22, 17, .96); border-top: 0; }
-[data-look="zitrus"] .nav button[aria-current="page"] span.ic-wrap .ic { color: #131611; }
-[data-look="zitrus"] .nav button { color: rgba(255, 255, 255, .55); }
-[data-look="zitrus"] .nav button[aria-current="page"] { color: #fff; }
-[data-look="zitrus"] .nav button[aria-current="page"] span.ic-wrap { background: #c8f031; color: #131611; }
-[data-look="zitrus"] .fab { color: var(--ink); box-shadow: 0 10px 28px rgba(17, 20, 16, .25); }
-[data-look="zitrus"] .check[aria-checked="true"] { color: var(--ink); }
-[data-look="zitrus"] .rec__img { border-radius: 22px; }
-
-/* ───────────── C „Küche“: warmes Papier, Serifen-Überschriften, Terrakotta. Fotos tragen. ───────────── */
-:root[data-look="kueche"] {
+/* Gestaltung „Küche“ (gewählt am 22.11.2026): warmes Papierweiß, Serifen-Überschriften, Terrakotta, Fotos tragen.
+   Dunkel: neutrales, leicht warmes Graphit statt Braun; Akzent heller, Text auf Akzent dunkel. */
+:root {
   --paper: #fbf8f3; --surface: #ffffff; --surface-2: #f3eee6;
   --ink: #2a211b; --ink-2: #57483d; --ink-3: #8a7a6d; --ink-on: #ffffff;
   --line: rgba(42, 33, 27, .09); --line-2: rgba(42, 33, 27, .17);
@@ -365,27 +286,34 @@ body:has(.fab) .toast { bottom: calc(var(--nav-h) + var(--safe-b) + var(--s4) + 
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", "Noto Serif", Georgia, serif;
   --r-s: 12px; --r-m: 18px; --r-l: 26px;
 }
-@media (prefers-color-scheme: dark) { :root[data-look="kueche"]:not([data-theme="hell"]) {
-  --paper: #17120f; --surface: #211a16; --surface-2: #2b231e; --ink: #f4ece4; --ink-2: #d2c4b7; --ink-3: #a08f81; --ink-on: #17120f;
-  --line: rgba(244, 236, 228, .08); --line-2: rgba(244, 236, 228, .16); --brand-50: rgba(232, 135, 92, .12); --brand-100: rgba(232, 135, 92, .2); --brand-500: #e8875c; --brand-600: #f0a582; --brand-700: #f6c3a8;
-  --apricot: #e9a94a; --apricot-50: rgba(233, 169, 74, .14); --berry: #e07a8a; --berry-50: rgba(224, 122, 138, .14);
+@media (prefers-color-scheme: dark) { :root:not([data-theme="hell"]) {
+  --paper: #121110; --surface: #1c1b19; --surface-2: #262422; --ink: #f2eee8; --ink-2: #cbc4ba; --ink-3: #958d83; --ink-on: #1a110c;
+  --line: rgba(255, 255, 255, .07); --line-2: rgba(255, 255, 255, .14); --brand-50: rgba(224, 133, 92, .13); --brand-100: rgba(224, 133, 92, .22); --brand-500: #e0855c; --brand-600: #eba07f; --brand-700: #f3c1a7;
+  --apricot: #e8b062; --apricot-50: rgba(232, 176, 98, .14); --berry: #e8899a; --berry-50: rgba(232, 137, 154, .14); --sky: #93bcd8; --sky-50: rgba(147, 188, 216, .13);
+  --scrim: rgba(0, 0, 0, .62); --sh-1: none; --sh-2: 0 16px 40px rgba(0, 0, 0, .5);
 } }
-:root[data-look="kueche"][data-theme="dunkel"] {
-  --paper: #17120f; --surface: #211a16; --surface-2: #2b231e; --ink: #f4ece4; --ink-2: #d2c4b7; --ink-3: #a08f81; --ink-on: #17120f;
-  --line: rgba(244, 236, 228, .08); --line-2: rgba(244, 236, 228, .16); --brand-50: rgba(232, 135, 92, .12); --brand-100: rgba(232, 135, 92, .2); --brand-500: #e8875c; --brand-600: #f0a582; --brand-700: #f6c3a8;
-  --apricot: #e9a94a; --apricot-50: rgba(233, 169, 74, .14); --berry: #e07a8a; --berry-50: rgba(224, 122, 138, .14);
+:root[data-theme="dunkel"] {
+  --paper: #121110; --surface: #1c1b19; --surface-2: #262422; --ink: #f2eee8; --ink-2: #cbc4ba; --ink-3: #958d83; --ink-on: #1a110c;
+  --line: rgba(255, 255, 255, .07); --line-2: rgba(255, 255, 255, .14); --brand-50: rgba(224, 133, 92, .13); --brand-100: rgba(224, 133, 92, .22); --brand-500: #e0855c; --brand-600: #eba07f; --brand-700: #f3c1a7;
+  --apricot: #e8b062; --apricot-50: rgba(232, 176, 98, .14); --berry: #e8899a; --berry-50: rgba(232, 137, 154, .14); --sky: #93bcd8; --sky-50: rgba(147, 188, 216, .13);
+  --scrim: rgba(0, 0, 0, .62); --sh-1: none; --sh-2: 0 16px 40px rgba(0, 0, 0, .5);
 }
-[data-look="kueche"] .hero { height: calc(220px + var(--safe-t)); margin: 0 12px; margin-top: calc(12px + var(--safe-t)); border-radius: 28px; }
-[data-look="kueche"] .hero__in { padding-top: 14px; }
-[data-look="kueche"] .hero::after { background: linear-gradient(180deg, rgba(30, 20, 12, .2) 0%, rgba(30, 20, 12, 0) 35%, rgba(30, 20, 12, .7) 100%); }
-[data-look="kueche"] .hero h1, [data-look="kueche"] .sheet__head h2, [data-look="kueche"] .welcome h2, [data-look="kueche"] .empty h3, [data-look="kueche"] .rec__title { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
-[data-look="kueche"] .hero h1 { font-size: 38px; }
-[data-look="kueche"] .hero__kicker { font-family: var(--font); letter-spacing: .04em; text-transform: none; font-size: 13px; }
-[data-look="kueche"] .mono { font-family: var(--font); font-weight: 600; letter-spacing: .02em; text-transform: none; font-size: 15px; color: var(--ink); }
-[data-look="kueche"] .section__head::after { display: none; }
-[data-look="kueche"] .section__head--action { justify-content: space-between; }
-[data-look="kueche"] .card, [data-look="kueche"] .group, [data-look="kueche"] .stat { box-shadow: 0 1px 2px rgba(42, 33, 27, .05); }
-[data-look="kueche"] .stat b { font-family: var(--serif); font-size: 30px; }
-[data-look="kueche"] .rec__title { font-size: 18px; }
-[data-look="kueche"] .rec__img { border-radius: 20px; }
-[data-look="kueche"] .nav button[aria-current="page"] span.ic-wrap { background: var(--brand-50); }
+.hero { height: calc(220px + var(--safe-t)); margin: 0 12px; margin-top: calc(12px + var(--safe-t)); border-radius: 28px; }
+.hero__in { padding-top: 14px; }
+.hero::after { background: linear-gradient(180deg, rgba(30, 20, 12, .2) 0%, rgba(30, 20, 12, 0) 35%, rgba(30, 20, 12, .7) 100%); }
+.hero h1, .sheet__head h2, .welcome h2, .empty h3, .rec__title { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; }
+.hero h1 { font-size: 38px; }
+.hero__kicker { font-family: var(--font); letter-spacing: .04em; text-transform: none; font-size: 13px; }
+.mono { font-family: var(--font); font-weight: 600; letter-spacing: .02em; text-transform: none; font-size: 15px; color: var(--ink); }
+.section__head::after { display: none; }
+.section__head--action { justify-content: space-between; }
+.card, .group, .stat { box-shadow: 0 1px 2px rgba(42, 33, 27, .05); }
+.stat b { font-family: var(--serif); font-size: 30px; }
+.rec__title { font-size: 18px; }
+.rec__img { border-radius: 20px; }
+.nav button[aria-current="page"] span.ic-wrap { background: var(--brand-50); }
+
+/* Dunkel: Karten heben sich mit Linie statt Schatten ab, Foto-Kopf etwas dunkler */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="hell"]) .card, :root:not([data-theme="hell"]) .group, :root:not([data-theme="hell"]) .stat { box-shadow: none; border-color: var(--line); } :root:not([data-theme="hell"]) .hero img { filter: brightness(.86) saturate(.95); } }
+:root[data-theme="dunkel"] .card, :root[data-theme="dunkel"] .group, :root[data-theme="dunkel"] .stat { box-shadow: none; border-color: var(--line); }
+:root[data-theme="dunkel"] .hero img { filter: brightness(.86) saturate(.95); }
