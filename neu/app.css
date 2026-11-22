@@ -275,6 +275,44 @@ body:has(.fab) .toast { bottom: calc(var(--nav-h) + var(--safe-b) + var(--s4) + 
 }
 @media (min-width: 720px) { :root { --gut: 28px; } .hero { height: 180px; } }
 
+/* Schnellstart, Hinweis nach dem ersten Artikel, Frage, Monatsrückblick */
+.quick, .aha, .ask { display: flex; flex-direction: column; gap: var(--s3); }
+.quick p, .aha p { margin: 0; font-size: 14px; }
+.aha p { display: flex; gap: var(--s2); align-items: flex-start; color: var(--ink-2); }
+.aha p .ic { flex: none; margin-top: 2px; color: var(--brand-600); }
+.aha .btn, .ask > .btn--ghost, .quick > .btn { align-self: flex-start; }
+.ask__opts { display: flex; flex-direction: column; gap: var(--s2); }
+.review { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s2); }
+.review > div { padding: var(--s3); border-radius: var(--r-m); background: var(--surface); border: 1px solid var(--line); }
+.review b { display: block; font-family: var(--serif); font-size: 26px; font-variant-numeric: tabular-nums; }
+.review span { font-size: 13px; color: var(--ink-3); }
+.review--warn b { color: var(--berry); }
+
+/* Datenschutz und Nutzung */
+.privacy-sum { display: flex; flex-direction: column; gap: var(--s2); margin: 0; padding: 0; list-style: none; }
+.privacy-sum li { display: flex; gap: var(--s2); align-items: flex-start; font-size: 15px; }
+.privacy-sum .ic { flex: none; margin-top: 2px; color: var(--brand-600); }
+.flows { display: flex; flex-direction: column; gap: var(--s2); }
+.flows .card { font-size: 14px; display: flex; flex-direction: column; gap: 4px; }
+.flows dt { font-weight: 600; color: var(--ink-2); font-size: 12px; }
+.flows dd { margin: 0 0 4px; }
+.usage-rows { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.usage-rows div { display: flex; justify-content: space-between; gap: var(--s3); }
+.usage-rows span:last-child { font-weight: 600; text-align: right; }
+.danger-zone { display: flex; flex-direction: column; gap: var(--s2); }
+.cam-note { display: flex; gap: var(--s2); align-items: flex-start; font-size: 14px; margin: 0; }
+.cam-note .ic { flex: none; width: 16px; height: 16px; margin-top: 2px; }
+.share-btn { align-self: flex-start; }
+
+/* Tippflächen mindestens 44 px (Apple 44 pt, Android 48 dp) */
+.btn--sm { min-height: 44px; }
+.chip { min-height: 44px; }
+.seg button { min-height: 44px; }
+.icon-btn { width: 44px; height: 44px; }
+.toast .btn--ghost { min-height: 44px; }
+.bon-line__main .input { min-height: 44px; }
+button.row__main { min-height: 44px; align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+
 /* Gestaltung „Küche“ (gewählt am 22.11.2026): warmes Papierweiß, Serifen-Überschriften, Terrakotta, Fotos tragen.
    Dunkel: gedämpftes warmes Grau (nicht Schwarz, nicht Braun); Akzent heller, Text auf Akzent dunkel. */
 :root {
