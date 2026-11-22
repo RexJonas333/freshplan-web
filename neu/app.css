@@ -276,7 +276,7 @@ body:has(.fab) .toast { bottom: calc(var(--nav-h) + var(--safe-b) + var(--s4) + 
 @media (min-width: 720px) { :root { --gut: 28px; } .hero { height: 180px; } }
 
 /* Gestaltung „Küche“ (gewählt am 22.11.2026): warmes Papierweiß, Serifen-Überschriften, Terrakotta, Fotos tragen.
-   Dunkel: neutrales, leicht warmes Graphit statt Braun; Akzent heller, Text auf Akzent dunkel. */
+   Dunkel: gedämpftes warmes Grau (nicht Schwarz, nicht Braun); Akzent heller, Text auf Akzent dunkel. */
 :root {
   --paper: #fbf8f3; --surface: #ffffff; --surface-2: #f3eee6;
   --ink: #2a211b; --ink-2: #57483d; --ink-3: #8a7a6d; --ink-on: #ffffff;
@@ -287,16 +287,16 @@ body:has(.fab) .toast { bottom: calc(var(--nav-h) + var(--safe-b) + var(--s4) + 
   --r-s: 12px; --r-m: 18px; --r-l: 26px;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="hell"]) {
-  --paper: #121110; --surface: #1c1b19; --surface-2: #262422; --ink: #f2eee8; --ink-2: #cbc4ba; --ink-3: #958d83; --ink-on: #1a110c;
-  --line: rgba(255, 255, 255, .07); --line-2: rgba(255, 255, 255, .14); --brand-50: rgba(224, 133, 92, .13); --brand-100: rgba(224, 133, 92, .22); --brand-500: #e0855c; --brand-600: #eba07f; --brand-700: #f3c1a7;
+  --paper: #2b2825; --surface: #353130; --surface-2: #403b37; --ink: #f6f1eb; --ink-2: #dad2c8; --ink-3: #aea497; --ink-on: #23160f;
+  --line: rgba(255, 255, 255, .09); --line-2: rgba(255, 255, 255, .17); --brand-50: rgba(224, 133, 92, .13); --brand-100: rgba(224, 133, 92, .22); --brand-500: #e0855c; --brand-600: #eba07f; --brand-700: #f3c1a7;
   --apricot: #e8b062; --apricot-50: rgba(232, 176, 98, .14); --berry: #e8899a; --berry-50: rgba(232, 137, 154, .14); --sky: #93bcd8; --sky-50: rgba(147, 188, 216, .13);
-  --scrim: rgba(0, 0, 0, .62); --sh-1: none; --sh-2: 0 16px 40px rgba(0, 0, 0, .5);
+  --scrim: rgba(10, 8, 6, .55); --sh-1: none; --sh-2: 0 16px 40px rgba(0, 0, 0, .35);
 } }
 :root[data-theme="dunkel"] {
-  --paper: #121110; --surface: #1c1b19; --surface-2: #262422; --ink: #f2eee8; --ink-2: #cbc4ba; --ink-3: #958d83; --ink-on: #1a110c;
-  --line: rgba(255, 255, 255, .07); --line-2: rgba(255, 255, 255, .14); --brand-50: rgba(224, 133, 92, .13); --brand-100: rgba(224, 133, 92, .22); --brand-500: #e0855c; --brand-600: #eba07f; --brand-700: #f3c1a7;
+  --paper: #2b2825; --surface: #353130; --surface-2: #403b37; --ink: #f6f1eb; --ink-2: #dad2c8; --ink-3: #aea497; --ink-on: #23160f;
+  --line: rgba(255, 255, 255, .09); --line-2: rgba(255, 255, 255, .17); --brand-50: rgba(224, 133, 92, .13); --brand-100: rgba(224, 133, 92, .22); --brand-500: #e0855c; --brand-600: #eba07f; --brand-700: #f3c1a7;
   --apricot: #e8b062; --apricot-50: rgba(232, 176, 98, .14); --berry: #e8899a; --berry-50: rgba(232, 137, 154, .14); --sky: #93bcd8; --sky-50: rgba(147, 188, 216, .13);
-  --scrim: rgba(0, 0, 0, .62); --sh-1: none; --sh-2: 0 16px 40px rgba(0, 0, 0, .5);
+  --scrim: rgba(10, 8, 6, .55); --sh-1: none; --sh-2: 0 16px 40px rgba(0, 0, 0, .35);
 }
 .hero { height: calc(220px + var(--safe-t)); margin: 0 12px; margin-top: calc(12px + var(--safe-t)); border-radius: 28px; }
 .hero__in { padding-top: 14px; }
@@ -314,6 +314,6 @@ body:has(.fab) .toast { bottom: calc(var(--nav-h) + var(--safe-b) + var(--s4) + 
 .nav button[aria-current="page"] span.ic-wrap { background: var(--brand-50); }
 
 /* Dunkel: Karten heben sich mit Linie statt Schatten ab, Foto-Kopf etwas dunkler */
-@media (prefers-color-scheme: dark) { :root:not([data-theme="hell"]) .card, :root:not([data-theme="hell"]) .group, :root:not([data-theme="hell"]) .stat { box-shadow: none; border-color: var(--line); } :root:not([data-theme="hell"]) .hero img { filter: brightness(.86) saturate(.95); } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="hell"]) .card, :root:not([data-theme="hell"]) .group, :root:not([data-theme="hell"]) .stat { box-shadow: none; border-color: var(--line); } :root:not([data-theme="hell"]) .hero img { filter: brightness(.94); } }
 :root[data-theme="dunkel"] .card, :root[data-theme="dunkel"] .group, :root[data-theme="dunkel"] .stat { box-shadow: none; border-color: var(--line); }
-:root[data-theme="dunkel"] .hero img { filter: brightness(.86) saturate(.95); }
+:root[data-theme="dunkel"] .hero img { filter: brightness(.94); }
