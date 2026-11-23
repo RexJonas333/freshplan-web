@@ -540,3 +540,16 @@ button.row__main { min-height: 44px; align-self: stretch; display: flex; flex-di
 .step-edit li::before { content: counter(s); width: 28px; height: 28px; margin-top: 8px; border-radius: 50%; background: var(--surface); font-weight: 650; font-size: 14px; display: grid; place-items: center; }
 .step-edit textarea { padding: 10px 12px; min-height: 64px; resize: vertical; line-height: 1.45; }
 @media (max-width: 360px) { .ing-edit__row { grid-template-columns: 28px 52px 72px 1fr 40px; gap: 4px; } }
+
+/* ── Update ── */
+.update-card { display: flex; align-items: center; gap: var(--s3); margin-top: var(--s5); padding: var(--s3) var(--s2) var(--s3) var(--s4); border-radius: var(--r-m); background: var(--lemon); color: #16241d; }
+.update-card > .ic { flex: none; }
+.update-card b { display: block; font-size: 15px; }
+.update-card span { display: block; font-size: 13px; opacity: .8; }
+.update-card .btn--pri { background: #16241d; border-color: #16241d; color: #fff; }
+.update-card .info-btn { color: #16241d; }
+.update-ver { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s3); }
+.update-ver b { font-size: 22px; font-weight: 720; font-stretch: 88%; }
+.update-ver span { font-size: 14px; color: var(--ink-3); }
+.meter { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--leaf); transition: width var(--t) var(--e-soft); }

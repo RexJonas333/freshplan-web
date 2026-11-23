@@ -103,6 +103,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .card h3{color:#fff}
 .card ol{margin:0;padding-left:20px;display:grid;gap:8px;color:rgba(244,249,245,.82);font-size:16px}
 .card .btn{background:#F4F9F5;color:#1B6E3F;border-color:#F4F9F5;align-self:flex-start}
+.card.wide{grid-column:1/-1;background:transparent}
+.card .btns{display:flex;gap:12px;flex-wrap:wrap}
+.card .btn.alt{background:transparent;color:#F4F9F5;border-color:rgba(244,249,245,.4)}
+.card p.small{margin:0;color:rgba(244,249,245,.78);font-size:15px;line-height:1.55;max-width:62ch}
 .card .url{font:500 13px var(--mono);color:#A6E7BC;word-break:break-all}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .get{background:#151C18}}
 :root[data-theme="dark"] .get{background:#151C18}
@@ -291,6 +295,14 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
           <ol><li>Den Link in Safari öffnen.</li><li>Unten auf das Teilen-Symbol tippen.</li><li>„Zum Home-Bildschirm“ wählen.</li></ol>
           <div class="url">rexjonas333.github.io/freshplan-web</div>
           <a class="btn" href="https://rexjonas333.github.io/freshplan-web/">In Safari öffnen</a>
+        </div>
+        <div class="card wide" id="klassik">
+          <h3>Vorherige Version 1.41</h3>
+          <p class="small">Die bisherige FreshPlan-Version mit Markt, Haushalt und Konto. Auf Android wird sie als eigene App „FreshPlan 1.41“ installiert und läuft neben der neuen Version; die Daten der beiden Apps sind getrennt. Wer bisher 1.41 genutzt hat, bekommt beim Update auf die neue Version seinen Vorrat, die Einkaufsliste und eigene Rezepte übernommen.</p>
+          <div class="btns">
+            <a class="btn" href="https://rexjonas333.github.io/freshplan-web/FreshPlan-1.41.apk">FreshPlan 1.41 für Android</a>
+            <a class="btn alt" href="https://rexjonas333.github.io/freshplan-web/alt/">1.41 im Browser öffnen</a>
+          </div>
         </div>
       </div>
     </div>
