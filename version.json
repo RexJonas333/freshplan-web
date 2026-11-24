@@ -1,11 +1,11 @@
 {
-  "code": 41,
-  "name": "1.41",
+  "code": 47,
+  "name": "1.47",
   "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
-  "date": "2026-11-20",
+  "date": "2026-11-24",
   "notes": [
-    "Bewegung: Zeilen rücken beim Entfernen und Abhaken weich nach",
-    "Abhaken federt, Zutaten fliegen im Bogen zum Vorrat",
-    "Ladebalken, wenn eine Antwort länger dauert; Meldungen lassen sich wegwischen"
+    "Neues Aussehen „Fenster“: Die App liegt wie auf einer Fensterscheibe, dahinter der Blick in den Dschungel",
+    "Beim Wechsel zwischen Vorrat, Heute und Kochen schwenkt der Blick nach links oder rechts mit",
+    "Hell zeigt den Abend, Dunkel die Nacht; die bisherigen Bildwelten gibt es weiter unter Profil, Darstellung"
   ]
 }
