@@ -1,11 +1,11 @@
 {
-  "code": 47,
-  "name": "1.47",
+  "code": 48,
+  "name": "1.48",
   "url": "https://rexjonas333.github.io/freshplan-web/FreshPlan.apk",
   "date": "2026-11-24",
   "notes": [
-    "Neues Aussehen „Fenster“: Die App liegt wie auf einer Fensterscheibe, dahinter der Blick in den Dschungel",
-    "Beim Wechsel zwischen Vorrat, Heute und Kochen schwenkt der Blick nach links oder rechts mit",
-    "Hell zeigt den Abend, Dunkel die Nacht; die bisherigen Bildwelten gibt es weiter unter Profil, Erweitert"
+    "Fenster heller: hellerer Blick nach draußen, hellere Glasflächen",
+    "Nahtloser Wechsel: Vorrat, Heute und Kochen liegen nebeneinander, Inhalt und Blick folgen beim Wischen dem Finger",
+    "Vorrat: Zeile nach rechts wischen = verbraucht; nach links wischen bringt dich zu Heute statt einzufrieren. Einfrieren über Antippen"
   ]
 }
