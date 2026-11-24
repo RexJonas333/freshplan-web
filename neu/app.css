@@ -273,7 +273,7 @@ button.row__main { min-height: 44px; align-self: stretch; display: flex; flex-di
 /* Gestaltung „Etikett“ (gewählt am 23.11.2026)
    Weiß und Nebelgrau als Regal, Lebensmittel als Etiketten mit Aufklebern.
    Tomate nur für Marke und Mitte, Zitrone für „bald“, Minze für „gut“, Tinte für Aktionen.
-   Dunkel: dieselbe Idee bei Nacht, tiefes Grün statt Schwarz. */
+   Dunkel: neutrales Graphit, kein Grünstich, nicht zu schwarz (24.11.2026). */
 :root {
   --paper: #ffffff; --surface: #f3f5f2; --surface-2: #e7ebe6; --tile: #f3f5f2;
   --ink: #16241d; --ink-2: #3d4a43; --ink-3: #5b6862; --ink-on: #ffffff;
@@ -290,12 +290,12 @@ button.row__main { min-height: 44px; align-self: stretch; display: flex; flex-di
   --sh-2: 0 18px 44px rgba(22, 36, 29, .16);
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="hell"]) {
-  --paper: #1b2520; --surface: #24302a; --surface-2: #2e3b34; --tile: #e4eae5;
-  --ink: #eef2ee; --ink-2: #c6cfc9; --ink-3: #9aa69f; --ink-on: #16241d;
+  --paper: #1e2120; --surface: #272b29; --surface-2: #313633; --tile: #e4eae5;
+  --ink: #eef1ee; --ink-2: #c8cdca; --ink-3: #9da5a0; --ink-on: #16241d;
   --act: #eef2ee; --act-on: #16241d;
   --brand-50: rgba(255, 122, 89, .12); --brand-100: rgba(255, 122, 89, .24); --brand-500: #ff7a59; --brand-600: #ff9a80; --brand-700: #ffc2b2;
   --tomato: #f0502f; --lemon: #f2d34a; --mint: #a9d9b4; --mint-50: rgba(169, 217, 180, .12); --leaf: #7fd19c;
-  --feature: #111915; --feature-ink: #eef2ee;
+  --feature: #151817; --feature-ink: #eef2ee;
   --apricot: #f2c14a; --apricot-50: rgba(242, 193, 74, .13);
   --berry: #ff8c9c; --berry-50: rgba(255, 140, 156, .13);
   --sky: #8cc3e3; --sky-50: rgba(140, 195, 227, .13);
@@ -303,12 +303,12 @@ button.row__main { min-height: 44px; align-self: stretch; display: flex; flex-di
   --scrim: rgba(4, 8, 6, .6); --sh-1: none; --sh-2: 0 18px 44px rgba(0, 0, 0, .45);
 } }
 :root[data-theme="dunkel"] {
-  --paper: #1b2520; --surface: #24302a; --surface-2: #2e3b34; --tile: #e4eae5;
-  --ink: #eef2ee; --ink-2: #c6cfc9; --ink-3: #9aa69f; --ink-on: #16241d;
+  --paper: #1e2120; --surface: #272b29; --surface-2: #313633; --tile: #e4eae5;
+  --ink: #eef1ee; --ink-2: #c8cdca; --ink-3: #9da5a0; --ink-on: #16241d;
   --act: #eef2ee; --act-on: #16241d;
   --brand-50: rgba(255, 122, 89, .12); --brand-100: rgba(255, 122, 89, .24); --brand-500: #ff7a59; --brand-600: #ff9a80; --brand-700: #ffc2b2;
   --tomato: #f0502f; --lemon: #f2d34a; --mint: #a9d9b4; --mint-50: rgba(169, 217, 180, .12); --leaf: #7fd19c;
-  --feature: #111915; --feature-ink: #eef2ee;
+  --feature: #151817; --feature-ink: #eef2ee;
   --apricot: #f2c14a; --apricot-50: rgba(242, 193, 74, .13);
   --berry: #ff8c9c; --berry-50: rgba(255, 140, 156, .13);
   --sky: #8cc3e3; --sky-50: rgba(140, 195, 227, .13);
@@ -553,3 +553,50 @@ button.row__main { min-height: 44px; align-self: stretch; display: flex; flex-di
 .update-ver span { font-size: 14px; color: var(--ink-3); }
 .meter { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
 .meter i { display: block; height: 100%; background: var(--leaf); transition: width var(--t) var(--e-soft); }
+
+/* ── FreshPlan 2, Schritt 1: drei lebende Bereiche, Haken statt Wischen, Profil als Ebene ── */
+html, body { height: 100%; overflow: hidden; }
+.app { height: 100dvh; min-height: 0; padding-bottom: 0; overflow: hidden; }
+.pager { position: fixed; inset: 0; overflow: hidden; touch-action: pan-y; }
+.pager__track { display: flex; height: 100%; will-change: transform; }
+.pane { height: 100%; flex: none; overflow-x: hidden; overflow-y: auto; overscroll-behavior-y: contain; touch-action: pan-y; background: var(--paper); padding-bottom: calc(var(--nav-h) + var(--safe-b) + var(--s8)); scrollbar-width: none; }
+.pane::-webkit-scrollbar { display: none; }
+.shelf, .recrow, .chips { touch-action: pan-x pan-y; }
+/* Leiste und Fächer ohne Weichzeichner: der Grafikchip muss nichts dahinter neu berechnen */
+.nav { background: var(--paper); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.fan-scrim { background: color-mix(in srgb, var(--paper) 78%, transparent); -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* Lebensmittel-Fotos nie größer als die Hälfte ihrer Pixel anzeigen (scharf auf 2-fach-Displays) */
+.tile__img img { width: 58%; height: 58%; }
+
+.irow { position: relative; display: flex; align-items: center; gap: 2px; background: var(--surface); padding-right: var(--s2); }
+.irow > .row { flex: 1; min-width: 0; background: transparent; padding-right: var(--s1); -webkit-touch-callout: none; user-select: none; }
+.group > .irow + .irow { box-shadow: inset 0 1px 0 var(--line); }
+.check { width: 44px; height: 44px; flex: none; border-radius: 50%; border: 1.5px solid var(--line-2); background: var(--paper); color: var(--ink-3); display: grid; place-items: center; transition: background-color var(--t-fast) var(--e-out), border-color var(--t-fast) var(--e-out), color var(--t-fast) var(--e-out); }
+.check .ic { width: 20px; height: 20px; stroke-width: 2.3; }
+.check:active, .check.is-on { background: var(--leaf); border-color: var(--leaf); color: var(--paper); }
+.menu-list { display: flex; flex-direction: column; gap: var(--s2); }
+.menu-item { display: flex; align-items: center; gap: var(--s3); min-height: 52px; padding: 0 var(--s4); border: 0; border-radius: var(--r-s); background: var(--surface); color: var(--ink); font-size: 16px; font-weight: 600; text-align: left; }
+.menu-item .ic { width: 20px; height: 20px; color: var(--ink-2); }
+.menu-item:active { background: var(--surface-2); }
+.menu-item--danger, .menu-item--danger .ic { color: var(--berry); }
+
+.layer { position: fixed; inset: 0; z-index: 55; background: var(--paper); display: flex; flex-direction: column; outline: none; animation: layerin 280ms var(--e-drawer); }
+.layer--closing { animation: layerout 220ms var(--e-soft) forwards; }
+@keyframes layerin { from { transform: translateX(100%); } }
+@keyframes layerout { to { transform: translateX(100%); } }
+.layer__head { display: flex; align-items: center; gap: var(--s3); width: 100%; max-width: var(--maxw); margin: 0 auto; padding: calc(var(--safe-t) + 10px) var(--gut) var(--s3); }
+.layer__head h2 { flex: 1; min-width: 0; font-size: clamp(19px, 5.6vw, 24px); line-height: 1.15; font-weight: 720; font-stretch: 88%; letter-spacing: -.025em; color: var(--ink); }
+.layer__body { flex: 1; overflow-y: auto; overscroll-behavior: contain; width: 100%; max-width: var(--maxw); margin: 0 auto; padding: var(--s2) var(--gut) calc(var(--safe-b) + var(--s8)); display: flex; flex-direction: column; gap: var(--s5); }
+.pcard { display: flex; align-items: center; gap: var(--s4); padding: var(--s4); border-radius: var(--r-m); background: var(--surface); }
+.pcard__av { width: 64px; height: 64px; border-radius: 50%; background: var(--tomato); color: #16241d; display: grid; place-items: center; font-weight: 720; font-size: 26px; flex: none; }
+.pcard__av .ic { width: 28px; height: 28px; }
+.pcard__main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pcard__name { width: 100%; min-height: 44px; border: 0; border-bottom: 1.5px solid transparent; background: transparent; color: var(--ink); font: 650 22px/1.2 var(--font); letter-spacing: -.02em; padding: 0; }
+.pcard__name:focus { outline: none; border-bottom-color: var(--ink); }
+.pcard__name::placeholder { color: var(--ink-3); }
+.pcard__sub { font-size: 14px; color: var(--ink-3); }
+.plist .row { min-height: 64px; }
+.plist__ic { width: 40px; height: 40px; border-radius: 12px; background: var(--paper); color: var(--ink-2); display: grid; place-items: center; flex: none; }
+.plist__ic .ic { width: 20px; height: 20px; }
+.plist .row > .ic { color: var(--ink-3); width: 18px; height: 18px; flex: none; }
+@media (prefers-reduced-motion: reduce) { .layer, .layer--closing { animation: none; } }
