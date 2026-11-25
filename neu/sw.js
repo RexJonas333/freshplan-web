@@ -1,6 +1,6 @@
 // Service Worker: App-Hülle vorab, Bilder beim ersten Ansehen, Server-Anfragen nie aus dem Cache.
-const V = "fp2-ebe8d662c6";
-const SHELL = ["./","index.html","app.js","app.css","manifest.webmanifest","assets/icon.svg","teile/chunk-3V7NJTVG.js","teile/chunk-BGAZNZ6H.js","teile/chunk-GGSRRDTW.js","teile/chunk-HW73KF47.js","teile/chunk-YT2NZWX7.js","teile/einstellungen-U2SA3O4N.js","teile/erfassen-OHTLMCCL.js","teile/update-OO5AYHP5.js"];
+const V = "fp2-907dd29f0d";
+const SHELL = ["./","index.html","app.js","app.css","manifest.webmanifest","assets/icon.svg","teile/chunk-HRITCZNF.js","teile/chunk-M34BLNJL.js","teile/chunk-SOCAT7IA.js","teile/chunk-YT2NZWX7.js","teile/chunk-ZWZIPLLN.js","teile/einstellungen-TD6EFDDJ.js","teile/erfassen-7XS66FU2.js","teile/update-4XCJQVZE.js"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(V).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k.startsWith("fp2-") && k !== V).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", (e) => {

@@ -600,3 +600,114 @@ html, body { height: 100%; overflow: hidden; }
 .plist__ic .ic { width: 20px; height: 20px; }
 .plist .row > .ic { color: var(--ink-3); width: 18px; height: 18px; flex: none; }
 @media (prefers-reduced-motion: reduce) { .layer, .layer--closing { animation: none; } }
+
+/* ── Fenster (25.11.2026): modernes Haus, schmaler weißer Rahmen, Aussicht hinter getönter Scheibe.
+   Alles in den Bereichen steht direkt auf dem Glas, in sauberer weißer Schrift, die wie Marker wirkt.
+   Eingabefelder, Blätter und Ebenen sind fast deckendes Milchglas mit dunkler Schrift. ── */
+@font-face { font-family: "Outfit"; src: url(assets/fonts/Outfit-Regular.woff) format("woff"); font-weight: 300 550; font-display: swap; }
+@font-face { font-family: "Outfit"; src: url(assets/fonts/Outfit-Bold.woff) format("woff"); font-weight: 551 900; font-display: swap; }
+
+:root {
+  --font: "Outfit", "Instrument", system-ui, sans-serif;
+  --fw: 10px;                         /* Rahmenbreite */
+  --frame: #ffffff; --frame-edge: #dfe3e0; --frame-ink: #6b726e; --frame-ink-on: #222826; --frame-disc: #262b29;
+  --milk: rgba(250, 251, 250, .9); --milk-ink: #16241d; --milk-ink-3: #56625b;
+  --dot-red: #ff5a3c; --dot-orange: #ff9a3d; --dot-yellow: #ffd84a; --dot-green: #62d394; --dot-blue: #8cc8ff;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="hell"]) {
+  --frame: #353a37; --frame-edge: #2a2e2c; --frame-ink: #b9c0bc; --frame-ink-on: #f2f4f2; --frame-disc: #eef1ee;
+  --milk: rgba(36, 40, 38, .9); --milk-ink: #eef1ee; --milk-ink-3: #b3bbb6;
+} }
+:root[data-theme="dunkel"] {
+  --frame: #353a37; --frame-edge: #2a2e2c; --frame-ink: #b9c0bc; --frame-ink-on: #f2f4f2; --frame-disc: #eef1ee;
+  --milk: rgba(36, 40, 38, .9); --milk-ink: #eef1ee; --milk-ink-3: #b3bbb6;
+}
+body { font-family: var(--font); background: #0d1512; }
+
+/* Aussicht: steht beim Scrollen still, schwenkt beim Bereichswechsel */
+.fenster { position: fixed; inset: 0; overflow: hidden; background: #0d1512; pointer-events: none; }
+.fenster__view img { position: absolute; top: 0; left: 50%; height: 100%; width: auto; max-width: none; transform: translate3d(-50%, 0, 0); will-change: transform; user-select: none; }
+.fenster__tint { position: absolute; inset: 0; }
+/* Rahmen: liegt über dem Inhalt, Schrift verschwindet beim Scrollen hinter dem Rahmen */
+.fenster__frame { position: fixed; inset: 0; bottom: calc(var(--nav-h) + var(--safe-b)); z-index: 30; pointer-events: none;
+  border: var(--fw) solid var(--frame); border-top-width: calc(var(--safe-t) + var(--fw)); border-bottom-width: 0;
+  box-shadow: inset 0 0 0 1px var(--frame-edge), inset 0 7px 12px -8px rgba(0, 0, 0, .45), inset 7px 0 12px -9px rgba(0, 0, 0, .35), inset -7px 0 12px -9px rgba(0, 0, 0, .35), inset 0 -6px 10px -8px rgba(0, 0, 0, .35); }
+
+/* Alles in den Bereichen: Schrift auf der Scheibe */
+.app { background: transparent; }
+.pane {
+  --paper: transparent; --surface: transparent; --surface-2: rgba(255, 255, 255, .14); --tile: transparent;
+  --ink: #ffffff; --ink-2: rgba(255, 255, 255, .93); --ink-3: rgba(255, 255, 255, .86);
+  --line: rgba(255, 255, 255, .28); --line-2: rgba(255, 255, 255, .55);
+  --act: #ffffff; --act-on: #16241d; --brand-600: #ffffff; --brand-500: #ffffff; --leaf: #8be3b0;
+  background: transparent; color: #fff; padding-left: var(--fw); padding-right: var(--fw);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .22);
+}
+.pane .top { padding-top: calc(var(--safe-t) + var(--fw) + 8px); }
+.pane .top h1 { font-weight: 700; letter-spacing: -.025em; line-height: 1; font-size: clamp(34px, 10.5vw, 46px); }
+.pane .brand { font-weight: 700; letter-spacing: -.02em; }
+.pane .avatar, .pane .icon-btn { background: var(--milk); color: var(--milk-ink); text-shadow: none; }
+.pane .input, .pane textarea { background: var(--milk); color: var(--milk-ink); border-color: transparent; text-shadow: none; }
+.pane .input::placeholder { color: var(--milk-ink-3); }
+.pane .search .ic { color: var(--milk-ink-3); z-index: 1; }
+.pane .seg { background: rgba(255, 255, 255, .12); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .45); }
+.pane .seg button { color: #fff; }
+.pane .seg button[aria-pressed="true"], :root .pane .seg button[aria-pressed="true"] { background: #fff; color: #16241d; text-shadow: none; box-shadow: 0 1px 3px rgba(0, 0, 0, .2); }
+.pane .seg button[aria-pressed="true"] .n { color: #56625b; }
+.pane .chip { background: transparent; border: 1.5px solid rgba(255, 255, 255, .6); color: #fff; }
+.pane .chip[aria-pressed="true"] { background: #fff; border-color: #fff; color: #16241d; text-shadow: none; }
+.pane .btn { background: transparent; border: 1.5px solid rgba(255, 255, 255, .65); color: #fff; }
+.pane .btn--pri, .pane .add-btn, .pane .pill { background: #fff; border-color: #fff; color: #16241d; text-shadow: none; }
+.pane .btn--soft { background: rgba(255, 255, 255, .16); border-color: transparent; }
+.pane .btn--ghost { border-color: transparent; color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+.pane .card, .pane .update-card, .pane .welcome { background: transparent; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .45); color: #fff; }
+.pane .card--warn { box-shadow: inset 0 0 0 1.5px var(--dot-yellow); }
+.pane .muted { color: var(--ink-3); }
+
+/* Listen ohne Kasten, Trennlinien wie mit Marker gezogen */
+.pane .group { background: transparent; border-radius: 0; overflow: visible; }
+.pane .row, .pane .irow { background: transparent; }
+.pane .irow > .row, .pane .group > .row { padding-left: 0; }
+.pane .group > .irow + .irow, .pane .group > .row + .row { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .26); }
+.pane .row__title { font-weight: 600; }
+.pane .info-btn { color: #fff; }
+.pane .check { background: transparent; border: 1.5px solid rgba(255, 255, 255, .75); color: #fff; }
+.pane .check:active, .pane .check.is-on { background: #fff; border-color: #fff; color: #16241d; }
+
+/* Lebensmittel und Rezepte als Foto-Aufkleber mit weißem Rand */
+.pane .row__img { background: #fff; padding: 3px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0, 0, 0, .3); }
+.pane .tile__img { background: transparent; border-radius: 0; }
+.pane .tile__img img { width: 62%; height: auto; aspect-ratio: 160 / 152; object-fit: contain; mix-blend-mode: normal; background: #fff; padding: 7%; border-radius: 18px; box-sizing: content-box; box-shadow: 0 3px 10px rgba(0, 0, 0, .3); transform: rotate(-2deg); }
+.pane .tile:nth-child(2n) .tile__img img { transform: rotate(1.5deg); }
+.pane .tile:nth-child(3n) .tile__img img { transform: rotate(-0.8deg); }
+.pane .rec__img, .pane .feature img, .pane .detail-img { border: 4px solid #fff; border-radius: 16px; box-shadow: 0 3px 10px rgba(0, 0, 0, .3); box-sizing: border-box; }
+.pane .feature { background: transparent; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .45); color: #fff; }
+
+/* Haltbarkeit: farbiger Punkt plus Wort, Schrift bleibt weiß */
+.pane .tag { background: transparent !important; color: #fff !important; padding: 0; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; box-shadow: none; border-radius: 0; }
+.pane .tag::before { content: ""; width: 9px; height: 9px; border-radius: 50%; flex: none; background: var(--dot); box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .9); }
+.pane .tag .ic { display: none; }
+.tag--abgelaufen { --dot: var(--dot-red); } .tag--heute { --dot: var(--dot-orange); } .tag--bald { --dot: var(--dot-yellow); } .tag--ok { --dot: var(--dot-green); } .tag--tk { --dot: var(--dot-blue); }
+.pane .tile .tag { font-size: 13px; margin-top: -4px; }
+
+/* Leiste auf der Fensterbank: ganz weiß-grau */
+.nav { background: var(--frame); border-top: 0; box-shadow: inset 0 1px 0 var(--frame-edge), 0 -1px 0 rgba(0, 0, 0, .06); }
+.nav button { color: var(--frame-ink); }
+.nav button[aria-current="page"] { color: var(--frame-ink-on); }
+.nav button[aria-current="page"] span.ic-wrap { background: color-mix(in srgb, var(--frame-ink) 16%, transparent); }
+.nav .badge { background: var(--frame-disc); color: var(--frame); }
+.hub__disc { background: var(--frame-disc); color: var(--frame); box-shadow: 0 4px 12px rgba(0, 0, 0, .25); }
+.nav .hub[aria-current="page"] { color: var(--frame-ink-on); }
+
+/* Milchglas: Fächer, Blätter, Ebenen */
+.fan-scrim { background: rgba(8, 16, 14, .35); }
+.fan button { background: var(--milk); color: var(--milk-ink); }
+/* Milchglas: satiniert, die Aussicht schimmert nur als Farbe durch, kein Text dahinter lesbar */
+.sheet, .layer { background: var(--milk); -webkit-backdrop-filter: blur(22px) saturate(1.1); backdrop-filter: blur(22px) saturate(1.1); }
+
+/* Aussicht wählen (Profil › Darstellung) */
+.views { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); }
+.views button { position: relative; border: 0; padding: 0; background: none; color: var(--ink); text-align: left; display: flex; flex-direction: column; gap: 6px; font: 600 14px/1.2 var(--font); }
+.views img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 14px; outline: 2px solid transparent; outline-offset: 2px; }
+.views button[aria-pressed="true"] img { outline-color: var(--ink); }
+.views .ph { font-weight: 400; font-size: 12px; color: var(--ink-3); }
